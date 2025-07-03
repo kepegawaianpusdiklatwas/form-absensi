@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,7 +10,7 @@
 <body class="bg-white text-black p-6">
   <div class="max-w-2xl mx-auto border border-gray-300 shadow p-6">
     <h1 class="text-2xl font-bold text-center mb-6">Surat Pernyataan Absensi Fingerprint</h1>
-    
+
     <label class="block font-semibold mb-1">Cari Nama Pegawai</label>
     <input id="search" type="text" placeholder="Ketik nama..." class="w-full border p-2 mb-4" list="pegawaiList" />
     <datalist id="pegawaiList"></datalist>
@@ -52,8 +53,7 @@
 
   <script>
     const pegawai = [
-      { nama: "Tasurun", nip: "19790321 199903 1 001", golongan: "III/d", jabatan: "Analis Diklat" },
-      // Tambahkan data pegawai lain di sini jika perlu
+      { nama: "Tasurun", nip: "19790321 199903 1 001", golongan: "III/d", jabatan: "Analis Diklat" }
     ];
 
     const input = document.getElementById('search');
@@ -81,7 +81,6 @@
         jabatanEl.textContent = data.jabatan;
 
         const now = new Date();
-        const options = { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' };
         const hari = now.toLocaleDateString('id-ID', { weekday: 'long' });
         const tanggal = now.toLocaleDateString('id-ID');
         const waktu = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
