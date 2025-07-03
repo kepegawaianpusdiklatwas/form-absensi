@@ -1,93 +1,94 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Surat Pernyataan Absensi</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      input, button, datalist, select, label, #search, #cetakBtn {
+        display: none !important;
+      }
+      body {
+        margin: 0;
+        padding: 1cm;
+      }
+    }
+  </style>
 </head>
 <body class="bg-white text-black p-6">
   <div class="max-w-2xl mx-auto border border-gray-300 shadow p-6">
     <h1 class="text-2xl font-bold text-center mb-6">Surat Pernyataan Absensi Fingerprint</h1>
 
-    <label class="block font-semibold mb-1">Cari Nama Pegawai</label>
+    <!-- Pencarian -->
+    <label class="block font-semibold mb-1" for="search">Cari Nama Pegawai</label>
     <input id="search" type="text" placeholder="Ketik nama..." class="w-full border p-2 mb-4" list="pegawaiList" />
-    <datalist id="pegawaiList"></datalist>
+    <datalist id="pegawaiList">
+      <option value="Tasurun">
+      <option value="Pegawai Contoh">
+    </datalist>
 
-    <div id="form">
-      <div class="mb-3">
-        <label class="font-bold">Nama Lengkap</label>
-        <div id="nama" class="border p-2 bg-gray-100"></div>
+    <!-- Data Pegawai -->
+    <div id="form" class="space-y-3">
+      <div>
+        <strong>Nama Lengkap</strong><div id="nama">-</div>
       </div>
-      <div class="mb-3">
-        <label class="font-bold">NIP</label>
-        <div id="nip" class="border p-2 bg-gray-100"></div>
+      <div>
+        <strong>NIP</strong><div id="nip">-</div>
       </div>
-      <div class="mb-3">
-        <label class="font-bold">Golongan</label>
-        <div id="golongan" class="border p-2 bg-gray-100"></div>
+      <div>
+        <strong>Golongan</strong><div id="golongan">-</div>
       </div>
-      <div class="mb-3">
-        <label class="font-bold">Jabatan</label>
-        <div id="jabatan" class="border p-2 bg-gray-100"></div>
+      <div>
+        <strong>Jabatan</strong><div id="jabatan">-</div>
       </div>
-      <div class="mb-3">
-        <label class="font-bold">Hari</label>
-        <div id="hari" class="border p-2 bg-gray-100"></div>
+      <div>
+        <strong>Hari</strong><div id="hari">-</div>
       </div>
-      <div class="mb-3">
-        <label class="font-bold">Tanggal</label>
-        <div id="tanggal" class="border p-2 bg-gray-100"></div>
+      <div>
+        <strong>Tanggal</strong><div id="tanggal">-</div>
       </div>
-      <div class="mb-6">
-        <label class="font-bold">Waktu</label>
-        <div id="waktu" class="border p-2 bg-gray-100"></div>
+      <div>
+        <strong>Waktu</strong><div id="waktu">-</div>
       </div>
     </div>
 
-    <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-      Cetak
-    </button>
+    <button id="cetakBtn" onclick="window.print()" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Cetak</button>
   </div>
 
   <script>
-    const pegawai = [
-      { nama: "Tasurun", nip: "19790321 199903 1 001", golongan: "III/d", jabatan: "Analis Diklat" }
-    ];
+    const dataPegawai = {
+      "Tasurun": {
+        nama: "Tasurun",
+        nip: "19790321 199903 1 001",
+        golongan: "III/d",
+        jabatan: "Analis Diklat",
+        hari: "Senin",
+        tanggal: "03/07/2025",
+        waktu: "08.00"
+      },
+      "Pegawai Contoh": {
+        nama: "Pegawai Contoh",
+        nip: "19801212 200501 1 002",
+        golongan: "III/c",
+        jabatan: "Fungsional Umum",
+        hari: "Selasa",
+        tanggal: "04/07/2025",
+        waktu: "09.00"
+      }
+    };
 
-    const input = document.getElementById('search');
-    const list = document.getElementById('pegawaiList');
-    const namaEl = document.getElementById('nama');
-    const nipEl = document.getElementById('nip');
-    const golonganEl = document.getElementById('golongan');
-    const jabatanEl = document.getElementById('jabatan');
-    const hariEl = document.getElementById('hari');
-    const tanggalEl = document.getElementById('tanggal');
-    const waktuEl = document.getElementById('waktu');
-
-    pegawai.forEach(p => {
-      const option = document.createElement('option');
-      option.value = p.nama;
-      list.appendChild(option);
-    });
-
-    input.addEventListener('input', () => {
-      const data = pegawai.find(p => p.nama.toLowerCase() === input.value.toLowerCase());
-      if (data) {
-        namaEl.textContent = data.nama;
-        nipEl.textContent = data.nip;
-        golonganEl.textContent = data.golongan;
-        jabatanEl.textContent = data.jabatan;
-
-        const now = new Date();
-        const hari = now.toLocaleDateString('id-ID', { weekday: 'long' });
-        const tanggal = now.toLocaleDateString('id-ID');
-        const waktu = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
-        hariEl.textContent = hari;
-        tanggalEl.textContent = tanggal;
-        waktuEl.textContent = waktu;
+    document.getElementById("search").addEventListener("input", (e) => {
+      const selected = dataPegawai[e.target.value];
+      if (selected) {
+        document.getElementById("nama").textContent = selected.nama;
+        document.getElementById("nip").textContent = selected.nip;
+        document.getElementById("golongan").textContent = selected.golongan;
+        document.getElementById("jabatan").textContent = selected.jabatan;
+        document.getElementById("hari").textContent = selected.hari;
+        document.getElementById("tanggal").textContent = selected.tanggal;
+        document.getElementById("waktu").textContent = selected.waktu;
       }
     });
   </script>
