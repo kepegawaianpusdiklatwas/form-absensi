@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surat Pernyataan Absensi Fingerprint</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8f9fa; }
+    .form-container {
+      max-width: 800px; margin: 30px auto; background-color: #fff;
+      padding: 30px; border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .form-header { text-align: center; margin-bottom: 20px; }
+    .btn-custom { background-color: #007BFF; color: white; width: 100%; }
+    .btn-custom:hover { background-color: #0056b3; }
+    .readonly { background-color: #e9ecef; }
+    @media (max-width: 576px) {
+      .form-container { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container form-container">
+  <div class="form-header">
+    <h3>Surat Pernyataan Absensi Fingerprint</h3>
+    <hr>
+  </div>
+  <form id="izinForm">
+    <div class="mb-3">
+      <label class="form-label">Cari Nama Pegawai</label>
+      <input type="text" class="form-control" id="cariNama" placeholder="Ketik nama..." oninput="filterPegawai()" list="daftarPegawai">
+      <datalist id="daftarPegawai"></datalist>
+    </div>
+    <div class="row">
+      <div class="col-md-6"><div class="mb-3"><label class="form-label">Nama Lengkap</label><input type="text" class="form-control readonly" name="nama" id="nama" readonly></div></div>
+      <div class="col-md-6"><div class="mb-3"><label class="form-label">NIP</label><input type="text" class="form-control readonly" name="nip" id="nip" readonly></div></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6"><div class="mb-3"><label class="form-label">Golongan</label><input type="text" class="form-control readonly" name="golongan" id="golongan" readonly></div></div>
+      <div class="col-md-6"><div class="mb-3"><label class="form-label">Jabatan</label><input type="text" class="form-control readonly" name="jabatan" id="jabatan" readonly></div></div>
+    </div>
+    <div class="row">
+      <div class="col-md-4"><div class="mb-3"><label class="form-label">Hari</label><input type="text" class="form-control" name="hari" required></div></div>
+      <div class="col-md-4"><div class="mb-3"><label class="form-label">Tanggal</label><input type="date" class="form-control" name="tanggal" required></div></div>
+      <div class="col-md-4"><div class="mb-3"><label class="form-label">Waktu</label><input type="time" class="form-control" name="waktu" required></div></div>
+    </div>
+    <div class="mb-3"><label class="form-label">Lokasi</label><input type="text" class="form-control" name="lokasi" required></div>
+    <div class="row">
+      <div class="col-md-6"><div class="mb-3"><label class="form-label">Nama Atasan Langsung</label><input type="text" class="form-control" name="atasan_langsung" required></div></div>
+      <div class="col-md-6"><div class="mb-3"><label class="form-label">NIP Atasan Langsung</label><input type="text" class="form-control" name="nip_atasan" required></div></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6"><div class="mb-3"><label class="form-label">Nama Atasan dari Atasan Langsung</label><input type="text" class="form-control" name="atasan_atasan" required></div></div>
+      <div class="col-md-6"><div class="mb-3"><label class="form-label">NIP Atasan dari Atasan Langsung</label><input type="text" class="form-control" name="nip_atasan_atasan" required></div></div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Upload Bukti (Screenshot CCTV / Google Lini Masa)</label>
+      <input type="file" class="form-control" name="file" accept="image/*,.pdf">
+    </div>
+    <button type="button" class="btn btn-custom" onclick="simpanData()">Simpan & Cetak Form</button>
+  </form>
+</div>
+
+<script>
+  let pegawaiData = [];
+
+  async function loadPegawai() {
+    const res = await fetch("https://script.google.com/macros/s/AKfycbzVaUTiO5P63P_w3cYP8bwP4zXiMg7fdYrXrq36qU1S1q8P-V9y7uOIQUyOthyZxc0R/exec?data=pegawai");
+    pegawaiData = await res.json();
+
+    const datalist = document.getElementById("daftarPegawai");
+    pegawaiData.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.Nama;
+      datalist.appendChild(opt);
+    });
+  }
+
+  function filterPegawai() {
+    const namaInput = document.getElementById("cariNama").value.toLowerCase();
+    const pegawai = pegawaiData.find(p => p.Nama.toLowerCase() === namaInput);
+    if (pegawai) {
+      document.getElementById("nama").value = pegawai.Nama;
+      document.getElementById("nip").value = pegawai.NIP;
+      document.getElementById("golongan").value = pegawai.Golongan;
+      document.getElementById("jabatan").value = pegawai.Jabatan;
+    }
+  }
+
+  function simpanData() {
+    const form = document.getElementById('izinForm');
+    const formData = new FormData(form);
+
+    fetch("https://script.google.com/macros/s/AKfycbzVaUTiO5P63P_w3cYP8bwP4zXiMg7fdYrXrq36qU1S1q8P-V9y7uOIQUyOthyZxc0R/exec", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+      alert("Data dan bukti berhasil disimpan!");
+      window.print();
+    })
+    .catch(error => {
+      alert("Gagal menyimpan data: " + error);
+    });
+  }
+
+  window.onload = loadPegawai;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
