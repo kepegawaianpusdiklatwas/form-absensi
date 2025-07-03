@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formulir Konfirmasi Kehadiran</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      input, select {
+        display: none !important;
+      }
+      .form-control-plaintext {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-light p-4">
+  <div class="container bg-white p-5 border rounded shadow-sm">
+    <h3 class="text-center mb-4">Formulir Konfirmasi Kehadiran</h3>
+
+    <div class="mb-3">
+      <label class="form-label">Cari Nama Pegawai</label>
+      <input class="form-control" list="pegawaiList" id="searchInput" placeholder="Ketik nama...">
+      <datalist id="pegawaiList">
+        <option value="Tasurun">
+        <option value="Contoh Pegawai">
+      </datalist>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Nama Lengkap</label>
+      <div class="form-control-plaintext" id="namaText">-</div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">NIP</label>
+      <div class="form-control-plaintext" id="nipText">-</div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Golongan</label>
+      <div class="form-control-plaintext" id="golText">-</div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Jabatan</label>
+      <div class="form-control-plaintext" id="jabText">-</div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Hari</label>
+      <input type="text" class="form-control" id="hariInput" placeholder="Contoh: Senin">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Tanggal</label>
+      <input type="text" class="form-control" id="tanggalInput" placeholder="Contoh: 03/07/2025">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Waktu</label>
+      <input type="text" class="form-control" id="waktuInput" placeholder="Contoh: 08:00 WIB">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Upload Bukti Kehadiran (Screenshot)</label>
+      <input type="file" class="form-control" id="buktiInput" accept="image/*,application/pdf">
+    </div>
+
+    <div class="mt-4 text-center no-print">
+      <button onclick="window.print()" class="btn btn-primary">Simpan & Cetak</button>
+    </div>
+  </div>
+
+  <script>
+    const pegawai = {
+      "Tasurun": {
+        nama: "Tasurun",
+        nip: "19790321 199903 1 001",
+        gol: "III/d",
+        jab: "Analis Diklat"
+      },
+      "Contoh Pegawai": {
+        nama: "Contoh Pegawai",
+        nip: "19801212 200501 1 002",
+        gol: "III/c",
+        jab: "Staf Umum"
+      }
+    };
+
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const val = this.value;
+      const data = pegawai[val];
+      if (data) {
+        document.getElementById('namaText').textContent = data.nama;
+        document.getElementById('nipText').textContent = data.nip;
+        document.getElementById('golText').textContent = data.gol;
+        document.getElementById('jabText').textContent = data.jab;
+      }
+    });
+  </script>
+</body>
+</html>
