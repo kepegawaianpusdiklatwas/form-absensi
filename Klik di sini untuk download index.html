@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulir Konfirmasi Kehadiran (Fingerprint)</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, select { width: 100%; padding: 5px; margin-top: 5px; }
+    button { margin-top: 15px; padding: 10px 15px; width: 100%; }
+    #output { margin-top: 30px; }
+    @media print {
+      body * { visibility: hidden; }
+      #output, #output * { visibility: visible; }
+      #output { position: absolute; top: 0; left: 0; }
+      form, button, input, select, label { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Formulir Konfirmasi Kehadiran (Fingerprint)</h1>
+  <form id="formulir">
+    <label for="search">Cari Nama Pegawai</label>
+    <input list="pegawaiList" id="search" placeholder="Ketik nama..." />
+    <datalist id="pegawaiList"></datalist>
+
+    <label for="hari">Hari</label>
+    <input type="text" id="hari" />
+
+    <label for="tanggal">Tanggal</label>
+    <input type="date" id="tanggal" value="2025-07-03" />
+
+    <label for="waktu">Waktu</label>
+    <input type="time" id="waktu" value="08:00" />
+
+    <label for="file">Upload Bukti Screenshoot</label>
+    <input type="file" id="file" />
+
+    <button type="button" onclick="window.print()">Cetak</button>
+  </form>
+
+  <div id="output">
+    <h2>Surat Pernyataan</h2>
+    <p>Nama: <span id="nama"></span></p>
+    <p>NIP: <span id="nip"></span></p>
+    <p>Golongan: <span id="golongan"></span></p>
+    <p>Jabatan: <span id="jabatan"></span></p>
+    <p>Hari: <span id="outHari"></span></p>
+    <p>Tanggal: <span id="outTanggal"></span></p>
+    <p>Waktu: <span id="outWaktu"></span></p>
+  </div>
+
+  <script>
+    const url = 'https://script.google.com/macros/s/AKfycbzVaUTiO5P63P_w3cYP8bwP4zXiMg7fdYrXrq36qU1S1q8P-V9y7uOIQUyOthyZxc0R/exec';
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const datalist = document.getElementById("pegawaiList");
+        data.forEach(p => {
+          const option = document.createElement("option");
+          option.value = p.nama;
+          datalist.appendChild(option);
+        });
+
+        document.getElementById("search").addEventListener("input", function () {
+          const selected = data.find(p => p.nama.toLowerCase() === this.value.toLowerCase());
+          if (selected) {
+            document.getElementById("nama").textContent = selected.nama;
+            document.getElementById("nip").textContent = selected.nip;
+            document.getElementById("golongan").textContent = selected.golongan;
+            document.getElementById("jabatan").textContent = selected.jabatan;
+          }
+        });
+      });
+
+    document.getElementById("formulir").addEventListener("input", () => {
+      document.getElementById("outHari").textContent = document.getElementById("hari").value;
+      document.getElementById("outTanggal").textContent = document.getElementById("tanggal").value;
+      document.getElementById("outWaktu").textContent = document.getElementById("waktu").value;
+    });
+  </script>
+</body>
+</html>
