@@ -299,7 +299,11 @@ const fuse = new Fuse(pegawaiList, fuseOptions); // Baris ~250
     }
   });
 }; // Akhir baris ~290
-
+        
+    bindSearch("nama", "info-nama", "nip");
+    bindSearch("atasan1", "info-atasan1", "nip_atasan1");
+    bindSearch("atasan2", "info-atasan2", "nip_atasan2");
+        
     // Submit form
     document.getElementById("absenForm").addEventListener("submit", async function(e) {
       e.preventDefault();
