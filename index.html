@@ -174,7 +174,8 @@ document.getElementById("cetak-nama").textContent = `Nama: ${data.Nama}`;
 document.getElementById("ttd-nama").textContent = data.Nama;
 document.getElementById("cetak-nip").textContent = `NIP: ${data.NIP}`;
 document.getElementById("cetak-hari").textContent = `Hari: ${data.Hari}`;
-document.getElementById("cetak-tanggal").textContent = `Tanggal: ${data.Tanggal}`;
+document.getElementById("cetak-tanggal-teks").textContent = `Tanggal: ${formatTanggalIndonesia(data.Tanggal)}`;
+document.getElementById("cetak-tanggal-list").textContent = formatTanggalIndonesia(data.Tanggal);
 document.getElementById("cetak-waktu").textContent = `Waktu: ${data.Waktu}`;
 document.getElementById("cetak-atasan1").textContent = `${data.AtasanLangsung} (${data.NIP_AtasanLangsung})`;
 document.getElementById("cetak-atasan2").textContent = `${data.AtasanDariAtasanLangsung} (${data.NIP_AtasanDariAtasanLangsung})`;
@@ -203,7 +204,8 @@ setTimeout(() => {
   <ul class="list-disc ml-6 mb-4">
     <li>Tidak melakukan absensi fingerprint pada hari:</li>
     <li id="cetak-hari"></li>
-    <li id="cetak-tanggal"></li>
+    <!-- CETAK 2 (bagian ul/surat pernyataan) -->
+    <li id="cetak-tanggal-list"></li>
     <li id="cetak-waktu"></li>
   </ul>
 
