@@ -112,9 +112,8 @@
       const data = Object.fromEntries(formData.entries());
 
       try {
-        await fetch("https://script.google.com/macros/s/AKfycby6oWhEaN5nXeQEiqTtBAWbl0YBmZ_1i4Uq0Xk1cuIaihVC6Vh1IWD5Yy10ussHpVZF/exec", {
+        await fetch("https://script.google.com/macros/s/AKfycbwQ_zeMlErqYgD43-9pndiyNlu0TucrwuFHi22xwRmLMoS4sZdLbuAykPXru5ggHj8T/exec", {
           method: "POST",
-          mode: "no-cors",
           body: new URLSearchParams(data)
         });
 
