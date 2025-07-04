@@ -209,44 +209,61 @@
     
     // Inisialisasi Fuse.js untuk pencarian
 fetch(urlJSON)
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) throw new Error('Gagal memuat data');
+    return res.json();
+  })
   .then(data => {
+    if (!data || data.length === 0) throw new Error('Data kosong');
+    
     pegawaiList = data;
+    console.log('Data pegawai loaded:', pegawaiList.length); // Debug
+    
     const fuseOptions = {
       keys: ['Nama', 'NIP'],
-      threshold: 0.3,
+      threshold: 0.4, // Lebih toleran
       includeScore: true,
-      minMatchCharLength: 3, // Minimal 3 karakter baru search
-      findAllMatches: true,
-      shouldSort: true
+      minMatchCharLength: 2, // Bisa mulai dari 2 karakter
+      ignoreLocation: true, // Cari di semua bagian string
+      findAllMatches: true
     };
+    
     const fuse = new Fuse(pegawaiList, fuseOptions);
 
     const bindSearch = (inputId, infoId, nipField) => {
       const input = document.getElementById(inputId);
       const info = document.getElementById(infoId);
       const nipInput = document.getElementById(nipField);
-      const golonganInput = document.getElementById("golongan");
-      const jabatanInput = document.getElementById("jabatan");
+      const isPegawai = (infoId === "info-nama");
       
-      let searchTimeout;
-      let lastSearchTerm = "";
+      let timeout;
+      let lastValue = "";
 
       input.addEventListener("input", () => {
-        clearTimeout(searchTimeout);
-        const searchTerm = input.value.trim();
+        clearTimeout(timeout);
+        const value = input.value.trim();
         
-        // Reset jika input kosong
-        if (!searchTerm) {
+        // Reset jika kosong
+        if (!value) {
           info.textContent = "";
           nipInput.value = "";
-          if (infoId === "info-nama") {
-            golonganInput.value = "";
-            jabatanInput.value = "";
+          if (isPegawai) {
+            document.getElementById("golongan").value = "";
+            document.getElementById("jabatan").value = "";
           }
+          lastValue = "";
           return;
         }
 
+        // Minimal 2 karakter
+        if (value.length < 2) {
+          info.textContent = "Minimal 2 karakter...";
+          return;
+        }
+
+        timeout = setTimeout(() => {
+          const results = fuse.search(value);
+          console.l
         // Cari hanya jika:
         // 1. Minimal 3 karakter
         // 2. Berbeda dengan pencarian terakhir
