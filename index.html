@@ -192,6 +192,8 @@ document.getElementById("cetak-tanggal-list").textContent = formatTanggalIndones
 document.getElementById("cetak-waktu").textContent = `Waktu: ${data.Waktu}`;
 document.getElementById("cetak-atasan1").textContent = `${data.AtasanLangsung} (${data.NIP_AtasanLangsung})`;
 document.getElementById("cetak-atasan2").textContent = `${data.AtasanDariAtasanLangsung} (${data.NIP_AtasanDariAtasanLangsung})`;
+document.getElementById("cetak-golongan").textContent = data.Golongan || "-";
+document.getElementById("cetak-jabatan").textContent = data.Jabatan || "-";
 
 // Tampilkan area cetak dan cetak
 document.getElementById("cetak-area").classList.remove("hidden");
