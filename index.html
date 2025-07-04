@@ -167,5 +167,30 @@
     }
   });
 </script>
+  <!-- Area Cetak (khusus untuk print) -->
+<div id="cetak-area" class="hidden bg-white p-8 rounded-xl shadow-md">
+  <h2 class="text-xl font-bold mb-4 text-center">SURAT PERNYATAAN KEHADIRAN</h2>
+  <p class="mb-2"><strong>Nama:</strong> <span id="cetak-nama"></span></p>
+  <p class="mb-2"><strong>NIP:</strong> <span id="cetak-nip"></span></p>
+  <p class="mb-2"><strong>Hari, Tanggal:</strong> <span id="cetak-hari-tanggal"></span></p>
+  <p class="mb-2"><strong>Waktu:</strong> <span id="cetak-waktu"></span></p>
+  <p class="mb-2"><strong>Atasan Langsung:</strong> <span id="cetak-atasan1"></span> (<span id="cetak-nip-atasan1"></span>)</p>
+  <p class="mb-2"><strong>Atasan dari Atasan Langsung:</strong> <span id="cetak-atasan2"></span> (<span id="cetak-nip-atasan2"></span>)</p>
+
+  <div class="grid grid-cols-3 text-center mt-12">
+    <div>
+      <p><strong>Menyetujui,</strong><br>Atasan Langsung</p><br><br><br>
+      <p><span id="ttd-atasan1"></span></p>
+    </div>
+    <div>
+      <p><strong>Disetujui oleh,</strong><br>Atasan dari Atasan Langsung</p><br><br><br>
+      <p><span id="ttd-atasan2"></span></p>
+    </div>
+    <div>
+      <p><strong>Yang Menyatakan,</strong></p><br><br><br>
+      <p><span id="ttd-nama"></span></p>
+    </div>
+  </div>
+</div>
 </body>
 </html>
