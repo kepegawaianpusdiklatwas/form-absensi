@@ -98,24 +98,29 @@
       const fuse = new Fuse(pegawaiList, { keys: ['Nama', 'NIP'], threshold: 0.3 });
 
       const bindSearch = (inputId, infoId, nipField) => {
-        const input = document.getElementById(inputId);
-        const info = document.getElementById(infoId);
-        const nipInput = document.getElementById(nipField);
-
-        input.addEventListener("input", () => {
-          const result = fuse.search(input.value);
-          if (result.length > 0) {
-            const match = result[0].item;
-            input.value = match.Nama;
-            nipInput.value = match.NIP;
-            info.textContent = `NIP: ${match.NIP}, Golongan: ${match.Golongan}, Jabatan: ${match.Jabatan}`;
-          } else {
-            nipInput.value = "";
-            info.textContent = "Tidak ditemukan.";
-          }
-        });
-      };
-
+      const input = document.getElementById(inputId);
+      const info = document.getElementById(infoId);
+      const nipInput = document.getElementById(nipField);
+      const golonganInput = document.getElementById("golongan");
+      const jabatanInput = document.getElementById("jabatan");
+    
+      input.addEventListener("input", () => {
+        const result = fuse.search(input.value);
+        if (result.length > 0) {
+          const match = result[0].item;
+          input.value = match.Nama;
+          nipInput.value = match.NIP;
+          golonganInput.value = match.Golongan || "-";
+          jabatanInput.value = match.Jabatan || "-";
+          info.textContent = `NIP: ${match.NIP}, Golongan: ${match.Golongan}, Jabatan: ${match.Jabatan}`;
+        } else {
+          nipInput.value = "";
+          golonganInput.value = "";
+          jabatanInput.value = "";
+          info.textContent = "Tidak ditemukan.";
+        }
+      });
+    };
       bindSearch("nama", "info-nama", "nip");
       bindSearch("atasan1", "info-atasan1", "nip_atasan1");
       bindSearch("atasan2", "info-atasan2", "nip_atasan2");
