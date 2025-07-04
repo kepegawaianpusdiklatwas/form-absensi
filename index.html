@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Konfirmasi Kehadiran</title>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .required:after { content: " *"; color: red; }
+    @media print {
+      body *:not(#print-area):not(#print-area *) {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md" id="print-area">
+    <h1 class="text-2xl font-bold mb-6 text-center">Form Konfirmasi Kehadiran Fingerprint</h1>
+    <form id="absenForm" class="space-y-4">
+      <div>
+        <label for="nama" class="required block">Nama Pegawai / NIP</label>
+        <input type="text" id="nama" name="Nama" required class="w-full p-2 border rounded" placeholder="Ketik nama atau NIP..." />
+        <input type="hidden" id="nip" name="NIP" />
+        <p id="info-nama" class="text-sm text-gray-600 mt-1"></p>
+      </div>
+
+      <div class="flex flex-col md:flex-row md:space-x-4">
+        <div class="flex-1">
+          <label for="hari" class="required block">Hari</label>
+          <input type="text" id="hari" name="Hari" required class="w-full p-2 border rounded" />
+        </div>
+        <div class="flex-1">
+          <label for="tanggal" class="required block">Tanggal</label>
+          <input type="date" id="tanggal" name="Tanggal" required class="w-full p-2 border rounded" />
+        </div>
+        <div class="flex-1">
+          <label for="waktu" class="required block">Waktu</label>
+          <div class="flex items-center space-x-2">
+            <input type="time" id="waktu" name="Waktu" required class="w-full p-2 border rounded" />
+            <span class="text-sm">WIB</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label for="atasan1" class="required block">Nama Atasan Langsung</label>
+        <input type="text" id="atasan1" name="AtasanLangsung" required class="w-full p-2 border rounded" placeholder="Cari nama atasan..." />
+        <input type="hidden" id="nip_atasan1" name="NIP_AtasanLangsung" />
+        <p id="info-atasan1" class="text-sm text-gray-600 mt-1"></p>
+      </div>
+
+      <div>
+        <label for="atasan2" class="required block">Nama Atasan dari Atasan Langsung</label>
+        <input type="text" id="atasan2" name="AtasanDariAtasanLangsung" required class="w-full p-2 border rounded" placeholder="Cari nama atasan atas..." />
+        <input type="hidden" id="nip_atasan2" name="NIP_AtasanDariAtasanLangsung" />
+        <p id="info-atasan2" class="text-sm text-gray-600 mt-1"></p>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Kirim & Cetak</button>
+        <button type="reset" id="resetBtn" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Clear Form</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    let pegawaiList = [];
+    const urlJSON = "https://kepegawaianpusdiklatwas.github.io/pegawai-json/";
+
+    fetch(urlJSON)
+      .then(res => res.json())
+      .then(data => {
+        pegawaiList = data;
+        const fuse = new Fuse(pegawaiList, { keys: ['Nama', 'NIP'], threshold: 0.3 });
+
+        const bindSearch = (inputId, infoId, nipField) => {
+          const input = document.getElementById(inputId);
+          const info = document.getElementById(infoId);
+          const nipInput = document.getElementById(nipField);
+
+          input.addEventListener("input", () => {
+            const result = fuse.search(input.value);
+            if (result.length > 0) {
+              const match = result[0].item;
+              input.value = match.Nama;
+              nipInput.value = match.NIP;
+              info.textContent = `NIP: ${match.NIP}, Golongan: ${match.Golongan}, Jabatan: ${match.Jabatan}`;
+            } else {
+              nipInput.value = "";
+              info.textContent = "Tidak ditemukan.";
+            }
+          });
+        };
+
+        bindSearch("nama", "info-nama", "nip");
+        bindSearch("atasan1", "info-atasan1", "nip_atasan1");
+        bindSearch("atasan2", "info-atasan2", "nip_atasan2");
+      });
+
+    document.getElementById("absenForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        await fetch("https://script.google.com/macros/s/AKfycby6oWhEaN5nXeQEiqTtBAWbl0YBmZ_1i4Uq0Xk1cuIaihVC6Vh1IWD5Yy10ussHpVZF/exec", {
+          method: "POST",
+          mode: "no-cors",
+          body: new URLSearchParams(data)
+        });
+
+        setTimeout(() => {
+          window.print();
+        }, 500);
+
+      } catch (error) {
+        alert("Gagal mengirim data: " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
