@@ -7,17 +7,24 @@
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; }
-    .required:after { content: " *"; color: red; }
-      @media print {
+  body { font-family: Arial, sans-serif; }
+  .required:after { content: " *"; color: red; }
+
+  @media print {
     body * {
-      display: none !important;
+      visibility: hidden;
     }
     #cetak-area, #cetak-area * {
-      display: block !important;
+      visibility: visible;
+    }
+    #cetak-area {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
     }
   }
-  </style>
+</style>
 </head>
 <body class="bg-gray-100 p-6">
   <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md" id="print-area">
