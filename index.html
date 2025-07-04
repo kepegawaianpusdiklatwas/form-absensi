@@ -18,6 +18,16 @@
       #print-area, #print-area * {
         visibility: visible;
       }
+      input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+.text-info {
+  color: #666;
+  font-size: 0.9em;
+  transition: all 0.3s ease;
+}
       #print-area {
         position: absolute;
         top: 0;
@@ -38,7 +48,6 @@
 </head>
 <body class="bg-gray-100 p-6">
   <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md" id="print-area">
-    <h1 class="text-2xl font-bold mb-6 text-center">Form Konfirmasi Kehadiran Fingerprint</h1>
     
     <!-- Form Input -->
     <form id="absenForm" class="space-y-4">
@@ -213,51 +222,83 @@
       .then(res => res.json())
       .then(data => {
         pegawaiList = data;
-        const fuse = new Fuse(pegawaiList, { 
-          keys: ['Nama', 'NIP'], 
-          threshold: 0.3,
-          includeScore: true
-        });
-
-        const bindSearch = (inputId, infoId, nipField) => {
-          const input = document.getElementById(inputId);
-          const info = document.getElementById(infoId);
-          const nipInput = document.getElementById(nipField);
-          const golonganInput = document.getElementById("golongan");
-          const jabatanInput = document.getElementById("jabatan");
+        const fuseOptions = {
+  keys: ['Nama', 'NIP'],
+  threshold: 0.3,
+  includeScore: true,
+  minMatchCharLength: 3 // Baru ditambahkan
+};
+const fuse = new Fuse(pegawaiList, fuseOptions); // Baris ~250
         
-          let timeout;
-          input.addEventListener("input", () => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-              const result = fuse.search(input.value);
-              if (result.length > 0 && result[0].score < 0.4) {
-                const match = result[0].item;
-                input.value = match.Nama;
-                nipInput.value = match.NIP;
-                if (infoId === "info-nama") {
-                  golonganInput.value = match.Golongan || "-";
-                  jabatanInput.value = match.Jabatan || "-";
-                }
-                info.textContent = `NIP: ${match.NIP}${match.Golongan ? ', Golongan: ' + match.Golongan : ''}${match.Jabatan ? ', Jabatan: ' + match.Jabatan : ''}`;
-              } else {
-                if (input.value.trim() === "") {
-                  info.textContent = "";
-                } else {
-                  info.textContent = "Tidak ditemukan. Pastikan nama/NIP benar.";
-                }
-              }
-            }, 300);
-          });
-        };
 
-        bindSearch("nama", "info-nama", "nip");
-        bindSearch("atasan1", "info-atasan1", "nip_atasan1");
-        bindSearch("atasan2", "info-atasan2", "nip_atasan2");
-      })
-      .catch(err => {
-        console.error("Gagal memuat data pegawai:", err);
-      });
+       const bindSearch = (inputId, infoId, nipField) => { // Mulai baris ~257
+  const input = document.getElementById(inputId);
+  const info = document.getElementById(infoId);
+  const nipInput = document.getElementById(nipField);
+  const golonganInput = document.getElementById("golongan");
+  const jabatanInput = document.getElementById("jabatan");
+  
+  let lastValue = "";
+  let timeout;
+  
+  input.addEventListener("input", () => {
+    clearTimeout(timeout);
+    
+    if (input.value.trim() === "") {
+      info.textContent = "";
+      nipInput.value = "";
+      if (infoId === "info-nama") {
+        golonganInput.value = "";
+        jabatanInput.value = "";
+      }
+      lastValue = "";
+      return;
+    }
+    
+    if (input.value.slice(0, -1) === lastValue && input.value.length >= lastValue.length) {
+      lastValue = input.value;
+      return;
+    }
+    
+    timeout = setTimeout(() => {
+      if (input.value.length < 3) {
+        info.textContent = "Ketikan minimal 3 karakter...";
+        return;
+      }
+      
+      const result = fuse.search(input.value);
+      if (result.length > 0 && result[0].score < 0.4) {
+        const match = result[0].item;
+        lastValue = match.Nama;
+        
+        if (input.value === match.Nama.slice(0, input.value.length)) {
+          input.value = match.Nama;
+        }
+        
+        nipInput.value = match.NIP;
+        if (infoId === "info-nama") {
+          golonganInput.value = match.Golongan || "-";
+          jabatanInput.value = match.Jabatan || "-";
+        }
+        info.textContent = `NIP: ${match.NIP}${match.Golongan ? ', Golongan: ' + match.Golongan : ''}${match.Jabatan ? ', Jabatan: ' + match.Jabatan : ''}`;
+      } else {
+        info.textContent = input.value.length >= 3 ? "Tidak ditemukan" : "";
+      }
+    }, 300);
+    
+    lastValue = input.value;
+  });
+  
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Backspace" || e.key === "Delete") {
+      clearTimeout(timeout);
+      if (input.value.length <= 1) {
+        info.textContent = "";
+        nipInput.value = "";
+      }
+    }
+  });
+}; // Akhir baris ~290
 
     // Submit form
     document.getElementById("absenForm").addEventListener("submit", async function(e) {
