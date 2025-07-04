@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,14 +10,9 @@
   <style>
   body { font-family: Arial, sans-serif; }
   .required:after { content: " *"; color: red; }
-
   @media print {
-    body * {
-      visibility: hidden;
-    }
-    #cetak-area, #cetak-area * {
-      visibility: visible;
-    }
+    body * { visibility: hidden; }
+    #cetak-area, #cetak-area * { visibility: visible; }
     #cetak-area {
       position: absolute;
       top: 0;
@@ -24,7 +20,7 @@
       width: 100%;
     }
   }
-</style>
+  </style>
 </head>
 <body class="bg-gray-100 p-6">
   <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md" id="print-area">
@@ -83,195 +79,33 @@
         <button type="reset" id="resetBtn" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Clear Form</button>
       </div>
     </form>
-    
   </div>
 
-  <script>
-  let pegawaiList = [];
-  const urlJSON = "https://kepegawaianpusdiklatwas.github.io/pegawai-json/pegawai.json";
-
-  // 🔍 Fuzzy search dengan Fuse.js
-  fetch(urlJSON)
-    .then(res => res.json())
-    .then(data => {
-      pegawaiList = data;
-      const fuse = new Fuse(pegawaiList, { keys: ['Nama', 'NIP'], threshold: 0.3 });
-
-      const bindSearch = (inputId, infoId, nipField) => {
-      const input = document.getElementById(inputId);
-      const info = document.getElementById(infoId);
-      const nipInput = document.getElementById(nipField);
-      const golonganInput = document.getElementById("golongan");
-      const jabatanInput = document.getElementById("jabatan");
-    
-      input.addEventListener("input", () => {
-        const result = fuse.search(input.value);
-        if (result.length > 0) {
-          const match = result[0].item;
-          input.value = match.Nama;
-          nipInput.value = match.NIP;
-          golonganInput.value = match.Golongan || "-";
-          jabatanInput.value = match.Jabatan || "-";
-          info.textContent = `NIP: ${match.NIP}, Golongan: ${match.Golongan}, Jabatan: ${match.Jabatan}`;
-        } else {
-          nipInput.value = "";
-          golonganInput.value = "";
-          jabatanInput.value = "";
-          info.textContent = "Tidak ditemukan.";
-        }
-      });
-    };
-      bindSearch("nama", "info-nama", "nip");
-      bindSearch("atasan1", "info-atasan1", "nip_atasan1");
-      bindSearch("atasan2", "info-atasan2", "nip_atasan2");
-    });
-
-  // 🔄 Fungsi konversi ke base64
-  function toBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result.split(',')[1]); // hanya base64-nya
-      reader.onerror = error => reject(error);
-    });
-  }
-// 📆 Format tanggal Indonesia
-function formatTanggalIndonesia(tanggalISO) {
-  const hariList = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-  const bulanList = ["Januari","Februari","Maret","April","Mei","Juni","Juli",
-                     "Agustus","September","Oktober","November","Desember"];
-  const tanggal = new Date(tanggalISO + "T00:00:00"); // hindari offset zona waktu
-  const hari = hariList[tanggal.getDay()];
-  const tgl = tanggal.getDate();
-  const bulan = bulanList[tanggal.getMonth()];
-  const tahun = tanggal.getFullYear();
-  return `${hari}, ${tgl} ${bulan} ${tahun}`;
-}
-  // 📨 Submit form
-  document.getElementById("absenForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const form = e.target;
-    const formData = new FormData(form);
-    const loading = document.getElementById("loading");
-    loading.classList.remove("hidden");
-
-    try {
-      const fileInput = document.getElementById("bukti");
-      const file = fileInput.files[0];
-
-      if (!file) throw new Error("File belum dipilih.");
-
-      const base64File = await toBase64(file);
-
-      const data = {
-        Nama: formData.get("Nama"),
-        NIP: formData.get("NIP"),
-        Hari: formData.get("Hari"),
-        Tanggal: formData.get("Tanggal"),
-        Waktu: formData.get("Waktu"),
-        AtasanLangsung: formData.get("AtasanLangsung"),
-        NIP_AtasanLangsung: formData.get("NIP_AtasanLangsung"),
-        AtasanDariAtasanLangsung: formData.get("AtasanDariAtasanLangsung"),
-        NIP_AtasanDariAtasanLangsung: formData.get("NIP_AtasanDariAtasanLangsung"),
-        Golongan: formData.get("Golongan"),
-        Jabatan: formData.get("Jabatan"),
-        FileName: file.name,
-        MimeType: file.type,
-        Base64: base64File
-      };
-
-      await fetch("https://script.google.com/macros/s/AKfycbyUoHtrNFOr64YWc50yasPIMVqzpyUgXtrIech54xLv-JWxhTLGZB2nW-hthqDf-xDk/exec", {
-  method: "POST",
-  mode: "no-cors",
-  body: JSON.stringify(data)
-});
-
-      loading.textContent = "✅ Berhasil dikirim!";
-
-// Isi cetakan dengan data yang baru dikirim
-document.getElementById("cetak-nama").textContent = data.Nama;
-document.getElementById("ttd-nama").textContent = data.Nama;
-document.getElementById("cetak-nip").textContent = data.NIP;
-document.getElementById("cetak-hari").textContent = data.Hari;
-document.getElementById("cetak-tanggal-list").textContent = formatTanggalIndonesia(data.Tanggal);
-document.getElementById("cetak-golongan").textContent = data.Golongan || "-";
-document.getElementById("cetak-jabatan").textContent = data.Jabatan || "-";
-// Gunakan hanya ini karena ini yang ada di HTML
-document.getElementById("cetak-haritanggal").textContent = `${data.Hari}, ${formatTanggalIndonesia(data.Tanggal)}`;      
-document.getElementById("cetak-waktu").textContent = `Waktu: ${data.Waktu}`;
-document.getElementById("cetak-atasan1").textContent = `${data.AtasanLangsung} (${data.NIP_AtasanLangsung})`;
-document.getElementById("cetak-atasan2").textContent = `${data.AtasanDariAtasanLangsung} (${data.NIP_AtasanDariAtasanLangsung})`;
-document.getElementById("cetak-golongan").textContent = data.Golongan || "-";
-document.getElementById("cetak-jabatan").textContent = data.Jabatan || "-";
-
-// Tampilkan area cetak dan cetak
-document.getElementById("cetak-area").classList.remove("hidden");
-setTimeout(() => {
-  window.print();
-  loading.classList.add("hidden");
-}, 700);
-
-    } catch (err) {
-      loading.textContent = "❌ Gagal mengirim: " + err.message;
-    }
-  });
-    
-</script>
-  <!-- Area Cetak (khusus untuk print) -->
-<div id="cetak-area" class="hidden p-10" style="font-family: Arial, sans-serif; font-size: 12pt;">
-  <div style="text-align: center; font-weight: bold; text-decoration: ; margin-bottom: 20px;">
-    SURAT PERNYATAAN
+  <div id="cetak-area" class="hidden p-10" style="font-family: Arial, sans-serif; font-size: 12pt;">
+    <div style="text-align: center; font-weight: bold; margin-bottom: 20px;">SURAT PERNYATAAN</div>
+    <p>Yang bertanda tangan di bawah ini:</p>
+    <table style="margin-left: 40px; margin-bottom: 15px;">
+      <tr><td style="width: 120px;">Nama</td><td>: <span id="cetak-nama"></span></td></tr>
+      <tr><td>NIP</td><td>: <span id="cetak-nip"></span></td></tr>
+      <tr><td>Golongan</td><td>: <span id="cetak-golongan"></span></td></tr>
+      <tr><td>Jabatan</td><td>: <span id="cetak-jabatan"></span></td></tr>
+    </table>
+    <p>Dengan ini menyatakan bahwa saya telah melakukan presensi namun tidak terekam, yaitu pada:</p>
+    <ul style="margin-left: 40px;">
+      <li>Hari/Tanggal: <span id="cetak-haritanggal"></span></li>
+      <li>Waktu: <span id="cetak-waktu"></span> WIB</li>
+    </ul>
+    <p style="margin-top: 20px;">Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan dapat dipertanggungjawabkan.</p>
+    <table style="width: 100%; margin-top: 60px; text-align: center;">
+      <tr>
+        <td>Menyetujui<br>Atasan Langsung<br><br><br><br><u id="cetak-atasan1"></u></td>
+        <td></td>
+        <td>Yang Menyatakan<br><br><br><br><u id="ttd-nama"></u></td>
+      </tr>
+    </table>
+    <div style="text-align: center; margin-top: 80px;">
+      Disetujui oleh:<br>Atasan dari Atasan Langsung<br><br><br><br><u id="cetak-atasan2"></u>
+    </div>
   </div>
-
-  <p>Yang bertanda tangan di bawah ini:</p>
-  <table style="margin-left: 40px; margin-bottom: 15px;">
-    <tr>
-      <td style="width: 120px;">Nama</td>
-      <td>: <span id="cetak-nama"></span></td>
-    </tr>
-    <tr>
-      <td>NIP</td>
-      <td>: <span id="cetak-nip"></span></td>
-    </tr>
-    <tr>
-  <td>Golongan</td>
-  <td>: <span id="cetak-golongan"></span></td>
-</tr>
-<tr>
-  <td>Jabatan</td>
-  <td>: <span id="cetak-jabatan"></span></td>
-</tr>
-  </table>
-
-  <p>Dengan ini menyatakan bahwa saya telah melakukan presensi namun tidak terekam, yaitu pada:</p>
-  <ul style="margin-left: 40px;">
-  <li>Hari/Tanggal: <span id="cetak-haritanggal"></span></li>
-  <li>Waktu: <span id="cetak-waktu"></span> WIB</li>
-</ul>
-
-  <p style="margin-top: 20px;">Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan dapat dipertanggungjawabkan.</p>
-
-  <table style="width: 100%; margin-top: 60px; text-align: center;">
-    <tr>
-      <td>
-        Menyetujui<br>
-        Atasan Langsung<br><br><br><br>
-        <u id="cetak-atasan1"></u>
-      </td>
-      <td></td>
-      <td>
-        Yang Menyatakan<br><br><br><br>
-        <u id="ttd-nama"></u>
-      </td>
-    </tr>
-  </table>
-
-  <div style="text-align: center; margin-top: 80px;">
-    Disetujui oleh:<br>
-    Atasan dari Atasan Langsung<br><br><br><br>
-    <u id="cetak-atasan2"></u>
-  </div>
-</div>
 </body>
 </html>
