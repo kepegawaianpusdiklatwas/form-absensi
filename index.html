@@ -74,90 +74,100 @@
   </div>
 
   <script>
-    let pegawaiList = [];
-    const urlJSON = "https://kepegawaianpusdiklatwas.github.io/pegawai-json/pegawai.json";
+  let pegawaiList = [];
+  const urlJSON = "https://kepegawaianpusdiklatwas.github.io/pegawai-json/pegawai.json";
 
-    fetch(urlJSON)
-      .then(res => res.json())
-      .then(data => {
-        pegawaiList = data;
-        const fuse = new Fuse(pegawaiList, { keys: ['Nama', 'NIP'], threshold: 0.3 });
+  // 🔍 Fuzzy search dengan Fuse.js
+  fetch(urlJSON)
+    .then(res => res.json())
+    .then(data => {
+      pegawaiList = data;
+      const fuse = new Fuse(pegawaiList, { keys: ['Nama', 'NIP'], threshold: 0.3 });
 
-        const bindSearch = (inputId, infoId, nipField) => {
-          const input = document.getElementById(inputId);
-          const info = document.getElementById(infoId);
-          const nipInput = document.getElementById(nipField);
+      const bindSearch = (inputId, infoId, nipField) => {
+        const input = document.getElementById(inputId);
+        const info = document.getElementById(infoId);
+        const nipInput = document.getElementById(nipField);
 
-          input.addEventListener("input", () => {
-            const result = fuse.search(input.value);
-            if (result.length > 0) {
-              const match = result[0].item;
-              input.value = match.Nama;
-              nipInput.value = match.NIP;
-              info.textContent = `NIP: ${match.NIP}, Golongan: ${match.Golongan}, Jabatan: ${match.Jabatan}`;
-            } else {
-              nipInput.value = "";
-              info.textContent = "Tidak ditemukan.";
-            }
-          });
-        };
+        input.addEventListener("input", () => {
+          const result = fuse.search(input.value);
+          if (result.length > 0) {
+            const match = result[0].item;
+            input.value = match.Nama;
+            nipInput.value = match.NIP;
+            info.textContent = `NIP: ${match.NIP}, Golongan: ${match.Golongan}, Jabatan: ${match.Jabatan}`;
+          } else {
+            nipInput.value = "";
+            info.textContent = "Tidak ditemukan.";
+          }
+        });
+      };
 
-        bindSearch("nama", "info-nama", "nip");
-        bindSearch("atasan1", "info-atasan1", "nip_atasan1");
-        bindSearch("atasan2", "info-atasan2", "nip_atasan2");
-      });
-
- 
-    document.getElementById("absenForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  const form = e.target;
-  const formData = new FormData(form);
-  const loading = document.getElementById("loading");
-  loading.classList.remove("hidden");
-
-  try {
-    const fileInput = document.getElementById("bukti");
-    const file = fileInput.files[0];
-
-    if (!file) throw new Error("File belum dipilih.");
-
-    const base64File = await toBase64(file);
-
-    const data = {
-      Nama: formData.get("Nama"),
-      NIP: formData.get("NIP"),
-      Hari: formData.get("Hari"),
-      Tanggal: formData.get("Tanggal"),
-      Waktu: formData.get("Waktu"),
-      AtasanLangsung: formData.get("AtasanLangsung"),
-      NIP_AtasanLangsung: formData.get("NIP_AtasanLangsung"),
-      AtasanDariAtasanLangsung: formData.get("AtasanDariAtasanLangsung"),
-      NIP_AtasanDariAtasanLangsung: formData.get("NIP_AtasanDariAtasanLangsung"),
-      FileName: file.name,
-      MimeType: file.type,
-      Base64: base64File
-    };
-
-    await fetch("https://script.google.com/macros/s/AKfycby6oWhEaN5nXeQEiqTtBAWbl0YBmZ_1i4Uq0Xk1cuIaihVC6Vh1IWD5Yy10ussHpVZF/exec", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
+      bindSearch("nama", "info-nama", "nip");
+      bindSearch("atasan1", "info-atasan1", "nip_atasan1");
+      bindSearch("atasan2", "info-atasan2", "nip_atasan2");
     });
 
-    loading.textContent = "Berhasil dikirim!";
-    setTimeout(() => {
-      window.print();
-      loading.classList.add("hidden");
-    }, 700);
-
-  } catch (err) {
-    loading.textContent = "Gagal mengirim: " + err.message;
+  // 🔄 Fungsi konversi ke base64
+  function toBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(',')[1]); // hanya base64-nya
+      reader.onerror = error => reject(error);
+    });
   }
-});
-    
-  </script>
+
+  // 📨 Submit form
+  document.getElementById("absenForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+    const loading = document.getElementById("loading");
+    loading.classList.remove("hidden");
+
+    try {
+      const fileInput = document.getElementById("bukti");
+      const file = fileInput.files[0];
+
+      if (!file) throw new Error("File belum dipilih.");
+
+      const base64File = await toBase64(file);
+
+      const data = {
+        Nama: formData.get("Nama"),
+        NIP: formData.get("NIP"),
+        Hari: formData.get("Hari"),
+        Tanggal: formData.get("Tanggal"),
+        Waktu: formData.get("Waktu"),
+        AtasanLangsung: formData.get("AtasanLangsung"),
+        NIP_AtasanLangsung: formData.get("NIP_AtasanLangsung"),
+        AtasanDariAtasanLangsung: formData.get("AtasanDariAtasanLangsung"),
+        NIP_AtasanDariAtasanLangsung: formData.get("NIP_AtasanDariAtasanLangsung"),
+        FileName: file.name,
+        MimeType: file.type,
+        Base64: base64File
+      };
+
+      await fetch("https://script.google.com/macros/s/AKfycby6oWhEaN5nXeQEiqTtBAWbl0YBmZ_1i4Uq0Xk1cuIaihVC6Vh1IWD5Yy10ussHpVZF/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+
+      loading.textContent = "✅ Berhasil dikirim!";
+      setTimeout(() => {
+        window.print();
+        loading.classList.add("hidden");
+      }, 700);
+
+    } catch (err) {
+      loading.textContent = "❌ Gagal mengirim: " + err.message;
+    }
+  });
+</script>
 </body>
 </html>
