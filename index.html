@@ -128,7 +128,18 @@
       reader.onerror = error => reject(error);
     });
   }
-
+// 📆 Format tanggal Indonesia
+function formatTanggalIndonesia(tanggalISO) {
+  const hariList = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+  const bulanList = ["Januari","Februari","Maret","April","Mei","Juni","Juli",
+                     "Agustus","September","Oktober","November","Desember"];
+  const tanggal = new Date(tanggalISO + "T00:00:00"); // hindari offset zona waktu
+  const hari = hariList[tanggal.getDay()];
+  const tgl = tanggal.getDate();
+  const bulan = bulanList[tanggal.getMonth()];
+  const tahun = tanggal.getFullYear();
+  return `${hari}, ${tgl} ${bulan} ${tahun}`;
+}
   // 📨 Submit form
   document.getElementById("absenForm").addEventListener("submit", async function (e) {
     e.preventDefault();
