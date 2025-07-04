@@ -19,7 +19,7 @@
 <body class="bg-gray-100 p-6">
   <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md" id="print-area">
     <h1 class="text-2xl font-bold mb-6 text-center">Form Konfirmasi Kehadiran Fingerprint</h1>
-    <form id="absenForm" enctype="multipart/form-data" class="space-y-4">
+    <form id="absenForm" class="space-y-4">
       <div>
         <label for="nama" class="required block">Nama Pegawai / NIP</label>
         <input type="text" id="nama" name="Nama" required class="w-full p-2 border rounded" placeholder="Ketik nama atau NIP..." />
@@ -60,16 +60,16 @@
       </div>
 
       <div>
-  <label for="bukti" class="required block">Upload Bukti Screenshot (CCTV atau Google Timeline)</label>
-  <input type="file" id="bukti" name="Bukti" accept="image/*" required class="w-full p-2 border rounded" />
-        <div id="loading" class="hidden text-blue-700 font-semibold">Mengunggah file, mohon tunggu...</div>
-      
-</div>
+        <label for="bukti" class="required block">Upload Bukti Screenshot CCTV</label>
+        <input type="file" id="bukti" name="Bukti" accept="image/*" required class="w-full p-2 border rounded" />
+      </div>
+
+      <div id="loading" class="hidden text-blue-600 font-semibold">Mengunggah file, mohon tunggu...</div>
+
       <div class="flex justify-between items-center">
         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Kirim & Cetak</button>
         <button type="reset" id="resetBtn" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Clear Form</button>
       </div>
-
     </form>
   </div>
 
@@ -109,71 +109,45 @@
 
     document.getElementById("absenForm").addEventListener("submit", async function (e) {
       e.preventDefault();
+
       const form = e.target;
       const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
+      const loading = document.getElementById("loading");
+      loading.classList.remove("hidden");
 
       try {
-        await fetch("https://script.google.com/macros/s/AKfycbwQ_zeMlErqYgD43-9pndiyNlu0TucrwuFHi22xwRmLMoS4sZdLbuAykPXru5ggHj8T/exec", {
+        const fileInput = document.getElementById("bukti");
+        const file = fileInput.files[0];
+
+        const buktiData = new FormData();
+        buktiData.append("file", file);
+
+        const uploadRes = await fetch("https://script.google.com/macros/s/AKfycbx_upload_script_url/exec", {
           method: "POST",
-          body: new URLSearchParams(data)
+          body: buktiData
         });
 
+        const fileUrl = await uploadRes.text();
+        if (!fileUrl.includes("http")) throw new Error("Upload gagal");
+
+        formData.append("BuktiURL", fileUrl);
+
+        await fetch("https://script.google.com/macros/s/AKfycby6oWhEaN5nXeQEiqTtBAWbl0YBmZ_1i4Uq0Xk1cuIaihVC6Vh1IWD5Yy10ussHpVZF/exec", {
+          method: "POST",
+          mode: "no-cors",
+          body: new URLSearchParams(formData)
+        });
+
+        loading.textContent = "Berhasil dikirim!";
         setTimeout(() => {
           window.print();
-        }, 500);
+          loading.classList.add("hidden");
+        }, 700);
 
-      } catch (error) {
-        alert("Gagal mengirim data: " + error.message);
+      } catch (err) {
+        loading.textContent = "Gagal mengirim: " + err.message;
       }
     });
-    document.getElementById("absenForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  const form = e.target;
-  const formData = new FormData(form);
-
-  const loading = document.getElementById("loading");
-  loading.classList.remove("hidden");
-
-  try {
-    // ⬆️ Upload file screenshot dulu
-    const fileInput = document.getElementById("bukti");
-    const file = fileInput.files[0];
-
-    const fileData = new FormData();
-    fileData.append("file", file);
-
-    const uploadRes = await fetch("URL_UPLOAD_GAS", {
-      method: "POST",
-      body: fileData
-    });
-
-    const uploadText = await uploadRes.text();
-    const fileUrl = uploadText.includes("http") ? uploadText : "";
-
-    if (!fileUrl) throw new Error("Upload gagal");
-
-    // ✅ Setelah berhasil upload, kirim data ke spreadsheet
-    formData.append("BuktiURL", fileUrl);
-
-    await fetch("URL_SUBMIT_GAS", {
-      method: "POST",
-      mode: "no-cors",
-      body: new URLSearchParams(formData)
-    });
-
-    loading.textContent = "Berhasil dikirim!";
-    setTimeout(() => {
-      window.print();
-      loading.classList.add("hidden");
-    }, 700);
-
-  } catch (err) {
-    loading.textContent = "Gagal mengirim: " + err.message;
-  }
-});
-    
   </script>
 </body>
 </html>
