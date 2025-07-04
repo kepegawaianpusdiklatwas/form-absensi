@@ -177,6 +177,7 @@
 });
 
       loading.textContent = "✅ Berhasil dikirim!";
+      document.getElementById("cetak-area").classList.remove("hidden");
       setTimeout(() => {
         window.print();
         loading.classList.add("hidden");
@@ -186,6 +187,8 @@
       loading.textContent = "❌ Gagal mengirim: " + err.message;
     }
   });
+
+    
     // Tampilkan area cetak & isi datanya
 document.getElementById("cetak-nama").textContent = `Nama: ${data.Nama}`;
 document.getElementById("cetak-nip").textContent = `NIP: ${data.NIP}`;
