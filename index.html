@@ -197,9 +197,7 @@ document.getElementById("cetak-hari").textContent = data.Hari;
 document.getElementById("cetak-golongan").textContent = data.Golongan || "-";
 document.getElementById("cetak-jabatan").textContent = data.Jabatan || "-";
 // Gunakan hanya ini karena ini yang ada di HTML
-document.getElementById("cetak-tanggal-list").textContent = formatTanggalIndonesia(data.Tanggal);
-      
-document.getElementById("cetak-tanggal-list").textContent = formatTanggalIndonesia(data.Tanggal);
+document.getElementById("cetak-haritanggal").textContent = `${data.Hari}, ${formatTanggalIndonesia(data.Tanggal)}`;      
 document.getElementById("cetak-waktu").textContent = `Waktu: ${data.Waktu}`;
 document.getElementById("cetak-atasan1").textContent = `${data.AtasanLangsung} (${data.NIP_AtasanLangsung})`;
 document.getElementById("cetak-atasan2").textContent = `${data.AtasanDariAtasanLangsung} (${data.NIP_AtasanDariAtasanLangsung})`;
