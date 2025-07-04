@@ -147,6 +147,10 @@
           </td>
         </tr>
       </table>
+      <!-- Tambahkan di sini -->
+      <div style="text-align: right; margin-top: 20px; margin-right: 50px;">
+        Bogor, <span id="tanggal-surat"></span>
+      </div>
 
       <div style="text-align: center; margin-top: 80px;">
         Disetujui oleh:<br>
@@ -198,6 +202,7 @@
       const tahun = tanggal.getFullYear();
       return `${tgl} ${bulan} ${tahun}`;
     }
+    
     // Inisialisasi Fuse.js untuk pencarian
     fetch(urlJSON)
       .then(res => res.json())
