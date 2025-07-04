@@ -192,29 +192,48 @@ document.getElementById("cetak-area").classList.remove("hidden");
     
 </script>
   <!-- Area Cetak (khusus untuk print) -->
-<div id="cetak-area" class="hidden bg-white p-8 rounded-xl shadow-md">
-  <h2 class="text-xl font-bold mb-4 text-center">SURAT PERNYATAAN KEHADIRAN</h2>
-  <p class="mb-2"><strong>Nama:</strong> <span id="cetak-nama"></span></p>
-  <p class="mb-2"><strong>NIP:</strong> <span id="cetak-nip"></span></p>
-  <p class="mb-2"><strong>Hari, Tanggal:</strong> <span id="cetak-hari-tanggal"></span></p>
-  <p class="mb-2"><strong>Waktu:</strong> <span id="cetak-waktu"></span></p>
-  <p class="mb-2"><strong>Atasan Langsung:</strong> <span id="cetak-atasan1"></span> (<span id="cetak-nip-atasan1"></span>)</p>
-  <p class="mb-2"><strong>Atasan dari Atasan Langsung:</strong> <span id="cetak-atasan2"></span> (<span id="cetak-nip-atasan2"></span>)</p>
+<div id="cetak-area" class="hidden mt-10 p-6 border rounded text-sm leading-relaxed">
+  <h2 class="text-xl font-bold mb-6 text-center underline">SURAT PERNYATAAN</h2>
+  <p>Yang bertanda tangan di bawah ini:</p>
+  <p id="cetak-nama" class="ml-6"></p>
+  <p id="cetak-nip" class="ml-6 mb-4"></p>
 
-  <div class="grid grid-cols-3 text-center mt-12">
+  <p>Dengan ini menyatakan bahwa saya:</p>
+  <ul class="list-disc ml-6 mb-4">
+    <li>Tidak melakukan absensi fingerprint pada hari:</li>
+    <li id="cetak-hari"></li>
+    <li id="cetak-tanggal"></li>
+    <li id="cetak-waktu"></li>
+  </ul>
+
+  <p>Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan dapat dipertanggungjawabkan.</p>
+
+  <div class="grid grid-cols-3 text-center mt-10 text-sm">
     <div>
-      <p><strong>Menyetujui,</strong><br>Atasan Langsung</p><br><br><br>
-      <p><span id="ttd-atasan1"></span></p>
+      <p class="font-semibold">Menyetujui</p>
+      <p>Atasan Langsung</p>
+      <br><br><br>
+      <p id="cetak-atasan1" class="font-semibold underline"></p>
     </div>
     <div>
-      <p><strong>Disetujui oleh,</strong><br>Atasan dari Atasan Langsung</p><br><br><br>
-      <p><span id="ttd-atasan2"></span></p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <br><br><br>
+      <p>&nbsp;</p>
     </div>
     <div>
-      <p><strong>Yang Menyatakan,</strong></p><br><br><br>
-      <p><span id="ttd-nama"></span></p>
+      <p class="font-semibold">Yang Menyatakan</p>
+      <br><br><br>
+      <p id="ttd-nama" class="font-semibold underline"></p>
     </div>
   </div>
-</div>
+
+  <div class="text-center mt-16">
+    <p class="font-semibold">Disetujui oleh:</p>
+    <p>Atasan dari Atasan Langsung</p>
+    <br><br><br>
+    <p id="cetak-atasan2" class="font-semibold underline"></p>
+  </div>
+</div>  
 </body>
 </html>
