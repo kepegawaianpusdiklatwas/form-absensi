@@ -157,6 +157,56 @@
     reader.onerror = error => reject(error);
   });
 }
+    document.getElementById("absenForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+  const loading = document.getElementById("loading");
+  loading.classList.remove("hidden");
+
+  try {
+    const fileInput = document.getElementById("bukti");
+    const file = fileInput.files[0];
+
+    if (!file) throw new Error("File belum dipilih.");
+
+    const base64File = await toBase64(file);
+
+    const data = {
+      Nama: formData.get("Nama"),
+      NIP: formData.get("NIP"),
+      Hari: formData.get("Hari"),
+      Tanggal: formData.get("Tanggal"),
+      Waktu: formData.get("Waktu"),
+      AtasanLangsung: formData.get("AtasanLangsung"),
+      NIP_AtasanLangsung: formData.get("NIP_AtasanLangsung"),
+      AtasanDariAtasanLangsung: formData.get("AtasanDariAtasanLangsung"),
+      NIP_AtasanDariAtasanLangsung: formData.get("NIP_AtasanDariAtasanLangsung"),
+      FileName: file.name,
+      MimeType: file.type,
+      Base64: base64File
+    };
+
+    await fetch("https://script.google.com/macros/s/AKfycby6oWhEaN5nXeQEiqTtBAWbl0YBmZ_1i4Uq0Xk1cuIaihVC6Vh1IWD5Yy10ussHpVZF/exec", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+
+    loading.textContent = "Berhasil dikirim!";
+    setTimeout(() => {
+      window.print();
+      loading.classList.add("hidden");
+    }, 700);
+
+  } catch (err) {
+    loading.textContent = "Gagal mengirim: " + err.message;
+  }
+});
+    
   </script>
 </body>
 </html>
