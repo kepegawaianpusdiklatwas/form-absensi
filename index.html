@@ -181,10 +181,12 @@ function formatTanggalIndonesia(tanggalISO) {
       loading.textContent = "✅ Berhasil dikirim!";
 
 // Isi cetakan dengan data yang baru dikirim
-document.getElementById("cetak-nama").textContent = `Nama: ${data.Nama}`;
+document.getElementById("cetak-nama").textContent = data.Nama;
 document.getElementById("ttd-nama").textContent = data.Nama;
-document.getElementById("cetak-nip").textContent = `NIP: ${data.NIP}`;
-document.getElementById("cetak-hari").textContent = `Hari: ${data.Hari}`;
+document.getElementById("cetak-nip").textContent = data.NIP;
+document.getElementById("cetak-hari").textContent = data.Hari;
+document.getElementById("cetak-golongan").textContent = data.Golongan || "-";
+document.getElementById("cetak-jabatan").textContent = data.Jabatan || "-";
 // Gunakan hanya ini karena ini yang ada di HTML
 document.getElementById("cetak-tanggal-list").textContent = formatTanggalIndonesia(data.Tanggal);
       
@@ -225,8 +227,8 @@ setTimeout(() => {
       <td>: <span id="cetak-nip"></span></td>
     </tr>
     <tr>
-      <td>Golongan</td>
-      <td>: <span id="cetak-golongan"></span></td>
+      <td>Golongan</td><td id="cetak-golongan"></td>
+      <td>Jabatan</td><td id="cetak-jabatan"></td>
     </tr>
     <tr>
       <td>Jabatan</td>
