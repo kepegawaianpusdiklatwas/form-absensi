@@ -74,6 +74,16 @@
         <button type="reset" id="resetBtn" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Clear Form</button>
       </div>
     </form>
+    <div id="cetak-area" class="hidden mt-10 p-6 border rounded text-sm leading-relaxed">
+  <h2 class="text-xl font-bold mb-4 text-center">Surat Pernyataan Fingerprint</h2>
+  <p id="cetak-nama"></p>
+  <p id="cetak-nip"></p>
+  <p id="cetak-hari"></p>
+  <p id="cetak-tanggal"></p>
+  <p id="cetak-waktu"></p>
+  <p id="cetak-atasan1"></p>
+  <p id="cetak-atasan2"></p>
+</div>
   </div>
 
   <script>
@@ -169,6 +179,17 @@
       loading.textContent = "❌ Gagal mengirim: " + err.message;
     }
   });
+    // Tampilkan area cetak & isi datanya
+document.getElementById("cetak-nama").textContent = `Nama: ${data.Nama}`;
+document.getElementById("cetak-nip").textContent = `NIP: ${data.NIP}`;
+document.getElementById("cetak-hari").textContent = `Hari: ${data.Hari}`;
+document.getElementById("cetak-tanggal").textContent = `Tanggal: ${data.Tanggal}`;
+document.getElementById("cetak-waktu").textContent = `Waktu: ${data.Waktu}`;
+document.getElementById("cetak-atasan1").textContent = `Atasan Langsung: ${data.AtasanLangsung} (${data.NIP_AtasanLangsung})`;
+document.getElementById("cetak-atasan2").textContent = `Atasan dari Atasan Langsung: ${data.AtasanDariAtasanLangsung} (${data.NIP_AtasanDariAtasanLangsung})`;
+
+document.getElementById("cetak-area").classList.remove("hidden");
+    
 </script>
   <!-- Area Cetak (khusus untuk print) -->
 <div id="cetak-area" class="hidden bg-white p-8 rounded-xl shadow-md">
