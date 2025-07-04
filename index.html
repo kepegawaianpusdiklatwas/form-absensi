@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Form Konfirmasi Kehadiran</title>
+  <style>
+    body {{ font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }}
+    .form-group {{ margin-bottom: 15px; }}
+    label {{ display: block; font-weight: bold; }}
+    input[type="text"] {{ width: 100%; padding: 8px; }}
+    .suggestion {{ background: #eee; padding: 5px; cursor: pointer; }}
+    .suggestion:hover {{ background: #ccc; }}
+    button {{ margin-top: 10px; }}
+  </style>
+</head>
+<body>
+  <h2>Form Konfirmasi Kehadiran</h2>
+  <div class="form-group">
+    <label for="search-nama">Cari Nama Pegawai:</label>
+    <input type="text" id="search-nama" placeholder="Ketik minimal 3 huruf..." autocomplete="off"/>
+    <div id="suggestions"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Nama</label>
+    <input type="text" id="nama" readonly />
+  </div>
+  <div class="form-group">
+    <label>NIP</label>
+    <input type="text" id="nip" readonly />
+  </div>
+  <div class="form-group">
+    <label>Golongan</label>
+    <input type="text" id="gol" readonly />
+  </div>
+  <div class="form-group">
+    <label>Jabatan</label>
+    <input type="text" id="jabatan" readonly />
+  </div>
+
+  <button id="clear">Clear Pencarian</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <script>
+    let pegawaiList = [];
+    let fuse;
+
+    fetch("https://kepegawaianpusdiklatwas.github.io/pegawai-json/pegawai.json")
+      .then(res => res.json())
+      .then(data => {{
+        pegawaiList = data;
+        fuse = new Fuse(pegawaiList, {{
+          keys: ['Nama'],
+          threshold: 0.3
+        }});
+      }});
+
+    const inputSearch = document.getElementById("search-nama");
+    const suggestionDiv = document.getElementById("suggestions");
+
+    inputSearch.addEventListener("input", function () {{
+      const keyword = this.value.trim();
+      if (keyword.length < 3) {{
+        suggestionDiv.innerHTML = "";
+        return;
+      }}
+      const hasil = fuse.search(keyword);
+      suggestionDiv.innerHTML = "";
+
+      hasil.slice(0, 5).forEach(({ item }) => {{
+        const btn = document.createElement("div");
+        btn.className = "suggestion";
+        btn.innerText = `${{item.Nama}} - ${{item.NIP}}`;
+        btn.onclick = () => {{
+          document.getElementById("nama").value = item.Nama;
+          document.getElementById("nip").value = item.NIP;
+          document.getElementById("gol").value = item.Golongan;
+          document.getElementById("jabatan").value = item.Jabatan;
+          inputSearch.value = item.Nama;
+          suggestionDiv.innerHTML = "";
+        }};
+        suggestionDiv.appendChild(btn);
+      }});
+    }});
+
+    document.getElementById("clear").addEventListener("click", () => {{
+      inputSearch.value = "";
+      document.getElementById("nama").value = "";
+      document.getElementById("nip").value = "";
+      document.getElementById("gol").value = "";
+      document.getElementById("jabatan").value = "";
+      suggestionDiv.innerHTML = "";
+    }});
+  </script>
+</body>
+</html>
