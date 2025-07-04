@@ -151,9 +151,7 @@
             Atasan Langsung<br><br><br><br>
             <u id="cetak-atasan1"></u>
           </td>
-          <div style="text-align: right; margin-top: 50px;">
-  Bogor, <span id="tanggal-surat"></span>
-</div>
+          
           <td style="width: 20%;"></td>
           <td style="width: 40%;">
             Yang Menyatakan<br><br><br><br>
@@ -207,24 +205,111 @@
         reader.onerror = error => reject(error);
       });
     }
-    function formatTanggalIndonesia(tanggalISO) {
-      const bulanList = ["Januari","Februari","Maret","April","Mei","Juni","Juli",
-                        "Agustus","September","Oktober","November","Desember"];
-      const tanggal = new Date(tanggalISO + "T00:00:00");
-      const tgl = tanggal.getDate();
-      const bulan = bulanList[tanggal.getMonth()];
-      const tahun = tanggal.getFullYear();
-      return `${tgl} ${bulan} ${tahun}`;
-    }
+    
     
     // Inisialisasi Fuse.js untuk pencarian
-    fetch(urlJSON)
-      .then(res => res.json())
-      .then(data => {
-        pegawaiList = data;
-        const fuseOptions = {
-  keys: ['Nama', 'NIP'],
-  threshold: 0.3,
+fetch(urlJSON)
+  .then(res => res.json())
+  .then(data => {
+    pegawaiList = data;
+    const fuseOptions = {
+      keys: ['Nama', 'NIP'],
+      threshold: 0.3,
+      includeScore: true,
+      minMatchCharLength: 3, // Minimal 3 karakter baru search
+      findAllMatches: true,
+      shouldSort: true
+    };
+    const fuse = new Fuse(pegawaiList, fuseOptions);
+
+    const bindSearch = (inputId, infoId, nipField) => {
+      const input = document.getElementById(inputId);
+      const info = document.getElementById(infoId);
+      const nipInput = document.getElementById(nipField);
+      const golonganInput = document.getElementById("golongan");
+      const jabatanInput = document.getElementById("jabatan");
+      
+      let searchTimeout;
+      let lastSearchTerm = "";
+
+      input.addEventListener("input", () => {
+        clearTimeout(searchTimeout);
+        const searchTerm = input.value.trim();
+        
+        // Reset jika input kosong
+        if (!searchTerm) {
+          info.textContent = "";
+          nipInput.value = "";
+          if (infoId === "info-nama") {
+            golonganInput.value = "";
+            jabatanInput.value = "";
+          }
+          return;
+        }
+
+        // Cari hanya jika:
+        // 1. Minimal 3 karakter
+        // 2. Berbeda dengan pencarian terakhir
+        // 3. User berhenti mengetik selama 300ms
+        if (searchTerm.length >= 3 && searchTerm !== lastSearchTerm) {
+          info.textContent = "Mencari...";
+          
+          searchTimeout = setTimeout(() => {
+            const results = fuse.search(searchTerm);
+            lastSearchTerm = searchTerm;
+            
+            if (results.length > 0) {
+              const bestMatch = results[0].item;
+              
+              // Auto-fill jika kecocokan tinggi
+              if (results[0].score < 0.3) {
+                input.value = bestMatch.Nama;
+              }
+              
+              nipInput.value = bestMatch.NIP;
+              if (infoId === "info-nama") {
+                golonganInput.value = bestMatch.Golongan || "-";
+                jabatanInput.value = bestMatch.Jabatan || "-";
+              }
+              
+              info.textContent = `NIP: ${bestMatch.NIP}` +
+                (bestMatch.Golongan ? ` • Gol: ${bestMatch.Golongan}` : "") +
+                (bestMatch.Jabatan ? ` • Jabatan: ${bestMatch.Jabatan}` : "");
+            } else {
+              info.textContent = "Data tidak ditemukan";
+            }
+          }, 300);
+        } else if (searchTerm.length < 3) {
+          info.textContent = "Minimal ketik 3 karakter...";
+        }
+      });
+
+      // Handle penghapusan input
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" || e.key === "Delete") {
+          clearTimeout(searchTimeout);
+          if (input.value.length <= 1) {
+            info.textContent = "";
+            nipInput.value = "";
+            if (infoId === "info-nama") {
+              golonganInput.value = "";
+              jabatanInput.value = "";
+            }
+          }
+        }
+      });
+    };
+
+    bindSearch("nama", "info-nama", "nip");
+    bindSearch("atasan1", "info-atasan1", "nip_atasan1");
+    bindSearch("atasan2", "info-atasan2", "nip_atasan2");
+  })
+  .catch(err => {
+    console.error("Gagal memuat data pegawai:", err);
+    document.querySelectorAll("#info-nama, #info-atasan1, #info-atasan2").forEach(el => {
+      el.textContent = "Gagal memuat data. Silakan refresh halaman.";
+    });
+  });
   includeScore: true,
   minMatchCharLength: 3 // Baru ditambahkan
 };
