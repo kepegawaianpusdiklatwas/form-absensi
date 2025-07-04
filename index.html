@@ -207,49 +207,60 @@ setTimeout(() => {
     
 </script>
   <!-- Area Cetak (khusus untuk print) -->
-<div id="cetak-area" class="hidden mt-10 p-6 border rounded text-sm leading-relaxed">
-  <h2 class="text-xl font-bold mb-6 text-center underline">SURAT PERNYATAAN</h2>
-  <p>Saya yang bertanda tangan di bawah ini:</p>
-  <p id="cetak-nama" class="ml-6"></p>
-  <p id="cetak-nip" class="ml-6 mb-4"></p>
+<div id="cetak-area" class="hidden p-10" style="font-family: Arial, sans-serif; font-size: 12pt;">
+  <div style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 20px;">
+    SURAT PERNYATAAN
+  </div>
 
-  <p>Dengan ini menyatakan bahwa sesungguhnya saya telah melakukan presensi namun tidak terekam, yaitu pada:</p>
-  <ul class="list-disc ml-6 mb-4">
-    <li>Hari:</li>
-    <li id="cetak-hari"></li>
-    <!-- CETAK 2 (bagian ul/surat pernyataan) -->
-    <li id="cetak-tanggal-list"></li>
-    <li id="cetak-waktu"></li>
+  <p>Yang bertanda tangan di bawah ini:</p>
+  <table style="margin-left: 40px; margin-bottom: 15px;">
+    <tr>
+      <td style="width: 120px;">Nama</td>
+      <td>: <span id="cetak-nama"></span></td>
+    </tr>
+    <tr>
+      <td>NIP</td>
+      <td>: <span id="cetak-nip"></span></td>
+    </tr>
+    <tr>
+      <td>Golongan</td>
+      <td>: <span id="cetak-golongan"></span></td>
+    </tr>
+    <tr>
+      <td>Jabatan</td>
+      <td>: <span id="cetak-jabatan"></span></td>
+    </tr>
+  </table>
+
+  <p>Dengan ini menyatakan bahwa saya telah melakukan presensi namun tidak terekam, yaitu pada:</p>
+  <ul style="margin-left: 40px;">
+    <li>Hari: <span id="cetak-hari"></span></li>
+    <li>Tanggal: <span id="cetak-tanggal-list"></span></li>
+    <li>Waktu: <span id="cetak-waktu"></span> WIB</li>
   </ul>
 
-  <p>Atas perkenannya, kami ucapkan terima kasih.</p>
+  <p style="margin-top: 20px;">Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan dapat dipertanggungjawabkan.</p>
 
-  <div class="grid grid-cols-3 text-center mt-10 text-sm">
-    <div>
-      <p class="font-semibold">Menyetujui</p>
-      <p>Atasan Langsung</p>
-      <br><br><br>
-      <p id="cetak-atasan1" class="font-semibold underline"></p>
-    </div>
-    <div>
-      <p>&nbsp;</p>
-      <p>&nbsp;</p>
-      <br><br><br>
-      <p>&nbsp;</p>
-    </div>
-    <div>
-      <p class="font-semibold">Yang Menyatakan</p>
-      <br><br><br>
-      <p id="ttd-nama" class="font-semibold underline"></p>
-    </div>
-  </div>
+  <table style="width: 100%; margin-top: 60px; text-align: center;">
+    <tr>
+      <td>
+        Menyetujui<br>
+        Atasan Langsung<br><br><br><br>
+        <u id="cetak-atasan1"></u>
+      </td>
+      <td></td>
+      <td>
+        Yang Menyatakan<br><br><br><br>
+        <u id="ttd-nama"></u>
+      </td>
+    </tr>
+  </table>
 
-  <div class="text-center mt-16">
-    <p class="font-semibold">Disetujui oleh:</p>
-    <p>Atasan dari Atasan Langsung</p>
-    <br><br><br>
-    <p id="cetak-atasan2" class="font-semibold underline"></p>
+  <div style="text-align: center; margin-top: 80px;">
+    Disetujui oleh:<br>
+    Atasan dari Atasan Langsung<br><br><br><br>
+    <u id="cetak-atasan2"></u>
   </div>
-</div>  
+</div>
 </body>
 </html>
