@@ -88,6 +88,42 @@
       .proof-page { page-break-before: always; }
       .form-page, .page-indicator, .page-nav { display:none!important; }
     }
+    /* Tambahkan di bagian <style> yang sudah ada */
+.proof-page {
+  page-break-before: always;
+  padding: 2rem 0; /* Padding atas bawah saja */
+}
+
+.proof-container {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 0 auto;
+  width: 65%;
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.proof-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  max-height: 400px;
+}
+
+@media print {
+  .proof-container {
+    width: 60% !important;
+    margin-top: 1.5cm !important;
+    box-shadow: none !important;
+  }
+  
+  .proof-image {
+    max-height: 350px !important;
+  }
+}
   </style>
 </head>
 <body class="p-4 md:p-8">
@@ -308,35 +344,37 @@
           <div class="proof-page">
             <div style="text-align:center;font-weight:bold;margin-bottom:20px;font-size:14pt;">LAMPIRAN BUKTI KEHADIRAN</div>
             
-            <div class="proof-container">
-              <div class="proof-header">BUKTI KEHADIRAN - <span id="proof-nama"></span> (NIP: <span id="proof-nip"></span>)</div>
-              <div id="proof-image-container">
-                <!-- Gambar akan dimasukkan secara dinamis -->
-              </div>
-              <div class="proof-caption">
-                <div>Tanggal: <span id="proof-tanggal"></span></div>
-                <div>Waktu: <span id="proof-waktu"></span> WIB</div>
-                <div>Lokasi: <span id="proof-lokasi"></span></div>
-              </div>
-              <div class="proof-stamp">
-                <div class="proof-stamp-text">Dokumen ini dicetak secara otomatis pada <span id="proof-timestamp"></span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer baru -->
-        <div class="footer-print" style="background: linear-gradient(135deg, #f5f7fb, #e2e8f0); padding: 15px; border-radius: 0 0 16px 16px; text-align: center; margin-top: 30px;">
-          <p style="margin: 0; font-size: 0.85rem; color: #64748b; font-family: 'Poppins', sans-serif;">
-            <i class="fas fa-copyright" style="color: #3a56d4;"></i> 
-            <span style="color: #3f37c9; font-weight: 600;">Kepegawaian Pusdiklatwas</span> 
-            <span style="color: #4361ee;">2025</span> | 
-            <span style="font-style: italic;">Versi : 1.0001</span>
-          </p>
-        </div>
-      </div>
+            <div class="proof-page">
+  <div style="text-align:center; margin-bottom:1rem;">
+    <div style="font-weight:bold; font-size:14pt; text-decoration:underline">
+      LAMPIRAN BUKTI KEHADIRAN
+    </div>
+    <div style="font-size:11pt; color:#555; margin-top:4px">
+      (Tidak berlaku tanpa tanda tangan dan stempel)
     </div>
   </div>
+  
+  <div class="proof-container">
+    <div style="text-align:center; font-weight:500; margin-bottom:8px">
+      <span id="proof-nama"></span> <br>
+      NIP: <span id="proof-nip"></span>
+    </div>
+    
+    <div id="proof-image-container">
+      <!-- Gambar akan muncul di sini -->
+    </div>
+    
+    <div style="text-align:center; margin-top:12px; font-size:11pt">
+      <div>Tanggal: <span id="proof-tanggal"></span></div>
+      <div>Waktu: <span id="proof-waktu"></span> WIB</div>
+      <div>Lokasi: <span id="proof-lokasi"></span></div>
+    </div>
+    
+    <div style="text-align:center; font-size:9pt; color:#777; margin-top:16px; padding-top:8px; border-top:1px dashed #ddd">
+      Dicetak otomatis pada <span id="proof-timestamp"></span>
+    </div>
+  </div>
+</div>
 
   <script>
     // Bagian Inisialisasi Data dan Pencarian
