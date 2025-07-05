@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Konfirmasi Kehadiran</title>
+  
+  <!-- CSS External -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  
+  <!-- JS External -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <!-- CSS Internal -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    :root { 
+      --primary:#4361ee; 
+      --primary-dark:#3a56d4; 
+      --secondary:#3f37c9; 
+      --danger:#f72585; 
+    }
+    
+    body { 
+      font-family:'Poppins',sans-serif; 
+      background-color:#f5f7fb; 
+    }
+    
+    .required:after { 
+      content:" *"; 
+      color:var(--danger); 
+    }
+    
+    #cetak-area { display:none; }
+    
+    .search-info { 
+      min-height:20px; 
+      transition:all 0.3s ease; 
+      font-size:0.8rem; 
+    }
+    
+    .search-info.error { color:var(--danger); }
+    .search-info.success { color:#10b981; }
+    .search-info.loading { color:#64748b; font-style:italic; }
+    
+    #error-display { 
+      color:var(--danger); 
+      padding:12px; 
+      margin-top:10px; 
+      display:none; 
+      background-color:rgba(247,37,133,0.1); 
+      border-radius:8px; 
+      border-left:4px solid var(--danger); 
+    }
+    
+    /* Tambahkan style lainnya sesuai kebutuhan */
+  </style>
+</head>
+<body class="p-4 md:p-8">
+  <div class="max-w-4xl mx-auto" id="app">
+    <!-- Aplikasi akan dirender di sini -->
+  </div>
+
+  <!-- Modul JavaScript -->
+  <script type="module">
+    // Impor modul utama
+    import { initializeApp } from './modules/app.js';
+    
+    // Inisialisasi aplikasi saat DOM siap
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  </script>
+</body>
+</html>
