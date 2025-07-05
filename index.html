@@ -4,35 +4,269 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Form Konfirmasi Kehadiran</title>
-  <h1>Form Konfirmasi Kehadiran</h1>
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: Arial, sans-serif; }
-    .required:after { content: " *"; color: red; }
-    #cetak-area { display: none; }
-    .search-info { min-height: 20px; transition: all 0.3s ease; }
-    .search-info.error { color: red; }
-    .search-info.success { color: green; }
-    .search-info.loading { color: #666; font-style: italic; }
-    #error-display {
-      color: red;
-      padding: 10px;
-      margin-top: 10px;
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --info: #4895ef;
+      --light: #f8f9fa;
+      --dark: #212529;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fb;
+    }
+    
+    .required:after {
+      content: " *";
+      color: var(--danger);
+    }
+    
+    #cetak-area {
       display: none;
     }
-    .ttd-space {
-      height: 80px;
-      position: relative;
-      margin-top: 30px;
+    
+    .search-info {
+      min-height: 20px;
+      transition: all 0.3s ease;
+      font-size: 0.8rem;
     }
+    
+    .search-info.error {
+      color: var(--danger);
+    }
+    
+    .search-info.success {
+      color: #10b981;
+    }
+    
+    .search-info.loading {
+      color: #64748b;
+      font-style: italic;
+    }
+    
+    #error-display {
+      color: var(--danger);
+      padding: 12px;
+      margin-top: 10px;
+      display: none;
+      background-color: rgba(247, 37, 133, 0.1);
+      border-radius: 8px;
+      border-left: 4px solid var(--danger);
+    }
+    
+    .ttd-space {
+      height: 100px;
+      position: relative;
+      margin-top: 40px;
+    }
+    
     .ttd-name {
       position: absolute;
       bottom: 0;
       width: 100%;
       text-align: center;
+      font-weight: 500;
     }
-
+    
+    .form-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+    
+    .form-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .form-body {
+      padding: 2rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #334155;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+      background-color: #e2e8f0;
+      color: #334155;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #cbd5e1;
+    }
+    
+    .file-upload {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+    
+    .file-upload-btn {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background-color: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      text-align: center;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .file-upload-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+    
+    .file-upload-input {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    .file-name {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 0.5rem;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .input-with-icon {
+      position: relative;
+    }
+    
+    .input-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+    
+    .search-result {
+      position: absolute;
+      width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    
+    .search-result-item {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .search-result-item:hover {
+      background-color: #f8fafc;
+    }
+    
+    .search-result-item small {
+      display: block;
+      color: #64748b;
+      font-size: 0.75rem;
+    }
+    
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .form-divider {
+      height: 1px;
+      background-color: #e2e8f0;
+      margin: 1.5rem 0;
+    }
+    
     @media print {
       body * {
         visibility: hidden;
@@ -56,150 +290,226 @@
         display: block !important;
       }
       .ttd-space {
-        height: 100px;
+        height: 120px;
       }
     }
   </style>
 </head>
-<body class="bg-gray-100 p-6">
-  <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md" id="print-area">
-    <!-- Form Input -->
-    <form id="absenForm" class="space-y-4">
-      <div>
-        <label for="nama" class="required block">Nama Pegawai / NIP</label>
-        <input type="text" id="nama" name="Nama" required class="w-full p-2 border rounded" placeholder="Ketik nama atau NIP..." />
-        <input type="hidden" id="nip" name="NIP" />
-        <input type="hidden" id="golongan" name="Golongan" />
-        <input type="hidden" id="jabatan" name="Jabatan" />
-        <p id="info-nama" class="search-info text-sm mt-1"></p>
+<body class="p-4 md:p-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="form-card" id="print-area">
+      <!-- Header -->
+      <div class="form-header">
+        <h1 class="text-xl md:text-2xl font-bold">Form Konfirmasi Kehadiran</h1>
+        <p class="text-sm opacity-90 mt-1">Silakan isi form berikut untuk konfirmasi kehadiran yang tidak terekam</p>
       </div>
-
-      <div class="flex flex-col md:flex-row md:space-x-4">
-        <div class="flex-1">
-          <label for="tanggal" class="required block">Tanggal</label>
-          <input type="date" id="tanggal" name="Tanggal" required class="w-full p-2 border rounded" />
-        </div>
-        <div class="flex-1">
-          <label for="waktu" class="required block">Waktu</label>
-          <div class="flex items-center space-x-2">
-            <input type="time" id="waktu" name="Waktu" required class="w-full p-2 border rounded" />
-            <span class="text-sm">WIB</span>
+      
+      <!-- Form Body -->
+      <div class="form-body">
+        <form id="absenForm" class="space-y-6">
+          <!-- Data Pegawai Section -->
+          <div>
+            <h2 class="section-title">
+              <i class="fas fa-user-circle mr-2"></i>Data Pegawai
+            </h2>
+            
+            <div class="form-group">
+              <label for="nama" class="form-label required">Nama Pegawai / NIP</label>
+              <div class="input-with-icon">
+                <input type="text" id="nama" name="Nama" required class="form-control" placeholder="Ketik nama atau NIP..." />
+                <i class="fas fa-search input-icon"></i>
+                <div id="nama-results" class="search-result"></div>
+              </div>
+              <input type="hidden" id="nip" name="NIP" />
+              <input type="hidden" id="golongan" name="Golongan" />
+              <input type="hidden" id="jabatan" name="Jabatan" />
+              <p id="info-nama" class="search-info mt-2"></p>
+            </div>
           </div>
-        </div>
-        <div class="flex-1">
-          <label for="lokasi" class="required block">Lokasi</label>
-          <input type="text" id="lokasi" name="Lokasi" required class="w-full p-2 border rounded" placeholder="Lokasi presensi" />
-        </div>
-      </div>
-
-      <div>
-        <label for="atasan1" class="required block">Nama Atasan Langsung</label>
-        <input type="text" id="atasan1" name="AtasanLangsung" required class="w-full p-2 border rounded" placeholder="Cari nama atasan..." />
-        <input type="hidden" id="nip_atasan1" name="NIP_AtasanLangsung" />
-        <p id="info-atasan1" class="search-info text-sm mt-1"></p>
-      </div>
-
-      <div>
-        <label for="atasan2" class="required block">Nama Atasan dari Atasan Langsung</label>
-        <input type="text" id="atasan2" name="AtasanDariAtasanLangsung" required class="w-full p-2 border rounded" placeholder="Cari nama atasan atas..." />
-        <input type="hidden" id="nip_atasan2" name="NIP_AtasanDariAtasanLangsung" />
-        <p id="info-atasan2" class="search-info text-sm mt-1"></p>
-      </div>
-
-      <div>
-        <label for="bukti" class="required block">Upload Bukti Screenshot CCTV</label>
-        <input type="file" id="bukti" name="Bukti" accept="image/*" required class="w-full p-2 border rounded" />
-      </div>
-
-      <div id="loading" class="hidden text-blue-600 font-semibold">Mengunggah file, mohon tunggu...</div>
-      <div id="error-display"></div>
-
-      <div class="flex justify-between items-center">
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Kirim & Cetak</button>
-        <button type="reset" id="resetBtn" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Clear Form</button>
-      </div>
-    </form>
-    
-    <!-- Area Cetak -->
-    <div id="cetak-area" class="p-10" style="font-family: Arial, sans-serif; font-size: 12pt;">
-      <div style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 20px;">
-        SURAT PERNYATAAN
-      </div>
-
-      <p>Yang bertanda tangan di bawah ini:</p>
-      <table style="margin-left: 40px; margin-bottom: 15px;">
-        <tr>
-          <td style="width: 120px;">Nama</td>
-          <td>: <span id="cetak-nama"></span></td>
-        </tr>
-        <tr>
-          <td>NIP</td>
-          <td>: <span id="cetak-nip"></span></td>
-        </tr>
-        <tr>
-          <td>Golongan</td>
-          <td>: <span id="cetak-golongan"></span></td>
-        </tr>
-        <tr>
-          <td>Jabatan</td>
-          <td>: <span id="cetak-jabatan"></span></td>
-        </tr>
-      </table>
-
-      <p>Dengan ini menyatakan bahwa saya telah melakukan presensi namun tidak terekam, yaitu pada:</p>
-      <table style="margin-left: 40px; margin-bottom: 15px;">
-        <tr>
-          <td style="width: 120px; padding-right: 10px; vertical-align: top;">Hari/Tanggal</td>
-          <td style="vertical-align: top;">: <span id="cetak-haritanggal"></span></td>
-        </tr>
-        <tr>
-          <td style="width: 120px; padding-right: 10px; vertical-align: top;">Waktu</td>
-          <td style="vertical-align: top;">: <span id="cetak-waktu"></span> WIB</td>
-        </tr>
-        <tr>
-          <td style="width: 120px; padding-right: 10px; vertical-align: top;">Lokasi</td>
-          <td style="vertical-align: top;">: <span id="cetak-lokasi"></span></td>
-        </tr>
-      </table>
-
-      <p style="margin-top: 20px;">Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan dapat dipertanggungjawabkan.</p>
-
-      <div style="text-align: right; margin: 10px 0 10px 0;">
-        Bogor, <span id="tanggal-surat"></span>
-      </div>
-
-      <table style="width: 100%; text-align: center; border-collapse: collapse;">
-        <tr>
-          <td style="width: 40%;">
-            <div class="ttd-space">
-              <div class="ttd-name">
-                Menyetujui,<br>
-                Atasan Langsung<br>
-                <span id="cetak-atasan1"></span><br>
-                NIP. <span id="cetak-nip-atasan1"></span>
+          
+          <!-- Detail Kehadiran Section -->
+          <div>
+            <h2 class="section-title">
+              <i class="fas fa-calendar-check mr-2"></i>Detail Kehadiran
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="form-group">
+                <label for="tanggal" class="form-label required">Tanggal</label>
+                <div class="input-with-icon">
+                  <input type="date" id="tanggal" name="Tanggal" required class="form-control" />
+                  <i class="fas fa-calendar-day input-icon"></i>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="waktu" class="form-label required">Waktu</label>
+                <div class="input-with-icon">
+                  <input type="time" id="waktu" name="Waktu" required class="form-control" />
+                  <i class="fas fa-clock input-icon"></i>
+                </div>
+                <div class="text-xs text-slate-500 mt-1">Waktu dalam WIB</div>
+              </div>
+              
+              <div class="form-group">
+                <label for="lokasi" class="form-label required">Lokasi</label>
+                <div class="input-with-icon">
+                  <input type="text" id="lokasi" name="Lokasi" required class="form-control" placeholder="Lokasi presensi" />
+                  <i class="fas fa-map-marker-alt input-icon"></i>
+                </div>
               </div>
             </div>
-          </td>
-          <td style="width: 20%;"></td>
-          <td style="width: 40%;">
+          </div>
+          
+          <!-- Data Atasan Section -->
+          <div>
+            <h2 class="section-title">
+              <i class="fas fa-user-tie mr-2"></i>Data Atasan
+            </h2>
+            
+            <div class="form-group">
+              <label for="atasan1" class="form-label required">Atasan Langsung</label>
+              <div class="input-with-icon">
+                <input type="text" id="atasan1" name="AtasanLangsung" required class="form-control" placeholder="Cari nama atasan..." />
+                <i class="fas fa-search input-icon"></i>
+                <div id="atasan1-results" class="search-result"></div>
+              </div>
+              <input type="hidden" id="nip_atasan1" name="NIP_AtasanLangsung" />
+              <p id="info-atasan1" class="search-info mt-2"></p>
+            </div>
+            
+            <div class="form-group">
+              <label for="atasan2" class="form-label required">Atasan dari Atasan Langsung</label>
+              <div class="input-with-icon">
+                <input type="text" id="atasan2" name="AtasanDariAtasanLangsung" required class="form-control" placeholder="Cari nama atasan atas..." />
+                <i class="fas fa-search input-icon"></i>
+                <div id="atasan2-results" class="search-result"></div>
+              </div>
+              <input type="hidden" id="nip_atasan2" name="NIP_AtasanDariAtasanLangsung" />
+              <p id="info-atasan2" class="search-info mt-2"></p>
+            </div>
+          </div>
+          
+          <!-- Upload Bukti Section -->
+          <div>
+            <h2 class="section-title">
+              <i class="fas fa-file-upload mr-2"></i>Upload Bukti
+            </h2>
+            
+            <div class="form-group">
+              <label for="bukti" class="form-label required">Bukti Screenshot CCTV</label>
+              <div class="file-upload">
+                <label class="file-upload-btn">
+                  <i class="fas fa-cloud-upload-alt mr-2"></i>
+                  <span id="file-label">Pilih file gambar (JPG, PNG)</span>
+                  <input type="file" id="bukti" name="Bukti" accept="image/*" required class="file-upload-input" />
+                </label>
+                <div id="file-name" class="file-name"></div>
+              </div>
+              <div class="text-xs text-slate-500 mt-1">Maksimal ukuran file: 2MB</div>
+            </div>
+          </div>
+          
+          <!-- Status & Actions -->
+          <div id="loading" class="hidden p-4 bg-blue-50 text-blue-600 rounded-lg">
+            <i class="fas fa-spinner fa-spin mr-2"></i>
+            <span>Mengunggah file, mohon tunggu...</span>
+          </div>
+          
+          <div id="error-display"></div>
+          
+          <div class="flex flex-col md:flex-row justify-between gap-4 pt-4">
+            <button type="reset" id="resetBtn" class="btn btn-secondary">
+              <i class="fas fa-eraser mr-2"></i>Reset Form
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-paper-plane mr-2"></i>Kirim & Cetak
+            </button>
+          </div>
+        </form>
+        
+        <!-- Area Cetak -->
+        <div id="cetak-area" class="p-10" style="font-family: 'Poppins', sans-serif; font-size: 12pt;">
+          <div style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 20px; font-size: 14pt;">
+            SURAT PERNYATAAN
+          </div>
+
+          <p>Yang bertanda tangan di bawah ini:</p>
+          <table style="margin-left: 40px; margin-bottom: 15px;">
+            <tr>
+              <td style="width: 120px;">Nama</td>
+              <td>: <span id="cetak-nama"></span></td>
+            </tr>
+            <tr>
+              <td>NIP</td>
+              <td>: <span id="cetak-nip"></span></td>
+            </tr>
+            <tr>
+              <td>Golongan</td>
+              <td>: <span id="cetak-golongan"></span></td>
+            </tr>
+            <tr>
+              <td>Jabatan</td>
+              <td>: <span id="cetak-jabatan"></span></td>
+            </tr>
+          </table>
+
+          <p>Dengan ini menyatakan bahwa saya telah melakukan presensi namun tidak terekam, yaitu pada:</p>
+          <table style="margin-left: 40px; margin-bottom: 15px;">
+            <tr>
+              <td style="width: 120px; padding-right: 10px; vertical-align: top;">Hari/Tanggal</td>
+              <td style="vertical-align: top;">: <span id="cetak-haritanggal"></span></td>
+            </tr>
+            <tr>
+              <td style="width: 120px; padding-right: 10px; vertical-align: top;">Waktu</td>
+              <td style="vertical-align: top;">: <span id="cetak-waktu"></span> WIB</td>
+            </tr>
+            <tr>
+              <td style="width: 120px; padding-right: 10px; vertical-align: top;">Lokasi</td>
+              <td style="vertical-align: top;">: <span id="cetak-lokasi"></span></td>
+            </tr>
+          </table>
+
+          <p style="margin-top: 20px;">Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan dapat dipertanggungjawabkan.</p>
+
+          <div style="text-align: right; margin: 10px 0 10px 0;">
+            Bogor, <span id="tanggal-surat"></span>
+          </div>
+
+          <table style="width: 100%; text-align: center; border-collapse: collapse;">
+            <tr>
+              <td style="width: 40%;">
+                <div class="ttd-space">
+                  <div class="ttd-name">
+                    Menyetujui,<br>
+                    Atasan Langsung<br>
+                    <span id="cetak-atasan1"></span><br>
+                    NIP. <span id="cetak-nip-atasan1"></span>
+                  </div>
+                </div>
+              </td>
+              <td style="width: 20%;"></td>
+              <td style="width: 40%;">
+                <div class="ttd-space">
+                  <div class="ttd-name">
+                    Yang Menyatakan,<br>
+                    <span id="ttd-nama"></span><br>
+                    NIP. <span id="ttd-nip"></span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+          <div style="text-align: center;">
             <div class="ttd-space">
               <div class="ttd-name">
-                Yang Menyatakan,<br>
-                <span id="ttd-nama"></span><br>
-                NIP. <span id="ttd-nip"></span>
+                Disetujui oleh:<br>
+                Atasan dari Atasan Langsung<br>
+                <span id="cetak-atasan2"></span><br>
+                NIP. <span id="cetak-nip-atasan2"></span>
               </div>
             </div>
-          </td>
-        </tr>
-      </table>
-
-      <div style="text-align: center;">
-        <div class="ttd-space">
-          <div class="ttd-name">
-            Disetujui oleh:<br>
-            Atasan dari Atasan Langsung<br>
-            <span id="cetak-atasan2"></span><br>
-            NIP. <span id="cetak-nip-atasan2"></span>
           </div>
         </div>
       </div>
@@ -216,6 +526,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       initializeSearch();
       setupDateAutoFill();
+      setupFileUpload();
     });
 
     async function initializeSearch() {
@@ -239,9 +550,9 @@
         
         fuse = new Fuse(pegawaiList, fuseOptions);
         
-        setupSearchField('nama', 'info-nama', 'nip', true);
-        setupSearchField('atasan1', 'info-atasan1', 'nip_atasan1');
-        setupSearchField('atasan2', 'info-atasan2', 'nip_atasan2');
+        setupSearchField('nama', 'info-nama', 'nip', 'nama-results', true);
+        setupSearchField('atasan1', 'info-atasan1', 'nip_atasan1', 'atasan1-results');
+        setupSearchField('atasan2', 'info-atasan2', 'nip_atasan2', 'atasan2-results');
         
       } catch (error) {
         console.error('Error loading data:', error);
@@ -249,10 +560,11 @@
       }
     }
 
-    function setupSearchField(inputId, infoId, nipFieldId, isPegawai = false) {
+    function setupSearchField(inputId, infoId, nipFieldId, resultsId, isPegawai = false) {
       const input = document.getElementById(inputId);
       const info = document.getElementById(infoId);
       const nipField = document.getElementById(nipFieldId);
+      const resultsContainer = document.getElementById(resultsId);
       let searchTimeout;
 
       input.addEventListener('input', function() {
@@ -260,12 +572,13 @@
         const query = this.value.trim();
         
         if (!query) {
-          clearSearchResults(info, nipField, isPegawai);
+          clearSearchResults(info, nipField, resultsContainer, isPegawai);
           return;
         }
         
         if (query.length < 2) {
           showInfoMessage(info, "Ketik minimal 2 karakter...");
+          resultsContainer.style.display = 'none';
           return;
         }
 
@@ -274,47 +587,93 @@
         searchTimeout = setTimeout(() => {
           try {
             const results = fuse.search(query);
-            handleSearchResults(results, input, info, nipField, isPegawai);
+            handleSearchResults(results, input, info, nipField, resultsContainer, isPegawai);
           } catch (error) {
             console.error('Search error:', error);
             showErrorMessage(info, "Error dalam pencarian");
+            resultsContainer.style.display = 'none';
           }
         }, 300);
       });
+      
+      // Hide results when clicking outside
+      document.addEventListener('click', function(e) {
+        if (e.target !== input) {
+          resultsContainer.style.display = 'none';
+        }
+      });
     }
 
-    function handleSearchResults(results, input, info, nipField, isPegawai) {
+    function handleSearchResults(results, input, info, nipField, resultsContainer, isPegawai) {
       if (results.length === 0) {
         showErrorMessage(info, "Data tidak ditemukan");
+        resultsContainer.style.display = 'none';
         return;
       }
 
-      const bestMatch = results[0].item;
+      // Show results in dropdown
+      resultsContainer.innerHTML = '';
+      results.slice(0, 5).forEach(result => {
+        const item = document.createElement('div');
+        item.className = 'search-result-item';
+        item.innerHTML = `
+          <div>${result.item.Nama}</div>
+          <small>NIP: ${result.item.NIP} ${result.item.Jabatan ? '| ' + result.item.Jabatan : ''}</small>
+        `;
+        item.addEventListener('click', () => {
+          input.value = result.item.Nama;
+          nipField.value = result.item.NIP;
+          
+          if (isPegawai) {
+            document.getElementById('golongan').value = result.item.Golongan || "-";
+            document.getElementById('jabatan').value = result.item.Jabatan || "-";
+          }
+          
+          showSuccessMessage(info, `NIP: ${result.item.NIP} | Golongan: ${result.item.Golongan || '-'}`);
+          resultsContainer.style.display = 'none';
+        });
+        resultsContainer.appendChild(item);
+      });
       
-      // Auto-fill if good match
-      if (results[0].score < 0.3) {
-        input.value = bestMatch.Nama;
-      }
+      resultsContainer.style.display = 'block';
+    }
+
+    function setupFileUpload() {
+      const fileInput = document.getElementById('bukti');
+      const fileName = document.getElementById('file-name');
+      const fileLabel = document.getElementById('file-label');
       
-      nipField.value = bestMatch.NIP;
-      
-      // Build information string
-      let infoText = `NIP: ${bestMatch.NIP}`;
-      if (isPegawai) {
-        document.getElementById('golongan').value = bestMatch.Golongan || "-";
-        document.getElementById('jabatan').value = bestMatch.Jabatan || "-";
-        infoText += ` | Golongan: ${bestMatch.Golongan || '-'}`;
-        infoText += ` | Jabatan: ${bestMatch.Jabatan || '-'}`;
-      }
-      
-      showSuccessMessage(info, infoText);
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+          const file = this.files[0];
+          if (file.size > 2 * 1024 * 1024) {
+            fileName.textContent = 'Ukuran file terlalu besar (maks 2MB)';
+            fileName.style.color = 'red';
+            fileInput.value = '';
+            return;
+          }
+          
+          fileLabel.textContent = file.name;
+          fileName.textContent = `Ukuran: ${formatFileSize(file.size)}`;
+          fileName.style.color = '';
+        }
+      });
+    }
+    
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
     // Helper functions
-    function clearSearchResults(info, nipField, isPegawai) {
+    function clearSearchResults(info, nipField, resultsContainer, isPegawai) {
       info.textContent = "";
-      info.className = "search-info text-sm mt-1";
+      info.className = "search-info mt-2";
       nipField.value = "";
+      resultsContainer.style.display = 'none';
       if (isPegawai) {
         document.getElementById('golongan').value = "";
         document.getElementById('jabatan').value = "";
@@ -325,23 +684,23 @@
       const infoFields = document.querySelectorAll('.search-info');
       infoFields.forEach(el => {
         el.textContent = message;
-        el.className = "search-info loading text-sm mt-1";
+        el.className = "search-info loading mt-2";
       });
     }
 
     function showInfoMessage(element, message, type = "info") {
       element.textContent = message;
-      element.className = `search-info ${type} text-sm mt-1`;
+      element.className = `search-info ${type} mt-2`;
     }
 
     function showSuccessMessage(element, message) {
       element.textContent = message;
-      element.className = "search-info success text-sm mt-1";
+      element.className = "search-info success mt-2";
     }
 
     function showErrorMessage(element, message) {
       element.textContent = message;
-      element.className = "search-info error text-sm mt-1";
+      element.className = "search-info error mt-2";
     }
 
     function showError(message) {
@@ -379,6 +738,7 @@
         const fileInput = document.getElementById("bukti");
         const file = fileInput.files[0];
         if (!file) throw new Error("File bukti harus diupload");
+        if (file.size > 2 * 1024 * 1024) throw new Error("Ukuran file terlalu besar (maks 2MB)");
 
         const base64File = await toBase64(file);
         const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -417,19 +777,21 @@
 
         // Tampilkan area cetak dan cetak
         document.getElementById("cetak-area").style.display = "block";
-        loading.textContent = "✅ Berhasil dikirim! Mencetak...";
+        loading.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Berhasil dikirim! Mencetak...';
         
         setTimeout(() => {
           window.print();
           loading.classList.add("hidden");
           form.reset();
           document.getElementById("cetak-area").style.display = "none";
+          document.getElementById("file-label").textContent = "Pilih file gambar (JPG, PNG)";
+          document.getElementById("file-name").textContent = "";
         }, 1000);
 
       } catch (err) {
         console.error("Upload error:", err);
-        loading.textContent = "❌ Gagal mengunggah";
-        errorDisplay.textContent = err.message;
+        loading.innerHTML = '<i class="fas fa-times-circle mr-2"></i> Gagal mengunggah';
+        errorDisplay.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i>${err.message}`;
         errorDisplay.style.display = "block";
       }
     });
@@ -487,9 +849,11 @@
       document.getElementById("cetak-area").style.display = "none";
       document.querySelectorAll(".search-info").forEach(el => {
         el.textContent = "";
-        el.className = "search-info text-sm mt-1";
+        el.className = "search-info mt-2";
       });
       document.getElementById("error-display").style.display = "none";
+      document.getElementById("file-label").textContent = "Pilih file gambar (JPG, PNG)";
+      document.getElementById("file-name").textContent = "";
     });
   </script>
 </body>
