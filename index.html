@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<base href="https://kepegawaianpusdiklatwas.github.io/form-absensi/" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Konfirmasi Kehadiran</title>
@@ -30,50 +29,17 @@
       font-family:'Poppins',sans-serif; 
       background-color:#f5f7fb; 
     }
-    
-    .required:after { 
-      content:" *"; 
-      color:var(--danger); 
-    }
-    
-    #cetak-area { display:none; }
-    
-    .search-info { 
-      min-height:20px; 
-      transition:all 0.3s ease; 
-      font-size:0.8rem; 
-    }
-    
-    .search-info.error { color:var(--danger); }
-    .search-info.success { color:#10b981; }
-    .search-info.loading { color:#64748b; font-style:italic; }
-    
-    #error-display { 
-      color:var(--danger); 
-      padding:12px; 
-      margin-top:10px; 
-      display:none; 
-      background-color:rgba(247,37,133,0.1); 
-      border-radius:8px; 
-      border-left:4px solid var(--danger); 
-    }
-    
-    /* Tambahkan style lainnya sesuai kebutuhan */
   </style>
 </head>
 <body class="p-4 md:p-8">
   <div class="max-w-4xl mx-auto" id="app">
-    <!-- Aplikasi akan dirender di sini -->
+    <h1 class="text-2xl font-bold text-center py-8 animate-pulse">Memuat aplikasi...</h1>
   </div>
 
   <!-- Modul JavaScript -->
   <script type="module">
-    // Impor modul utama
-    import { initializeApp } from './modules/app.js';
-    
-    
-    // Inisialisasi aplikasi saat DOM siap
-    document.addEventListener('DOMContentLoaded', initializeApp);
+    import { renderApp } from './modules/appComponent.js'; // Pastikan nama fungsi sesuai
+    document.addEventListener('DOMContentLoaded', renderApp);
   </script>
 </body>
 </html>
