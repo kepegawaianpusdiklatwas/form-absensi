@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Konfirmasi Kehadiran</title>
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
@@ -123,6 +124,10 @@
   .proof-image {
     max-height: 350px !important;
   }
+}
+    /* Di dalam tag <style> */
+@media print {
+  #savePdfBtn { display: none !important; }
 }
   </style>
 </head>
@@ -283,6 +288,12 @@
         
         <!-- Bagian Cetak Surat Pernyataan -->
         <div id="cetak-area" class="p-10" style="font-family:'Poppins',sans-serif;font-size:12pt;">
+          <!-- Di dalam div#cetak-area, sebelum </div> penutup -->
+            <div class="flex justify-center mt-6 mb-4 print:hidden">
+              <button id="savePdfBtn" class="btn btn-primary">
+                <i class="fas fa-file-pdf mr-2"></i> Simpan ke PDF
+              </button>
+            </div>
           <div style="text-align:center;font-weight:bold;text-decoration:underline;margin-bottom:20px;font-size:14pt;">SURAT PERNYATAAN</div>
 
           <p>Yang bertanda tangan di bawah ini:</p>
@@ -756,6 +767,33 @@
       document.getElementById("file-label").textContent = "Pilih file gambar (JPG, PNG)";
       document.getElementById("file-name").textContent = "";
     });
+
+    // Tombol Save PDF
+document.getElementById('savePdfBtn')?.addEventListener('click', function() {
+  const namaPegawai = document.getElementById('cetak-nama').textContent;
+  const tanggal = document.getElementById('tanggal').value;
+  const namaFile = `Surat Pernyataan_${namaPegawai}_${tanggal.replace(/-/g, '')}.pdf`;
+  
+  const element = document.getElementById('print-area');
+  const opt = {
+    margin: 10,
+    filename: namaFile,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  // Loading indicator
+  const originalText = this.innerHTML;
+  this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan PDF...';
+  this.disabled = true;
+
+  html2pdf().from(element).set(opt).save().finally(() => {
+    this.innerHTML = originalText;
+    this.disabled = false;
+  });
+});
+          
   </script>
 </body>
 </html>
