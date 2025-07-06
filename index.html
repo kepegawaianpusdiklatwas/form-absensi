@@ -192,7 +192,6 @@
       .ttd-space { height:120px; margin-top:20px; }
       .ttd-name { margin-bottom:15px; }
       .footer-print { display:none; }
-      .proof-page { page-break-before: always; }
       .form-page, .page-indicator, .page-nav { display:none!important; }
       #savePdfBtn { display: none !important; }
     }
@@ -365,14 +364,75 @@
               <button type="button" class="btn btn-secondary" onclick="prevPage(3)">
                 <i class="fas fa-arrow-left mr-2"></i> Kembali
               </button>
+              <button type="button" class="btn btn-primary" onclick="nextPage(3)">
+                Selanjutnya <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Halaman 4: Konfirmasi dan Kirim -->
+          <div class="form-page" id="page4">
+            <h2 class="section-title"><i class="fas fa-check-circle mr-2"></i>Konfirmasi Data</h2>
+            
+            <div class="bg-blue-50 p-6 rounded-lg mb-6">
+              <h3 class="font-semibold text-lg mb-4 text-blue-800">Silakan periksa kembali data yang telah Anda isi:</h3>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 class="font-medium text-blue-700 mb-2">Data Pegawai</h4>
+                  <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p><span class="font-medium">Nama:</span> <span id="confirm-nama"></span></p>
+                    <p><span class="font-medium">NIP:</span> <span id="confirm-nip"></span></p>
+                    <p><span class="font-medium">Jabatan:</span> <span id="confirm-jabatan"></span></p>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 class="font-medium text-blue-700 mb-2">Detail Kehadiran</h4>
+                  <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p><span class="font-medium">Tanggal:</span> <span id="confirm-tanggal"></span></p>
+                    <p><span class="font-medium">Waktu:</span> <span id="confirm-waktu"></span> WIB</p>
+                    <p><span class="font-medium">Lokasi:</span> <span id="confirm-lokasi"></span></p>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 class="font-medium text-blue-700 mb-2">Atasan Langsung</h4>
+                  <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p><span class="font-medium">Nama:</span> <span id="confirm-atasan1"></span></p>
+                    <p><span class="font-medium">NIP:</span> <span id="confirm-nip-atasan1"></span></p>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 class="font-medium text-blue-700 mb-2">Atasan dari Atasan</h4>
+                  <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p><span class="font-medium">Nama:</span> <span id="confirm-atasan2"></span></p>
+                    <p><span class="font-medium">NIP:</span> <span id="confirm-nip-atasan2"></span></p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mt-4">
+                <h4 class="font-medium text-blue-700 mb-2">Bukti Kehadiran</h4>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                  <p id="confirm-file" class="text-sm"></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="page-nav">
+              <button type="button" class="btn btn-secondary" onclick="prevPage(4)">
+                <i class="fas fa-arrow-left mr-2"></i> Kembali
+              </button>
               <button type="submit" class="btn btn-primary">
                 <i class="fas fa-paper-plane mr-2"></i>Kirim & Cetak
               </button>
             </div>
           </div>
           
-          <!-- Halaman 4: Ucapan Terima Kasih -->
-          <div class="form-page" id="page4">
+          <!-- Halaman 5: Ucapan Terima Kasih -->
+          <div class="form-page" id="page5">
             <div class="thank-you-page">
               <div class="thank-you-icon animate__animated animate__bounceIn">
                 <i class="fas fa-check-circle bounce"></i>
@@ -594,6 +654,9 @@
         if (!validatePage1()) return;
       } else if (currentPage === 2) {
         if (!validatePage2()) return;
+      } else if (currentPage === 3) {
+        if (!validatePage3()) return;
+        updateConfirmationPage(); // Update data konfirmasi sebelum pindah ke halaman 4
       }
       
       // Animasi GSAP untuk step
@@ -722,6 +785,32 @@
       });
     }
     
+    // Fungsi untuk update halaman konfirmasi
+    function updateConfirmationPage() {
+      const formData = new FormData(document.getElementById('absenForm'));
+      const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const date = new Date(formData.get('Tanggal'));
+      const hari = days[date.getDay()];
+      
+      document.getElementById('confirm-nama').textContent = formData.get('Nama');
+      document.getElementById('confirm-nip').textContent = formData.get('NIP');
+      document.getElementById('confirm-jabatan').textContent = formData.get('Jabatan') || '-';
+      document.getElementById('confirm-tanggal').textContent = `${hari}, ${formatTanggalIndonesia(formData.get('Tanggal'))}`;
+      document.getElementById('confirm-waktu').textContent = formData.get('Waktu');
+      document.getElementById('confirm-lokasi').textContent = formData.get('Lokasi');
+      document.getElementById('confirm-atasan1').textContent = formData.get('AtasanLangsung');
+      document.getElementById('confirm-nip-atasan1').textContent = formData.get('NIP_AtasanLangsung');
+      document.getElementById('confirm-atasan2').textContent = formData.get('AtasanDariAtasanLangsung');
+      document.getElementById('confirm-nip-atasan2').textContent = formData.get('NIP_AtasanDariAtasanLangsung');
+      
+      const fileInput = document.getElementById('bukti');
+      if (fileInput.files && fileInput.files[0]) {
+        document.getElementById('confirm-file').textContent = fileInput.files[0].name;
+      } else {
+        document.getElementById('confirm-file').textContent = 'Tidak ada file yang diupload';
+      }
+    }
+    
     // Fungsi validasi halaman
     function validatePage1() {
       const nama = document.getElementById('nama').value.trim();
@@ -778,6 +867,21 @@
       
       if (!lokasi) {
         alert("Harap isi lokasi kehadiran");
+        return false;
+      }
+      
+      return true;
+    }
+    
+    function validatePage3() {
+      const fileInput = document.getElementById('bukti');
+      if (!fileInput.files || !fileInput.files[0]) {
+        alert("Harap upload bukti kehadiran");
+        return false;
+      }
+      
+      if (fileInput.files[0].size > 2 * 1024 * 1024) {
+        alert("Ukuran file terlalu besar (maks 2MB)");
         return false;
       }
       
@@ -878,8 +982,8 @@
         loading.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Berhasil dikirim! Mencetak...';
         
         // Pindah ke halaman terima kasih dengan animasi
-        const currentPageEl = document.getElementById('page3');
-        const nextPageEl = document.getElementById('page4');
+        const currentPageEl = document.getElementById('page4');
+        const nextPageEl = document.getElementById('page5');
         
         gsap.to(currentPageEl, {
           opacity: 0,
@@ -902,9 +1006,9 @@
         });
         
         // Update step indicator
-        document.getElementById('step3').classList.remove('active');
-        document.getElementById('step3').classList.add('completed');
-        document.getElementById('step4').classList.add('active');
+        document.getElementById('step4').classList.remove('active');
+        document.getElementById('step4').classList.add('completed');
+        document.getElementById('step5').classList.add('active');
         
         setTimeout(() => {
           window.print();
