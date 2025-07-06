@@ -11,32 +11,32 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    :root { --primary:#4361ee; --primary-dark:#3a56d4; --secondary:#3f37c9; --danger:#f72585; }
-    body { font-family:'Poppins',sans-serif; background-color:#f5f7fb; }
+    :root { --primary:#4361ee; --danger:#f72585; }
+    body { font-family:'Poppins',sans-serif; background:#f5f7fb; }
     .required:after { content:" *"; color:var(--danger); }
-    #cetak-area { display:none; }
-    .search-info { min-height:20px; transition:all 0.3s ease; font-size:0.8rem; }
+    #cetak-area, #loading { display:none; }
+    .search-info { min-height:20px; transition:all 0.3s; font-size:0.8rem; }
     .search-info.error { color:var(--danger); }
     .search-info.success { color:#10b981; }
     .search-info.loading { color:#64748b; font-style:italic; }
-    #error-display { color:var(--danger); padding:12px; margin-top:10px; display:none; background-color:rgba(247,37,133,0.1); border-radius:8px; border-left:4px solid var(--danger); }
+    #error-display { color:var(--danger); padding:12px; margin-top:10px; display:none; background:rgba(247,37,133,0.1); border-radius:8px; border-left:4px solid var(--danger); }
     .ttd-space { height:100px; position:relative; margin-top:20px; }
     .ttd-name { position:absolute; bottom:0; width:100%; text-align:center; font-weight:500; line-height:1.6; }
-    .form-card { background:white; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.05); overflow:hidden; }
-    .form-header { background:linear-gradient(135deg,var(--primary),var(--secondary)); color:white; padding:1.5rem; text-align:center; }
+    .form-card { background:white; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.05); }
+    .form-header { background:linear-gradient(135deg,#4361ee,#3f37c9); color:white; padding:1.5rem; text-align:center; }
     .form-body { padding:2rem; }
     .form-group { margin-bottom:1.5rem; }
     .form-label { display:block; margin-bottom:0.5rem; font-weight:500; color:#334155; }
-    .form-control { width:100%; padding:0.75rem 1rem; border:1px solid #e2e8f0; border-radius:8px; transition:all 0.3s; font-size:0.95rem; }
-    .form-control:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(67,97,238,0.2); }
+    .form-control { width:100%; padding:0.75rem 1rem; border:1px solid #e2e8f0; border-radius:8px; transition:all 0.3s; }
+    .form-control:focus { outline:none; border-color:#4361ee; box-shadow:0 0 0 3px rgba(67,97,238,0.2); }
     .btn { display:inline-flex; align-items:center; justify-content:center; padding:0.75rem 1.5rem; border-radius:8px; font-weight:500; transition:all 0.3s; cursor:pointer; border:none; }
-    .btn-primary { background-color:var(--primary); color:white; }
-    .btn-primary:hover { background-color:var(--primary-dark); transform:translateY(-2px); }
-    .btn-secondary { background-color:#e2e8f0; color:#334155; }
-    .btn-secondary:hover { background-color:#cbd5e1; }
-    .file-upload { position:relative; overflow:hidden; display:inline-block; width:100%; }
-    .file-upload-btn { width:100%; padding:0.75rem 1rem; background-color:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; text-align:center; color:#64748b; cursor:pointer; transition:all 0.3s; }
-    .file-upload-btn:hover { border-color:var(--primary); color:var(--primary); background-color:rgba(67,97,238,0.05); }
+    .btn-primary { background:#4361ee; color:white; }
+    .btn-primary:hover { background:#3a56d4; transform:translateY(-2px); }
+    .btn-secondary { background:#e2e8f0; color:#334155; }
+    .btn-secondary:hover { background:#cbd5e1; }
+    .file-upload { position:relative; overflow:hidden; width:100%; }
+    .file-upload-btn { width:100%; padding:0.75rem 1rem; background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; text-align:center; color:#64748b; cursor:pointer; transition:all 0.3s; }
+    .file-upload-btn:hover { border-color:#4361ee; color:#4361ee; background:rgba(67,97,238,0.05); }
     .file-upload-input { position:absolute; left:0; top:0; opacity:0; width:100%; height:100%; cursor:pointer; }
     .file-name { margin-top:0.5rem; font-size:0.85rem; color:#64748b; }
     .loading-spinner { display:inline-block; width:1rem; height:1rem; border:2px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:white; animation:spin 1s ease-in-out infinite; margin-right:0.5rem; }
@@ -44,106 +44,50 @@
     .input-with-icon { position:relative; }
     .search-result { position:absolute; width:100%; max-height:200px; overflow-y:auto; background:white; border:1px solid #e2e8f0; border-radius:8px; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:10; margin-top:0.25rem; display:none; }
     .search-result-item { padding:0.75rem 1rem; cursor:pointer; transition:background 0.2s; }
-    .search-result-item:hover { background-color:#f8fafc; }
+    .search-result-item:hover { background:#f8fafc; }
     .search-result-item small { display:block; color:#64748b; font-size:0.75rem; }
-    .section-title { font-size:1.1rem; font-weight:600; color:var(--primary); margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid #e2e8f0; }
-    /* Styles untuk halaman bukti */
-    .proof-page { page-break-before: always; padding:2rem; }
-    .proof-container { border:1px solid #e2e8f0; border-radius:8px; padding:1rem; margin-top:1.5rem; }
-    .proof-header { background-color:#f8fafc; padding:0.75rem; border-radius:4px; margin-bottom:1rem; font-weight:500; }
-    .proof-image { max-width:100%; height:auto; display:block; margin:0 auto; border:1px solid #e2e8f0; }
-    .proof-caption { text-align:center; margin-top:0.5rem; font-size:0.9rem; color:#64748b; }
-    .proof-stamp { position:relative; margin-top:1.5rem; padding-top:1rem; border-top:1px dashed #e2e8f0; }
-    .proof-stamp-text { font-size:0.8rem; color:#64748b; text-align:center; }
-    /* Multi-page form styles */
+    .section-title { font-size:1.1rem; font-weight:600; color:#4361ee; margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid #e2e8f0; }
     .form-page { display:none; }
     .form-page.active { display:block; }
     .page-indicator { display:flex; justify-content:center; margin-bottom:1.5rem; }
     .page-step { width:30px; height:30px; border-radius:50%; background:#e2e8f0; color:#64748b; display:flex; align-items:center; justify-content:center; margin:0 10px; font-weight:600; position:relative; }
-    .page-step.active { background:var(--primary); color:white; }
+    .page-step.active { background:#4361ee; color:white; }
     .page-step.completed { background:#10b981; color:white; }
     .page-step:not(:last-child):after { content:''; position:absolute; width:40px; height:2px; background:#e2e8f0; left:100%; }
     .page-step.completed:not(:last-child):after { background:#10b981; }
     .page-nav { display:flex; justify-content:space-between; margin-top:2rem; }
-    /* Thank you page */
     .thank-you-page { text-align:center; padding:3rem 1rem; }
     .thank-you-icon { font-size:5rem; color:#10b981; margin-bottom:1.5rem; }
     .thank-you-title { font-size:1.75rem; font-weight:700; color:#334155; margin-bottom:1rem; }
     .thank-you-message { color:#64748b; max-width:500px; margin:0 auto 2rem; }
-    /* Animations */
-    @keyframes bounce { 
-      0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 
-      40% {transform: translateY(-20px);} 
-      60% {transform: translateY(-10px);} 
-    }
-    .bounce { animation: bounce 2s infinite; }
+    @keyframes bounce { 0%,20%,50%,80%,100% {transform:translateY(0);} 40% {transform:translateY(-20px);} 60% {transform:translateY(-10px);} }
+    .bounce { animation:bounce 2s infinite; }
+    .proof-page { page-break-before:always; padding:2rem 0; }
+    .proof-container { border:1px solid #e2e8f0; border-radius:8px; padding:1rem; margin:0 auto; width:75%; max-width:650px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+    .proof-image { max-width:100%; height:auto; display:block; margin:0 auto; border:1px solid #ddd; max-height:500px; }
     @media print {
       body * { visibility:hidden; }
       #print-area, #print-area * { visibility:visible; }
       #print-area { position:absolute; top:0; left:0; width:100%; padding:0; margin:0; background:white; }
-      #absenForm { display:none; }
+      #absenForm, #savePdfBtn, .form-page, .page-indicator, .page-nav { display:none!important; }
       #cetak-area { display:block!important; padding-top:0; }
       .ttd-space { height:120px; margin-top:20px; }
       .ttd-name { margin-bottom:15px; }
-      .footer-print { display:none; }
-      .proof-page { page-break-before: always; }
-      .form-page, .page-indicator, .page-nav { display:none!important; }
+      .proof-container { width:60%!important; margin-top:1.5cm!important; box-shadow:none!important; }
+      .proof-image { max-height:350px!important; }
     }
-    /* Tambahkan di bagian <style> yang sudah ada */
-.proof-page {
-  page-break-before: always;
-  padding: 2rem 0;
-}
-
-.proof-container {
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1rem;
-  margin: 0 auto;
-  width: 75%;
-  max-width: 650px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.proof-image {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  border: 1px solid #ddd;
-  max-height: 500px;
-}
-
-@media print {
-  .proof-container {
-    width: 60% !important;
-    margin-top: 1.5cm !important;
-    box-shadow: none !important;
-  }
-  
-  .proof-image {
-    max-height: 350px !important;
-  }
-}
-    /* Di dalam tag <style> */
-@media print {
-  #savePdfBtn { display: none !important; }
-}
   </style>
 </head>
 <body class="p-4 md:p-8">
   <div class="max-w-4xl mx-auto">
     <div class="form-card" id="print-area">
-      <!-- Bagian Header Form -->
       <div class="form-header">
         <h1 class="text-xl md:text-2xl font-bold">Form Konfirmasi Kehadiran</h1>
         <p class="text-sm opacity-90 mt-1">Silakan isi form berikut untuk konfirmasi kehadiran yang tidak terekam</p>
       </div>
       
       <div class="form-body">
-        <!-- Form Input Data -->
         <form id="absenForm" class="space-y-6">
-          <!-- Page Indicator -->
           <div class="page-indicator">
             <div class="page-step active" id="step1">1</div>
             <div class="page-step" id="step2">2</div>
@@ -151,33 +95,30 @@
             <div class="page-step" id="step4">4</div>
           </div>
           
-          <!-- Halaman 1: Data Diri dan Atasan -->
+          <!-- Page 1 -->
           <div class="form-page active" id="page1">
-            <!-- Bagian Data Pegawai -->
             <div>
               <h2 class="section-title"><i class="fas fa-user-circle mr-2"></i>Data Pegawai</h2>
               <div class="form-group">
                 <label for="nama" class="form-label required">Nama Pegawai / NIP</label>
                 <div class="input-with-icon">
                   <input type="text" id="nama" name="Nama" required class="form-control" placeholder="Ketik nama atau NIP...">
-                  <i class="fas fa-search" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); color:#94a3b8;"></i>
+                  <i class="fas fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                   <div id="nama-results" class="search-result"></div>
                 </div>
                 <input type="hidden" id="nip" name="NIP">
-                <input type="hidden" id="golongan" name="Golongan">
                 <input type="hidden" id="jabatan" name="Jabatan">
                 <p id="info-nama" class="search-info mt-2"></p>
               </div>
             </div>
             
-            <!-- Bagian Data Atasan -->
             <div>
               <h2 class="section-title"><i class="fas fa-user-tie mr-2"></i>Data Atasan</h2>
               <div class="form-group">
                 <label for="atasan1" class="form-label required">Atasan Langsung</label>
                 <div class="input-with-icon">
                   <input type="text" id="atasan1" name="AtasanLangsung" required class="form-control" placeholder="Cari nama atasan...">
-                  <i class="fas fa-search" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); color:#94a3b8;"></i>
+                  <i class="fas fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                   <div id="atasan1-results" class="search-result"></div>
                 </div>
                 <input type="hidden" id="nip_atasan1" name="NIP_AtasanLangsung">
@@ -188,7 +129,7 @@
                 <label for="atasan2" class="form-label required">Atasan dari Atasan Langsung</label>
                 <div class="input-with-icon">
                   <input type="text" id="atasan2" name="AtasanDariAtasanLangsung" required class="form-control" placeholder="Cari nama atasan atas...">
-                  <i class="fas fa-search" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); color:#94a3b8;"></i>
+                  <i class="fas fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                   <div id="atasan2-results" class="search-result"></div>
                 </div>
                 <input type="hidden" id="nip_atasan2" name="NIP_AtasanDariAtasanLangsung">
@@ -197,17 +138,14 @@
             </div>
             
             <div class="page-nav">
-              <div></div> <!-- Empty div for spacing -->
-              <button type="button" class="btn btn-primary" onclick="nextPage(1)">
-                Selanjutnya <i class="fas fa-arrow-right ml-2"></i>
-              </button>
+              <div></div>
+              <button type="button" class="btn btn-primary" onclick="nextPage(1)">Selanjutnya <i class="fas fa-arrow-right ml-2"></i></button>
             </div>
           </div>
           
-          <!-- Halaman 2: Tanggal, Waktu dan Lokasi -->
+          <!-- Page 2 -->
           <div class="form-page" id="page2">
             <h2 class="section-title"><i class="fas fa-calendar-check mr-2"></i>Detail Kehadiran</h2>
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="form-group">
                 <label for="tanggal" class="form-label required">Tanggal</label>
@@ -224,19 +162,14 @@
             </div>
             
             <div class="page-nav">
-              <button type="button" class="btn btn-secondary" onclick="prevPage(2)">
-                <i class="fas fa-arrow-left mr-2"></i> Kembali
-              </button>
-              <button type="button" class="btn btn-primary" onclick="nextPage(2)">
-                Selanjutnya <i class="fas fa-arrow-right ml-2"></i>
-              </button>
+              <button type="button" class="btn btn-secondary" onclick="prevPage(2)"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+              <button type="button" class="btn btn-primary" onclick="nextPage(2)">Selanjutnya <i class="fas fa-arrow-right ml-2"></i></button>
             </div>
           </div>
           
-          <!-- Halaman 3: Upload Bukti -->
+          <!-- Page 3 -->
           <div class="form-page" id="page3">
             <h2 class="section-title"><i class="fas fa-file-upload mr-2"></i>Upload Bukti</h2>
-            
             <div class="form-group">
               <label for="bukti" class="form-label required">Bukti Screenshot CCTV/Google Linimasa</label>
               <div class="file-upload">
@@ -250,25 +183,19 @@
               <div class="text-xs text-slate-500 mt-1">Maksimal ukuran file: 2MB</div>
             </div>
             
-            <!-- Bagian Loading dan Error -->
             <div id="loading" class="hidden p-4 bg-blue-50 text-blue-600 rounded-lg">
-              <i class="fas fa-spinner fa-spin mr-2"></i>
-              <span>Mengunggah file, mohon tunggu...</span>
+              <i class="fas fa-spinner fa-spin mr-2"></i> Mengunggah file, mohon tunggu...
             </div>
             
             <div id="error-display"></div>
             
             <div class="page-nav">
-              <button type="button" class="btn btn-secondary" onclick="prevPage(3)">
-                <i class="fas fa-arrow-left mr-2"></i> Kembali
-              </button>
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-paper-plane mr-2"></i>Kirim & Cetak
-              </button>
+              <button type="button" class="btn btn-secondary" onclick="prevPage(3)"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+              <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane mr-2"></i>Kirim & Cetak</button>
             </div>
           </div>
           
-          <!-- Halaman 4: Ucapan Terima Kasih -->
+          <!-- Page 4 -->
           <div class="form-page" id="page4">
             <div class="thank-you-page">
               <div class="thank-you-icon animate__animated animate__bounceIn">
@@ -285,7 +212,7 @@
           </div>
         </form>
         
-        <!-- Bagian Cetak Surat Pernyataan -->
+        <!-- Print Area -->
         <div id="cetak-area" class="p-10" style="font-family:'Poppins',sans-serif;font-size:12pt;">
           <div class="flex justify-center mt-6 mb-4 print:hidden">
             <button id="savePdfBtn" class="btn btn-primary">
@@ -304,12 +231,12 @@
 
           <p>Dengan ini menyatakan bahwa saya telah melakukan presensi namun tidak terekam, yaitu pada:</p>
           <table style="margin-left:40px;margin-bottom:15px;">
-            <tr><td style="width:120px;padding-right:10px;vertical-align:top;">Hari/Tanggal</td><td style="vertical-align:top;">: <span id="cetak-haritanggal"></span></td></tr>
-            <tr><td style="width:120px;padding-right:10px;vertical-align:top;">Waktu</td><td style="vertical-align:top;">: <span id="cetak-waktu"></span> WIB</td></tr>
-            <tr><td style="width:120px;padding-right:10px;vertical-align:top;">Lokasi</td><td style="vertical-align:top;">: <span id="cetak-lokasi"></span></td></tr>
+            <tr><td style="width:120px;">Hari/Tanggal</td><td>: <span id="cetak-haritanggal"></span></td></tr>
+            <tr><td>Waktu</td><td>: <span id="cetak-waktu"></span> WIB</td></tr>
+            <tr><td>Lokasi</td><td>: <span id="cetak-lokasi"></span></td></tr>
           </table>
 
-          <p style="margin-top:20px;">Terlampir screenshoot tampilan CCTV atau Google Linimasa saya. Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan dapat dipertanggungjawabkan. </p>
+          <p style="margin-top:20px;">Terlampir screenshoot tampilan CCTV atau Google Linimasa saya. Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan dapat dipertanggungjawabkan.</p>
 
           <div style="text-align:right;margin:10px 0 0 0;">Bogor, <span id="tanggal-surat"></span></div>
 
@@ -318,10 +245,8 @@
               <td style="width:40%;">
                 <div class="ttd-space">
                   <div class="ttd-name">
-                    Menyetujui,<br>
-                    Atasan Langsung<br><br><br>
-                    <span id="cetak-atasan1"></span><br>
-                    NIP. <span id="cetak-nip-atasan1"></span>
+                    Menyetujui,<br>Atasan Langsung<br><br><br>
+                    <span id="cetak-atasan1"></span><br>NIP. <span id="cetak-nip-atasan1"></span>
                   </div>
                 </div>
               </td>
@@ -330,8 +255,7 @@
                 <div class="ttd-space">
                   <div class="ttd-name">
                     Yang Menyatakan,<br><br><br>
-                    <span id="ttd-nama"></span><br>
-                    NIP. <span id="ttd-nip"></span>
+                    <span id="ttd-nama"></span><br>NIP. <span id="ttd-nip"></span>
                   </div>
                 </div>
               </td>
@@ -341,34 +265,24 @@
           <div style="text-align:center;margin-top:30px;">
             <div class="ttd-space">
               <div class="ttd-name">
-                Disetujui oleh:<br>
-                Atasan dari Atasan Langsung<br><br><br>
-                <span id="cetak-atasan2"></span><br>
-                NIP. <span id="cetak-nip-atasan2"></span>
+                Disetujui oleh:<br>Atasan dari Atasan Langsung<br><br><br>
+                <span id="cetak-atasan2"></span><br>NIP. <span id="cetak-nip-atasan2"></span>
               </div>
             </div>
           </div>
 
-          <!-- Halaman Bukti -->
           <div class="proof-page">
             <div style="text-align:center; margin-bottom:1rem;">
-              <div style="font-weight:bold; font-size:14pt; text-decoration:underline">
-                LAMPIRAN BUKTI KEHADIRAN
-              </div>
-              <div style="font-size:11pt; color:#555; margin-top:4px">
-                (Tidak berlaku tanpa paraf/tanda tangan atasan langsung)
-              </div>
+              <div style="font-weight:bold; font-size:14pt; text-decoration:underline">LAMPIRAN BUKTI KEHADIRAN</div>
+              <div style="font-size:11pt; color:#555; margin-top:4px">(Tidak berlaku tanpa paraf/tanda tangan atasan langsung)</div>
             </div>
             
             <div class="proof-container">
               <div style="text-align:center; font-weight:500; margin-bottom:8px">
-                <span id="proof-nama"></span> <br>
-                NIP: <span id="proof-nip"></span>
+                <span id="proof-nama"></span> <br>NIP: <span id="proof-nip"></span>
               </div>
               
-              <div id="proof-image-container">
-                <!-- Gambar akan muncul di sini -->
-              </div>
+              <div id="proof-image-container"></div>
               
               <div style="text-align:center; margin-top:12px; font-size:11pt">
                 <div>Tanggal: <span id="proof-tanggal"></span></div>
@@ -385,7 +299,6 @@
       </div>
     </div>
   </div>
-
   <script>
     // Bagian Inisialisasi Data dan Pencarian
     const urlJSON = "https://raw.githubusercontent.com/kepegawaianpusdiklatwas/pegawai-json/main/pegawai.json";
