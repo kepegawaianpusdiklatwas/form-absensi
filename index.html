@@ -463,7 +463,7 @@
           input.value = result.item.Nama;
           nipField.value = result.item.NIP;
           if (isPegawai) {
-            document.getElementById('golongan').value = result.item.Golongan || "-";
+            //document.getElementById('golongan').value = result.item.Golongan || "-";
             document.getElementById('jabatan').value = result.item.Jabatan || "-";
           }
           showSuccessMessage(info, `NIP: ${result.item.NIP} | Jabatan: ${result.item.Jabatan || '-'}`);
