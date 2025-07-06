@@ -12,7 +12,7 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
     :root { --primary:#4361ee; --danger:#f72585; }
-    body { font-family:'Poppins',sans-serif; background:#f5f7fb; }
+    body { font-family:'Poppins',sans-serif; background:#f5f7fb; min-height:100vh; display:flex; flex-direction:column; }
     .required:after { content:" *"; color:var(--danger); }
     #cetak-area, #loading { display:none; }
     .search-info { min-height:20px; transition:all 0.3s; font-size:0.8rem; }
@@ -76,15 +76,7 @@
       .proof-container { width:60%!important; margin-top:1.5cm!important; box-shadow:none!important; }
       .proof-image { max-height:350px!important; }
     }
-    footer {
-  position: relative;
-  margin-top: auto; /* Push ke bawah */
-}
-body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+    footer { position:relative; margin-top:auto; }
   </style>
 </head>
 <body class="p-4 md:p-8">
@@ -309,17 +301,17 @@ body {
     </div>
   </div>
   <script>
-    // Bagian Inisialisasi Data dan Pencarian
+    // Data dan Inisialisasi
     const urlJSON = "https://raw.githubusercontent.com/kepegawaianpusdiklatwas/pegawai-json/main/pegawai.json";
     let pegawaiList = [], fuse;
 
+    // Event Listener
     document.addEventListener('DOMContentLoaded', function() {
       initializeSearch();
-      setupDateAutoFill();
       setupFileUpload();
     });
 
-    // Fungsi untuk inisialisasi pencarian pegawai
+    // Fungsi Utama
     async function initializeSearch() {
       try {
         showLoadingMessage("Memuat data pegawai...");
@@ -345,7 +337,6 @@ body {
       }
     }
 
-    // Fungsi untuk setup field pencarian
     function setupSearchField(inputId, infoId, nipFieldId, resultsId, isPegawai = false) {
       const input = document.getElementById(inputId), info = document.getElementById(infoId);
       const nipField = document.getElementById(nipFieldId), resultsContainer = document.getElementById(resultsId);
@@ -374,7 +365,6 @@ body {
       });
     }
 
-    // Fungsi untuk menangani hasil pencarian
     function handleSearchResults(results, input, info, nipField, resultsContainer, isPegawai) {
       if (results.length === 0) return showErrorMessage(info, "Data tidak ditemukan");
       
@@ -386,9 +376,7 @@ body {
         item.addEventListener('click', () => {
           input.value = result.item.Nama;
           nipField.value = result.item.NIP;
-          if (isPegawai) {
-            document.getElementById('jabatan').value = result.item.Jabatan || "-";
-          }
+          if (isPegawai) document.getElementById('jabatan').value = result.item.Jabatan || "-";
           showSuccessMessage(info, `✅ NIP: ${result.item.NIP} | Jabatan: ${result.item.Jabatan || '-'}`);
           resultsContainer.style.display = 'none';
         });
@@ -397,19 +385,13 @@ body {
       resultsContainer.style.display = 'block';
     }
 
-    // Fungsi untuk navigasi halaman
     function nextPage(currentPage) {
-      // Validasi halaman saat ini sebelum pindah
-      if (currentPage === 1) {
-        if (!validatePage1()) return;
-      } else if (currentPage === 2) {
-        if (!validatePage2()) return;
-      }
+      if (currentPage === 1 && !validatePage1()) return;
+      if (currentPage === 2 && !validatePage2()) return;
       
       document.getElementById(`page${currentPage}`).classList.remove('active');
       document.getElementById(`page${currentPage + 1}`).classList.add('active');
       
-      // Update step indicator
       document.getElementById(`step${currentPage}`).classList.remove('active');
       document.getElementById(`step${currentPage}`).classList.add('completed');
       document.getElementById(`step${currentPage + 1}`).classList.add('active');
@@ -419,46 +401,21 @@ body {
       document.getElementById(`page${currentPage}`).classList.remove('active');
       document.getElementById(`page${currentPage - 1}`).classList.add('active');
       
-      // Update step indicator
       document.getElementById(`step${currentPage}`).classList.remove('active');
       document.getElementById(`step${currentPage - 1}`).classList.add('active');
     }
     
-    // Fungsi validasi halaman
     function validatePage1() {
       const nama = document.getElementById('nama').value.trim();
       const atasan1 = document.getElementById('atasan1').value.trim();
       const atasan2 = document.getElementById('atasan2').value.trim();
       
-      if (!nama) {
-        showErrorMessage(document.getElementById('info-nama'), "Harap isi nama pegawai");
-        return false;
-      }
-      
-      if (!document.getElementById('nip').value) {
-        showErrorMessage(document.getElementById('info-nama'), "Harap pilih pegawai dari daftar");
-        return false;
-      }
-      
-      if (!atasan1) {
-        showErrorMessage(document.getElementById('info-atasan1'), "Harap isi atasan langsung");
-        return false;
-      }
-      
-      if (!document.getElementById('nip_atasan1').value) {
-        showErrorMessage(document.getElementById('info-atasan1'), "Harap pilih atasan dari daftar");
-        return false;
-      }
-      
-      if (!atasan2) {
-        showErrorMessage(document.getElementById('info-atasan2'), "Harap isi atasan dari atasan langsung");
-        return false;
-      }
-      
-      if (!document.getElementById('nip_atasan2').value) {
-        showErrorMessage(document.getElementById('info-atasan2'), "Harap pilih atasan dari daftar");
-        return false;
-      }
+      if (!nama) return showErrorMessage(document.getElementById('info-nama'), "Harap isi nama pegawai");
+      if (!document.getElementById('nip').value) return showErrorMessage(document.getElementById('info-nama'), "Harap pilih pegawai dari daftar");
+      if (!atasan1) return showErrorMessage(document.getElementById('info-atasan1'), "Harap isi atasan langsung");
+      if (!document.getElementById('nip_atasan1').value) return showErrorMessage(document.getElementById('info-atasan1'), "Harap pilih atasan dari daftar");
+      if (!atasan2) return showErrorMessage(document.getElementById('info-atasan2'), "Harap isi atasan dari atasan langsung");
+      if (!document.getElementById('nip_atasan2').value) return showErrorMessage(document.getElementById('info-atasan2'), "Harap pilih atasan dari daftar");
       
       return true;
     }
@@ -468,25 +425,13 @@ body {
       const waktu = document.getElementById('waktu').value;
       const lokasi = document.getElementById('lokasi').value.trim();
       
-      if (!tanggal) {
-        alert("Harap isi tanggal kehadiran");
-        return false;
-      }
-      
-      if (!waktu) {
-        alert("Harap isi waktu kehadiran");
-        return false;
-      }
-      
-      if (!lokasi) {
-        alert("Harap isi lokasi kehadiran");
-        return false;
-      }
+      if (!tanggal) return alert("Harap isi tanggal kehadiran");
+      if (!waktu) return alert("Harap isi waktu kehadiran");
+      if (!lokasi) return alert("Harap isi lokasi kehadiran");
       
       return true;
     }
 
-    // Fungsi untuk setup upload file
     function setupFileUpload() {
       const fileInput = document.getElementById('bukti'), fileName = document.getElementById('file-name'), fileLabel = document.getElementById('file-label');
       
@@ -506,7 +451,6 @@ body {
       });
     }
     
-    // Fungsi untuk format ukuran file
     function formatFileSize(bytes) {
       if (bytes === 0) return '0 Bytes';
       const k = 1024, sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -514,18 +458,14 @@ body {
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
-    // Fungsi untuk membuat nama file yang diupload
     function generateFileName(namaPegawai, tanggalKejadian) {
-      // Format: NamaPegawai_TglKejadian (tanpa spasi)
-      const namaFile = namaPegawai.replace(/\s+/g, '_') + '_' + 
-                     tanggalKejadian.replace(/-/g, '');
-      return namaFile;
+      return namaPegawai.replace(/\s+/g, '_') + '_' + tanggalKejadian.replace(/-/g, '');
     }
 
-    // Fungsi Bantuan
+    // Helper Functions
     function clearSearchResults(info, nipField, resultsContainer, isPegawai) {
       info.textContent = ""; info.className = "search-info mt-2"; nipField.value = ""; resultsContainer.style.display = "none";
-      if (isPegawai) { document.getElementById('jabatan').value = ""; }
+      if (isPegawai) document.getElementById('jabatan').value = "";
     }
 
     function showLoadingMessage(message) {
@@ -537,9 +477,7 @@ body {
     function showErrorMessage(element, message) { element.textContent = message; element.className = "search-info error mt-2"; }
     function showError(message) { document.querySelectorAll('.search-info').forEach(el => showErrorMessage(el, message)); }
 
-    function setupDateAutoFill() { document.getElementById('tanggal').addEventListener('change', function() {}); }
-
-    // Fungsi untuk Submit Form
+    // Form Submission
     document.getElementById("absenForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       const form = e.target, formData = new FormData(form);
@@ -552,7 +490,6 @@ body {
         if (!file) throw new Error("File bukti harus diupload");
         if (file.size > 2 * 1024 * 1024) throw new Error("Ukuran file terlalu besar (maks 2MB)");
 
-        // Generate nama file baru
         const originalFileName = file.name;
         const fileExtension = originalFileName.split('.').pop();
         const newFileName = generateFileName(formData.get("Nama"), formData.get("Tanggal")) + '.' + fileExtension;
@@ -582,7 +519,6 @@ body {
         document.getElementById("cetak-area").style.display = "block";
         loading.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Berhasil dikirim! Mencetak...';
         
-        // Pindah ke halaman terima kasih
         document.getElementById('page3').classList.remove('active');
         document.getElementById('page4').classList.add('active');
         document.getElementById('step3').classList.remove('active');
@@ -603,7 +539,6 @@ body {
       }
     });
 
-    // Fungsi untuk konversi ke Base64
     function toBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -613,7 +548,6 @@ body {
       });
     }
 
-    // Fungsi untuk Update Tampilan Cetak
     function updatePrintView(data, hari) {
       const elements = {
         'cetak-nama': data.Nama, 'ttd-nama': data.Nama, 'ttd-nip': data.NIP, 'cetak-nip': data.NIP,
@@ -622,7 +556,6 @@ body {
         'cetak-atasan1': data["Atasan Langsung"], 'cetak-nip-atasan1': data["NIP Atasan"],
         'cetak-atasan2': data["Atasan dari Atasan"], 'cetak-nip-atasan2': data["NIP Atasan Atasan"],
         'tanggal-surat': formatTanggalIndonesia(data.Tanggal),
-        // Update untuk halaman bukti
         'proof-nama': data.Nama, 'proof-nip': data.NIP,
         'proof-tanggal': formatTanggalIndonesia(data.Tanggal), 'proof-waktu': data.Waktu,
         'proof-lokasi': data.Lokasi,
@@ -632,10 +565,8 @@ body {
       for (const [id, value] of Object.entries(elements)) {
         const element = document.getElementById(id);
         if (element) element.textContent = value;
-        else console.warn(`Element dengan ID ${id} tidak ditemukan`);
       }
 
-      // Menambahkan gambar bukti ke halaman cetak
       const proofImageContainer = document.getElementById('proof-image-container');
       proofImageContainer.innerHTML = '';
       
@@ -647,14 +578,12 @@ body {
       proofImageContainer.appendChild(img);
     }
 
-    // Fungsi untuk Format Tanggal Indonesia
     function formatTanggalIndonesia(tanggalISO) {
       const bulanList = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
       const tanggal = new Date(tanggalISO + "T00:00:00");
       return `${tanggal.getDate()} ${bulanList[tanggal.getMonth()]} ${tanggal.getFullYear()}`;
     }
 
-    // Fungsi untuk Format Tanggal dan Waktu
     function formatDateTime(date) {
       const bulanList = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
       const jam = date.getHours().toString().padStart(2, '0');
@@ -662,7 +591,6 @@ body {
       return `${date.getDate()} ${bulanList[date.getMonth()]} ${date.getFullYear()} ${jam}:${menit}`;
     }
     
-    // Fungsi untuk reset form
     function resetForm() {
       document.getElementById("absenForm").reset();
       document.getElementById("cetak-area").style.display = "none";
@@ -671,11 +599,9 @@ body {
       document.getElementById("file-label").textContent = "Pilih file gambar (JPG, PNG)";
       document.getElementById("file-name").textContent = "";
       
-      // Reset semua halaman
       document.querySelectorAll('.form-page').forEach(page => page.classList.remove('active'));
       document.getElementById('page1').classList.add('active');
       
-      // Reset step indicator
       document.querySelectorAll('.page-step').forEach(step => {
         step.classList.remove('active', 'completed');
       });
@@ -697,7 +623,6 @@ body {
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      // Loading indicator
       const originalText = this.innerHTML;
       this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan PDF...';
       this.disabled = true;
@@ -714,9 +639,6 @@ body {
     <div class="text-center">
       <p class="text-sm text-gray-600 font-medium">
         © 2025 Kepegawaian Pusdiklatwas BPKP
-      </p>
-      <p class="text-xs text-gray-500 mt-1">
-         
       </p>
     </div>
   </div>
