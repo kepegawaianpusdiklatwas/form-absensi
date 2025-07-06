@@ -49,7 +49,7 @@
     .search-result-item small { display:block; color:#64748b; font-size:0.75rem; }
     .section-title { font-size:1.1rem; font-weight:600; color:var(--primary); margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid #e2e8f0; }
     
-    /* Modern Step Indicator */
+    /* Modern Step Indicator with Animation */
     .page-indicator {
       display: flex;
       justify-content: center;
@@ -121,7 +121,7 @@
       width: 100%;
     }
     
-    /* Animations */
+    /* Animations for Steps */
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.15); }
@@ -132,6 +132,54 @@
       50% { transform: scale(1.15); }
       80% { transform: scale(0.95); }
       100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes bounceOut {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(0.8); opacity: 0; }
+    }
+    
+    /* Form Pages */
+    .form-page {
+      display: none;
+    }
+    .form-page.active {
+      display: block;
+      animation: fadeIn 0.5s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Page Navigation */
+    .page-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+    
+    /* Thank You Page */
+    .thank-you-page {
+      text-align: center;
+      padding: 2rem;
+    }
+    .thank-you-icon {
+      font-size: 4rem;
+      color: #10b981;
+      margin-bottom: 1.5rem;
+    }
+    .thank-you-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #334155;
+    }
+    .thank-you-message {
+      color: #64748b;
+      max-width: 500px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
     }
     
     /* Print Styles */
@@ -195,7 +243,7 @@
       <div class="form-body">
         <!-- Form Input Data -->
         <form id="absenForm" class="space-y-6">
-          <!-- Modern Step Indicator -->
+          <!-- Modern Step Indicator with Animation -->
           <div class="page-indicator">
             <div class="page-step active" id="step1">1</div>
             <div class="connector"></div>
@@ -258,7 +306,8 @@
               </button>
             </div>
           </div>
-                    <!-- Halaman 2: Tanggal, Waktu dan Lokasi -->
+          
+          <!-- Halaman 2: Tanggal, Waktu dan Lokasi -->
           <div class="form-page" id="page2">
             <h2 class="section-title"><i class="fas fa-calendar-check mr-2"></i>Detail Kehadiran</h2>
             
@@ -537,7 +586,8 @@
       });
       resultsContainer.style.display = 'block';
     }
-        // Fungsi untuk navigasi halaman dengan animasi modern
+
+    // Fungsi untuk navigasi halaman dengan animasi modern
     function nextPage(currentPage) {
       // Validasi halaman saat ini sebelum pindah
       if (currentPage === 1) {
@@ -588,14 +638,29 @@
         );
       }
       
-      // Pindah halaman
-      document.getElementById(`page${currentPage}`).classList.remove('active');
-      document.getElementById(`page${currentPage + 1}`).classList.add('active');
+      // Pindah halaman dengan animasi fade
+      const currentPageEl = document.getElementById(`page${currentPage}`);
+      const nextPageEl = document.getElementById(`page${currentPage + 1}`);
       
-      // Update step indicator
-      document.getElementById(`step${currentPage}`).classList.remove('active');
-      document.getElementById(`step${currentPage}`).classList.add('completed');
-      document.getElementById(`step${currentPage + 1}`).classList.add('active');
+      gsap.to(currentPageEl, {
+        opacity: 0,
+        y: -20,
+        duration: 0.3,
+        ease: "power2.out",
+        onComplete: () => {
+          currentPageEl.classList.remove('active');
+          nextPageEl.classList.add('active');
+          gsap.fromTo(nextPageEl, 
+            { opacity: 0, y: 20 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              ease: "power2.out"
+            }
+          );
+        }
+      });
     }
     
     function prevPage(currentPage) {
@@ -632,13 +697,29 @@
         }
       );
       
-      // Pindah halaman
-      document.getElementById(`page${currentPage}`).classList.remove('active');
-      document.getElementById(`page${currentPage - 1}`).classList.add('active');
+      // Pindah halaman dengan animasi fade
+      const currentPageEl = document.getElementById(`page${currentPage}`);
+      const prevPageEl = document.getElementById(`page${currentPage - 1}`);
       
-      // Update step indicator
-      document.getElementById(`step${currentPage}`).classList.remove('active');
-      document.getElementById(`step${currentPage - 1}`).classList.add('active');
+      gsap.to(currentPageEl, {
+        opacity: 0,
+        y: 20,
+        duration: 0.3,
+        ease: "power2.out",
+        onComplete: () => {
+          currentPageEl.classList.remove('active');
+          prevPageEl.classList.add('active');
+          gsap.fromTo(prevPageEl, 
+            { opacity: 0, y: -20 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              ease: "power2.out"
+            }
+          );
+        }
+      });
     }
     
     // Fungsi validasi halaman
@@ -796,9 +877,31 @@
         document.getElementById("cetak-area").style.display = "block";
         loading.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Berhasil dikirim! Mencetak...';
         
-        // Pindah ke halaman terima kasih
-        document.getElementById('page3').classList.remove('active');
-        document.getElementById('page4').classList.add('active');
+        // Pindah ke halaman terima kasih dengan animasi
+        const currentPageEl = document.getElementById('page3');
+        const nextPageEl = document.getElementById('page4');
+        
+        gsap.to(currentPageEl, {
+          opacity: 0,
+          y: -20,
+          duration: 0.3,
+          ease: "power2.out",
+          onComplete: () => {
+            currentPageEl.classList.remove('active');
+            nextPageEl.classList.add('active');
+            gsap.fromTo(nextPageEl, 
+              { opacity: 0, y: 20 },
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out"
+              }
+            );
+          }
+        });
+        
+        // Update step indicator
         document.getElementById('step3').classList.remove('active');
         document.getElementById('step3').classList.add('completed');
         document.getElementById('step4').classList.add('active');
@@ -897,13 +1000,24 @@
           );
         }
       });
+      
+      // Animasi fade in untuk halaman pertama
+      gsap.fromTo(document.getElementById('page1'), 
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: "power2.out"
+        }
+      );
     }
 
     // Tombol Save PDF
     document.getElementById('savePdfBtn')?.addEventListener('click', function() {
       const namaPegawai = document.getElementById('cetak-nama').textContent;
       const tanggal = document.getElementById('tanggal').value;
-      const namaFile = `Surat Pernyataan_${namaPegawai}_${tanggal.replace(/-/g, '')}.pdf`;
+      const namaFile = `Surat_Pernyataan_${namaPegawai}_${tanggal.replace(/-/g, '')}.pdf`;
       
       const element = document.getElementById('print-area');
       const opt = {
