@@ -466,7 +466,8 @@
             //document.getElementById('golongan').value = result.item.Golongan || "-";
             document.getElementById('jabatan').value = result.item.Jabatan || "-";
           }
-          showSuccessMessage(info, `NIP: ${result.item.NIP} | Jabatan: ${result.item.Jabatan || '-'}`);
+          //showSuccessMessage(info, `NIP: ${result.item.NIP} | Jabatan: ${result.item.Jabatan || '-'}`);
+          showSuccessMessage(info, `✅ NIP: ${result.item.NIP} | Jabatan: ${result.item.Jabatan || '-'}`);
           resultsContainer.style.display = 'none';
         });
         resultsContainer.appendChild(item);
