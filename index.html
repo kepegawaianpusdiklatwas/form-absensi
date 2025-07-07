@@ -49,12 +49,56 @@
     .section-title { font-size:1.1rem; font-weight:600; color:#4361ee; margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid #e2e8f0; }
     .form-page { display:none; }
     .form-page.active { display:block; }
+    
+    /* Animasi Step Indicator */
     .page-indicator { display:flex; justify-content:center; margin-bottom:1.5rem; }
-    .page-step { width:30px; height:30px; border-radius:50%; background:#e2e8f0; color:#64748b; display:flex; align-items:center; justify-content:center; margin:0 10px; font-weight:600; position:relative; }
-    .page-step.active { background:#4361ee; color:white; }
-    .page-step.completed { background:#10b981; color:white; }
-    .page-step:not(:last-child):after { content:''; position:absolute; width:40px; height:2px; background:#e2e8f0; left:100%; }
-    .page-step.completed:not(:last-child):after { background:#10b981; }
+    .page-step { 
+      width:36px; 
+      height:36px; 
+      border-radius:50%; 
+      background:#e2e8f0; 
+      color:#64748b; 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      margin:0 12px; 
+      font-weight:600; 
+      position:relative;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transform: scale(1);
+      cursor: pointer;
+    }
+    .page-step.active { 
+      background:#4361ee; 
+      color:white; 
+      transform: scale(1.2);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+      animation: pulse 2s infinite;
+    }
+    .page-step.completed { 
+      background:#10b981; 
+      color:white; 
+      transform: scale(1.1);
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
+    }
+    .page-step:not(:last-child):after { 
+      content:''; 
+      position:absolute; 
+      width:40px; 
+      height:3px; 
+      background:#e2e8f0; 
+      left:100%;
+      transition: all 0.5s ease;
+    }
+    .page-step.completed:not(:last-child):after { 
+      background:#10b981; 
+    }
+    @keyframes pulse {
+      0% { transform: scale(1.1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1.1); }
+    }
+    
     .page-nav { display:flex; justify-content:space-between; margin-top:2rem; }
     .thank-you-page { text-align:center; padding:3rem 1rem; }
     .thank-you-icon { font-size:5rem; color:#10b981; margin-bottom:1.5rem; }
@@ -65,12 +109,18 @@
     .proof-page { page-break-before:always; padding:2rem 0; }
     .proof-container { border:1px solid #e2e8f0; border-radius:8px; padding:1rem; margin:0 auto; width:75%; max-width:650px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
     .proof-image { max-width:100%; height:auto; display:block; margin:0 auto; border:1px solid #ddd; max-height:500px; }
+    .progress-container { width:100%; background-color:#e2e8f0; border-radius:8px; margin-top:1rem; }
+    .progress-bar { height:6px; border-radius:8px; background-color:#4361ee; width:0%; transition:width 0.3s ease; }
+    .upload-status { margin-top:0.5rem; font-size:0.85rem; display:none; }
+    .upload-status.success { color:#10b981; display:block; }
+    .upload-status.error { color:#f72585; display:block; }
     @media print {
       body * { visibility:hidden; }
       #print-area, #print-area * { visibility:visible; }
       #print-area { position:absolute; top:0; left:0; width:100%; padding:0; margin:0; background:white; }
       #absenForm, #savePdfBtn, .form-page, .page-indicator, .page-nav { display:none!important; }
       #cetak-area { display:block!important; padding-top:0; }
+      .form-header { display:none; }
       .ttd-space { height:120px; margin-top:20px; }
       .ttd-name { margin-bottom:15px; }
       .proof-container { width:60%!important; margin-top:1.5cm!important; box-shadow:none!important; }
@@ -90,14 +140,14 @@
       <div class="form-body">
         <form id="absenForm" class="space-y-6">
           <div class="page-indicator">
-            <div class="page-step active" id="step1">1</div>
-            <div class="page-step" id="step2">2</div>
-            <div class="page-step" id="step3">3</div>
-            <div class="page-step" id="step4">4</div>
+            <div class="page-step active" id="step1" onclick="goToStep(1)">1</div>
+            <div class="page-step" id="step2" onclick="goToStep(2)">2</div>
+            <div class="page-step" id="step3" onclick="goToStep(3)">3</div>
+            <div class="page-step" id="step4" onclick="goToStep(4)">4</div>
           </div>
           
           <!-- Page 1 -->
-          <div class="form-page active" id="page1">
+          <div class="form-page active animate__animated" id="page1">
             <div>
               <h2 class="section-title"><i class="fas fa-user-circle mr-2"></i>Data Pegawai</h2>
               <div class="form-group">
@@ -145,7 +195,7 @@
           </div>
           
           <!-- Page 2 -->
-          <div class="form-page" id="page2">
+          <div class="form-page animate__animated" id="page2">
             <h2 class="section-title"><i class="fas fa-calendar-check mr-2"></i>Detail Kehadiran</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="form-group">
@@ -169,7 +219,7 @@
           </div>
           
           <!-- Page 3 -->
-          <div class="form-page" id="page3">
+          <div class="form-page animate__animated" id="page3">
             <h2 class="section-title"><i class="fas fa-file-upload mr-2"></i>Upload Bukti</h2>
             <div class="form-group">
               <label for="bukti" class="form-label required">Bukti Screenshot CCTV/Google Linimasa</label>
@@ -182,6 +232,12 @@
                 <div id="file-name" class="file-name"></div>
               </div>
               <div class="text-xs text-slate-500 mt-1">Maksimal ukuran file: 2MB</div>
+              
+              <!-- Progress Bar -->
+              <div class="progress-container hidden" id="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+                <div class="upload-status" id="upload-status"></div>
+              </div>
             </div>
             
             <div id="loading" class="hidden p-4 bg-blue-50 text-blue-600 rounded-lg">
@@ -192,12 +248,12 @@
             
             <div class="page-nav">
               <button type="button" class="btn btn-secondary" onclick="prevPage(3)"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
-              <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane mr-2"></i>Kirim & Cetak</button>
+              <button type="submit" class="btn btn-primary" id="submit-btn"><i class="fas fa-paper-plane mr-2"></i>Kirim & Cetak</button>
             </div>
           </div>
           
           <!-- Page 4 -->
-          <div class="form-page" id="page4">
+          <div class="form-page animate__animated" id="page4">
             <div class="thank-you-page">
               <div class="thank-you-icon animate__animated animate__bounceIn">
                 <i class="fas fa-check-circle bounce"></i>
@@ -394,24 +450,65 @@
       resultsContainer.style.display = 'block';
     }
 
+    function goToStep(step) {
+      const currentPage = parseInt(document.querySelector('.form-page.active').id.replace('page', ''));
+      
+      if (step === currentPage) return;
+      
+      if (step > currentPage) {
+        nextPage(currentPage);
+      } else {
+        prevPage(currentPage);
+      }
+    }
+
     function nextPage(currentPage) {
       if (currentPage === 1 && !validatePage1()) return;
       if (currentPage === 2 && !validatePage2()) return;
       
-      document.getElementById(`page${currentPage}`).classList.remove('active');
-      document.getElementById(`page${currentPage + 1}`).classList.add('active');
+      // Animasi keluar
+      document.getElementById(`page${currentPage}`).classList.add('animate__animated', 'animate__fadeOutLeft');
       
-      document.getElementById(`step${currentPage}`).classList.remove('active');
-      document.getElementById(`step${currentPage}`).classList.add('completed');
-      document.getElementById(`step${currentPage + 1}`).classList.add('active');
+      setTimeout(() => {
+        document.getElementById(`page${currentPage}`).classList.remove('active', 'animate__fadeOutLeft');
+        document.getElementById(`page${currentPage + 1}`).classList.add('active', 'animate__animated', 'animate__fadeInRight');
+        
+        updateStepIndicator(currentPage, currentPage + 1);
+        
+        // Hapus class animasi setelah selesai
+        setTimeout(() => {
+          document.getElementById(`page${currentPage + 1}`).classList.remove('animate__fadeInRight');
+        }, 500);
+      }, 300);
     }
     
     function prevPage(currentPage) {
-      document.getElementById(`page${currentPage}`).classList.remove('active');
-      document.getElementById(`page${currentPage - 1}`).classList.add('active');
+      // Animasi keluar
+      document.getElementById(`page${currentPage}`).classList.add('animate__animated', 'animate__fadeOutRight');
       
-      document.getElementById(`step${currentPage}`).classList.remove('active');
-      document.getElementById(`step${currentPage - 1}`).classList.add('active');
+      setTimeout(() => {
+        document.getElementById(`page${currentPage}`).classList.remove('active', 'animate__fadeOutRight');
+        document.getElementById(`page${currentPage - 1}`).classList.add('active', 'animate__animated', 'animate__fadeInLeft');
+        
+        updateStepIndicator(currentPage, currentPage - 1);
+        
+        // Hapus class animasi setelah selesai
+        setTimeout(() => {
+          document.getElementById(`page${currentPage - 1}`).classList.remove('animate__fadeInLeft');
+        }, 500);
+      }, 300);
+    }
+    
+    function updateStepIndicator(fromStep, toStep) {
+      document.getElementById(`step${fromStep}`).classList.remove('active');
+      
+      if (toStep > fromStep) {
+        document.getElementById(`step${fromStep}`).classList.add('completed');
+      } else {
+        document.getElementById(`step${fromStep}`).classList.remove('completed');
+      }
+      
+      document.getElementById(`step${toStep}`).classList.add('active');
     }
     
     function validatePage1() {
@@ -491,8 +588,21 @@
       e.preventDefault();
       const form = e.target, formData = new FormData(form);
       const loading = document.getElementById("loading"), errorDisplay = document.getElementById("error-display");
-      loading.classList.remove("hidden"); errorDisplay.style.display = "none"; errorDisplay.textContent = "";
-
+      const progressContainer = document.getElementById("progress-container");
+      const progressBar = document.getElementById("progress-bar");
+      const uploadStatus = document.getElementById("upload-status");
+      const submitBtn = document.getElementById("submit-btn");
+      
+      // Reset UI
+      loading.classList.remove("hidden"); 
+      errorDisplay.style.display = "none"; 
+      errorDisplay.textContent = "";
+      progressContainer.classList.remove("hidden");
+      progressBar.style.width = "0%";
+      uploadStatus.textContent = "";
+      uploadStatus.className = "upload-status";
+      submitBtn.disabled = true;
+      
       try {
         if (!formData.get("NIP") || !formData.get("NIP_AtasanLangsung")) throw new Error("Data pegawai atau atasan tidak valid");
         const fileInput = document.getElementById("bukti"), file = fileInput.files[0];
@@ -503,7 +613,15 @@
         const fileExtension = originalFileName.split('.').pop();
         const newFileName = generateFileName(formData.get("Nama"), formData.get("Tanggal")) + '.' + fileExtension;
 
+        // Simulate progress for base64 conversion
+        progressBar.style.width = "30%";
+        uploadStatus.textContent = "Mengonversi file ke base64...";
+        
         const base64File = await toBase64(file);
+        
+        progressBar.style.width = "60%";
+        uploadStatus.textContent = "Mengunggah file ke server...";
+        
         const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         const date = new Date(formData.get("Tanggal")), hari = days[date.getDay()];
 
@@ -519,11 +637,19 @@
         };
 
         const response = await fetch("https://script.google.com/macros/s/AKfycbx9yjH-4_Mlpx1N7K7m3jrXy03ZJ8-B0icj6MPJQLOLm7DgwVRiJJPN7WuSVy4mB6n8/exec", {
-          method: "POST", body: JSON.stringify(data)
+          method: "POST", 
+          body: JSON.stringify(data)
         });
 
+        progressBar.style.width = "90%";
+        uploadStatus.textContent = "Menyimpan data...";
+        
         if (!response.ok) throw new Error("Gagal mengirim data ke server");
 
+        progressBar.style.width = "100%";
+        uploadStatus.textContent = "Upload berhasil!";
+        uploadStatus.className = "upload-status success";
+        
         updatePrintView(data, hari);
         document.getElementById("cetak-area").style.display = "block";
         loading.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Berhasil dikirim! Mencetak...';
@@ -538,13 +664,20 @@
           window.print();
           loading.classList.add("hidden");
           document.getElementById("cetak-area").style.display = "none";
+          submitBtn.disabled = false;
         }, 1000);
 
       } catch (err) {
         console.error("Upload error:", err);
+        progressBar.style.width = "100%";
+        progressBar.style.backgroundColor = "#f72585";
+        uploadStatus.textContent = "Upload gagal: " + err.message;
+        uploadStatus.className = "upload-status error";
+        
         loading.innerHTML = '<i class="fas fa-times-circle mr-2"></i> Gagal mengunggah';
         errorDisplay.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i>${err.message}`;
         errorDisplay.style.display = "block";
+        submitBtn.disabled = false;
       }
     });
 
@@ -607,6 +740,10 @@
       document.getElementById("error-display").style.display = "none";
       document.getElementById("file-label").textContent = "Pilih file gambar (JPG, PNG)";
       document.getElementById("file-name").textContent = "";
+      document.getElementById("progress-container").classList.add("hidden");
+      document.getElementById("progress-bar").style.width = "0%";
+      document.getElementById("progress-bar").style.backgroundColor = "#4361ee";
+      document.getElementById("upload-status").textContent = "";
       
       document.querySelectorAll('.form-page').forEach(page => page.classList.remove('active'));
       document.getElementById('page1').classList.add('active');
