@@ -108,7 +108,8 @@
     .bounce { animation:bounce 2s infinite; }
     .proof-page { page-break-before:always; padding:2rem 0; }
     .proof-container { border:1px solid #e2e8f0; border-radius:8px; padding:1rem; margin:0 auto; width:75%; max-width:650px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-    .proof-image { max-width:100%; height:auto; display:block; margin:0 auto; border:1px solid #ddd; max-height:500px; }
+    
+    .proof-image { width: 120%; max-width: 120%; height: auto; display: block; margin: 0 auto; border: 1px solid #ddd; max-height: 600px; transform: translateX(-10%); object-fit: contain; }
     .progress-container { width:100%; background-color:#e2e8f0; border-radius:8px; margin-top:1rem; }
     .progress-bar { height:6px; border-radius:8px; background-color:#4361ee; width:0%; transition:width 0.3s ease; }
     .upload-status { margin-top:0.5rem; font-size:0.85rem; display:none; }
@@ -124,7 +125,12 @@
       .ttd-space { height:120px; margin-top:20px; }
       .ttd-name { margin-bottom:15px; }
       .proof-container { width:60%!important; margin-top:1.5cm!important; box-shadow:none!important; }
-      .proof-image { max-height:350px!important; }
+      .proof-image { 
+    width: 120%!important;
+    max-width: 120%!important;
+    max-height:420px!important; /* 20% lebih besar dari 350px */
+    transform: translateX(-10%)!important;
+  }
     }
     footer { position:relative; margin-top:auto; }
   </style>
