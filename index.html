@@ -841,7 +841,7 @@
         'cetak-haritanggal': `${hari}, ${formatTanggalIndonesia(data.Tanggal)}`, 'cetak-waktu': data.Waktu, 'cetak-lokasi': data.Lokasi,
         'cetak-atasan1': data["Atasan Langsung"], 'cetak-nip-atasan1': data["NIP Atasan"],
         'cetak-atasan2': data["Atasan dari Atasan"], 'cetak-nip-atasan2': data["NIP Atasan Atasan"],
-        'tanggal-surat': formatTanggalIndonesia(data.Tanggal),
+        'tanggal-surat': formatTanggalIndonesia(new Date().toISOString().split('T')[0]),
         'proof-nama': data.Nama, 'proof-nip': data.NIP,
         'proof-tanggal': formatTanggalIndonesia(data.Tanggal), 'proof-waktu': data.Waktu,
         'proof-lokasi': data.Lokasi,
