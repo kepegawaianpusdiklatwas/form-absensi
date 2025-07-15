@@ -161,6 +161,7 @@
     margin-top:0.5cm !important;
     box-shadow:none !important;
     padding:0.5rem !important;
+    padding-bottom: 0.1rem !important;
   }
   .proof-image { 
     width: 100% !important;
@@ -171,6 +172,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px !important;
+    margin-bottom: 0.2rem !important
   }
 }    
    .proof-images-container {
@@ -856,7 +858,7 @@
       
       base64Files.forEach((file, index) => {
         const imgContainer = document.createElement('div');
-        imgContainer.style.marginBottom = '20px';
+        imgContainer.style.marginBottom = '10px';
         
        if (base64Files.length > 1) {
       const imgTitle = document.createElement('div');
@@ -872,7 +874,7 @@
         img.src = 'data:image/jpeg;base64,' + file.base64;
         img.className = 'proof-image';
         img.alt = 'Bukti Presensi ' + data.Nama;
-        img.style.maxHeight = base64Files.length > 1 ? '250px' : '350px';
+        img.style.maxHeight = base64Files.length > 1 ? '220px' : '320px';
         
         imgContainer.appendChild(img);
         proofImagesContainer.appendChild(imgContainer);
