@@ -108,7 +108,9 @@
     .bounce { animation:bounce 2s infinite; }
 .proof-page { 
   page-break-before:always; 
-  padding:0.5rem 0; /* Diubah dari 2rem 0 menjadi lebih kecil */
+  page-break-inside: avoid;
+  padding:0; /* Diubah dari 2rem 0 menjadi lebih kecil */
+  
   margin-top:-20px; /* Ditambahkan untuk mengurangi margin atas */
 }
 .proof-container { 
@@ -387,15 +389,17 @@
           </div>
 
           <div class="proof-page">
-            <div style="text-align:center; margin-bottom:0.5rem;"> <!-- ubah margin-bottom dari 1rem ke 0.5rem -->
-              <div style="font-weight:bold; font-size:12pt; text-decoration:underline"> <!-- ubah dari 14pt ke 12pt -->
-                LAMPIRAN BUKTI KEHADIRAN
-              </div>
-              <div style="font-size:10pt; color:#555; margin-top:2px"> <!-- ubah dari 11pt ke 10pt -->
-                (Tidak berlaku tanpa paraf/tanda tangan atasan langsung)
-              </div>
+        <div class="proof-container">
+          <!-- Pindahkan judul ke sini -->
+          <div style="text-align:center; margin-bottom:0.5rem;">
+            <div style="font-weight:bold; font-size:12pt; text-decoration:underline">
+              LAMPIRAN BUKTI KEHADIRAN
             </div>
-            
+            <div style="font-size:10pt; color:#555; margin-top:2px">
+              (Tidak berlaku tanpa paraf/tanda tangan atasan langsung)
+            </div>
+          </div>
+    
             <div class="proof-container">
               <div style="text-align:center; font-weight:500; margin-bottom:8px">
                 <span id="proof-nama"></span> <br>NIP: <span id="proof-nip"></span>
