@@ -450,6 +450,11 @@
       setupFileUpload(1);
     });
 
+    function getCurrentDateISO() {
+  const now = new Date();
+  return now.toISOString().split('T')[0];
+}
+    
     // Fungsi Utama
     async function initializeSearch() {
       try {
