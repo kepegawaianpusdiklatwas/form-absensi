@@ -168,7 +168,7 @@
   .proof-images-container {
     display: flex;
     flex-direction: column;
-    gap: 15px !important;
+    gap: 10px !important;
   }
 }    
    .proof-images-container {
@@ -387,9 +387,13 @@
           </div>
 
           <div class="proof-page">
-            <div style="text-align:center; margin-bottom:1rem;">
-              <div style="font-weight:bold; font-size:14pt; text-decoration:underline">LAMPIRAN BUKTI KEHADIRAN</div>
-              <div style="font-size:11pt; color:#555; margin-top:4px">(Tidak berlaku tanpa paraf/tanda tangan atasan langsung)</div>
+            <div style="text-align:center; margin-bottom:0.5rem;"> <!-- ubah margin-bottom dari 1rem ke 0.5rem -->
+              <div style="font-weight:bold; font-size:12pt; text-decoration:underline"> <!-- ubah dari 14pt ke 12pt -->
+                LAMPIRAN BUKTI KEHADIRAN
+              </div>
+              <div style="font-size:10pt; color:#555; margin-top:2px"> <!-- ubah dari 11pt ke 10pt -->
+                (Tidak berlaku tanpa paraf/tanda tangan atasan langsung)
+              </div>
             </div>
             
             <div class="proof-container">
@@ -405,9 +409,13 @@
                 <div>Lokasi: <span id="proof-lokasi"></span></div>
               </div>
               
-              <div style="text-align:center; font-size:9pt; color:#777; margin-top:16px; padding-top:8px; border-top:1px dashed #ddd">
+              <div style="text-align:center; font-size:8pt; color:#777; margin-top:8px; padding-top:4px; border-top:1px dashed #ddd">
                 Dicetak otomatis pada <span id="proof-timestamp"></span>
               </div>
+              <!-- Perubahan: 
+                 - font-size dari 9pt ke 8pt 
+                 - margin-top dari 16px ke 8px
+                 - padding-top dari 8px ke 4px -->
             </div>
           </div>
         </div>
@@ -846,14 +854,15 @@
         const imgContainer = document.createElement('div');
         imgContainer.style.marginBottom = '20px';
         
-        if (base64Files.length > 1) {
-          const imgTitle = document.createElement('div');
-          imgTitle.textContent = `Bukti ${index + 1}: ${file.originalName}`;
-          imgTitle.style.textAlign = 'center';
-          imgTitle.style.fontWeight = '500';
-          imgTitle.style.marginBottom = '8px';
-          imgContainer.appendChild(imgTitle);
-        }
+       if (base64Files.length > 1) {
+      const imgTitle = document.createElement('div');
+      imgTitle.textContent = `Bukti ${index + 1}`; // Hapus nama file, cukup nomor bukti
+      imgTitle.style.textAlign = 'center';
+      imgTitle.style.fontWeight = '500';
+      imgTitle.style.marginBottom = '4px'; // kecilkan margin
+      imgTitle.style.fontSize = '11px'; // tambahkan ukuran font lebih kecil
+      imgContainer.appendChild(imgTitle);
+    }
         
         const img = document.createElement('img');
         img.src = 'data:image/jpeg;base64,' + file.base64;
