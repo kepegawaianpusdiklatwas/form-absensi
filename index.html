@@ -785,11 +785,32 @@
         // Kirim data ke server
         progressBar.style.width = "90%";
         uploadStatus.textContent = "Mengunggah data ke server...";
+
+// MENJADI INI:
+const response = await fetch("https://script.google.com/macros/s/AKfycbwC0Z1mmGQ8O8s749Z5eAn3OcxdLbmofs45qQSPAAweTSl1SZmwcExxRT3YmjpdPTaW/exec", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    Nama: document.getElementById("nama").value,
+    NIP: document.getElementById("nip").value,
+    Jabatan: document.getElementById("jabatan").value,
+    Tanggal: document.getElementById("tanggal").value,
+    Waktu: document.getElementById("waktu").value,
+    Lokasi: document.getElementById("lokasi").value,
+    AtasanLangsung: document.getElementById("atasan1").value,
+    NIP_AtasanLangsung: document.getElementById("nip_atasan1").value,
+    AtasanDariAtasanLangsung: document.getElementById("atasan2").value,
+    NIP_AtasanDariAtasanLangsung: document.getElementById("nip_atasan2").value,
+    files: base64Files.map(file => ({
+      filename: file.newName,
+      mimeType: file.originalName.endsWith('.png') ? 'image/png' : 'image/jpeg',
+      content: file.base64
+    }))
+  })
+});
         
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwoKk446U-fqT5zF9Rys03YPXMbSsmL0zBAQzCIj8K33wXnB84I1uk3NqIpUe6W_Jg8/exec", {
-          method: "POST", 
-          body: JSON.stringify(data)
-        });
         
         if (!response.ok) {
           throw new Error("Gagal mengirim data ke server");
