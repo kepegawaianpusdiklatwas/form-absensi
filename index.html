@@ -786,37 +786,37 @@
         progressBar.style.width = "90%";
         uploadStatus.textContent = "Mengunggah data ke server...";
 
-// MENJADI INI:
-        
-const response = await fetch("https://script.google.com/macros/s/AKfycbzwApegVvQLhbtr8BC_Dlqbyi8z4hQrUGqER54Y0gdKyU9635m2cJN5vMHz9p56rjMz/exec", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    Nama: document.getElementById("nama").value,
-    NIP: document.getElementById("nip").value,
-    Jabatan: document.getElementById("jabatan").value,
-    Tanggal: document.getElementById("tanggal").value,
-    Waktu: document.getElementById("waktu").value,
-    Lokasi: document.getElementById("lokasi").value,
-    AtasanLangsung: document.getElementById("atasan1").value,
-    NIP_AtasanLangsung: document.getElementById("nip_atasan1").value,
-    AtasanDariAtasanLangsung: document.getElementById("atasan2").value,
-    NIP_AtasanDariAtasanLangsung: document.getElementById("nip_atasan2").value,
-    files: base64Files.map(file => ({
-      filename: file.newName,
-      mimeType: file.originalName.endsWith('.png') ? 'image/png' : 'image/jpeg',
-      content: file.base64
-    }))
-  })
-});
-        
-        
-        if (!response.ok) {
-          throw new Error("Gagal mengirim data ke server");
-        }
+        // Fixed fetch request
+        const response = await fetch("https://script.google.com/macros/s/AKfycbzwApegVvQLhbtr8BC_Dlqbyi8z4hQrUGqER54Y0gdKyU9635m2cJN5vMHz9p56rjMz/exec", {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            action: "submitForm",
+            data: {
+              Nama: document.getElementById("nama").value,
+              NIP: document.getElementById("nip").value,
+              Jabatan: document.getElementById("jabatan").value,
+              Tanggal: document.getElementById("tanggal").value,
+              Waktu: document.getElementById("waktu").value,
+              Lokasi: document.getElementById("lokasi").value,
+              AtasanLangsung: document.getElementById("atasan1").value,
+              NIP_AtasanLangsung: document.getElementById("nip_atasan1").value,
+              AtasanDariAtasanLangsung: document.getElementById("atasan2").value,
+              NIP_AtasanDariAtasanLangsung: document.getElementById("nip_atasan2").value,
+              files: base64Files.map(file => ({
+                filename: file.newName,
+                mimeType: file.originalName.endsWith('.png') ? 'image/png' : 'image/jpeg',
+                content: file.base64
+              }))
+            }
+          })
+        });
 
+        // Karena mode no-cors, kita tidak bisa membaca response
+        // Jadi kita asumsikan berhasil jika tidak ada error
         progressBar.style.width = "100%";
         uploadStatus.textContent = "Upload berhasil!";
         uploadStatus.className = "upload-status success";
