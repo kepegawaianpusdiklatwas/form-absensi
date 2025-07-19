@@ -14,7 +14,7 @@
     :root { --primary:#4361ee; --danger:#f72585; }
     body { font-family:'Poppins',sans-serif; background:#f5f7fb; min-height:100vh; display:flex; flex-direction:column; }
     .required:after { content:" *"; color:var(--danger); }
-    #cetak-area, #loading { display:none; }
+    #print-area, #loading { display:none; }
     .search-info { min-height:20px; transition:all 0.3s; font-size:0.8rem; }
     .search-info.error { color:var(--danger); }
     .search-info.success { color:#10b981; }
@@ -131,54 +131,56 @@
     .file-upload-wrapper { margin-bottom: 1rem; }
     .add-file-btn { margin-top: 0.5rem; }
     .proof-images-container { display: flex; flex-direction: column; gap: 20px; }
-    .proof-images-container {
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-    }
     .download-pdf-btn {
       margin-top: 2rem;
       display: inline-flex;
     }
+
     /* Print-specific styles */
     @media print {
-  body * { visibility: hidden; }
-  #print-area, #print-area * { visibility: visible; }
-  #print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-  }
-  ...
-}
-      .thank-you-page, .form-header, .form-page, .page-indicator, .page-nav { 
-        display: none !important; 
+      body * { 
+        visibility: hidden; 
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #print-area, #print-area * { 
+        visibility: visible; 
+        font-family: 'Poppins', sans-serif !important;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 10mm !important;
+        font-size: 12pt;
       }
       .proof-page { 
         page-break-before: always;
-        padding: 0 !important;
-        margin-top: -30px !important;
+        margin-top: 0 !important;
+        padding-top: 10mm !important;
       }
-      .proof-container { 
-        width: 80% !important;
-        margin-top: 0.5cm !important;
-        box-shadow: none !important;
-        padding: 0.5rem !important;
-        padding-bottom: 0.1rem !important;
-      }
-      .proof-image { 
+      .proof-container {
         width: 100% !important;
         max-width: 100% !important;
-        max-height: 450px !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
       }
-      .proof-images-container {
-        gap: 10px !important;
-        margin-bottom: 0.2rem !important;
+      .proof-image {
+        max-height: 120mm !important;
+      }
+      .ttd-space {
+        height: 30mm !important;
+      }
+      .thank-you-page, .form-header, .form-page, .page-indicator, .page-nav { 
+        display: none !important; 
       }
     }
+
     footer { position:relative; margin-top:auto; }
   </style>
 </head>
@@ -333,7 +335,6 @@
         </form>
         
         <!-- Print Area - Hidden by default, shown only for PDF generation -->
-        
         <div id="print-area" style="display:none; font-family:'Poppins',sans-serif;font-size:12pt;padding:20px;">
           <div style="text-align:center;font-weight:bold;text-decoration:underline;margin-bottom:20px;font-size:14pt;">SURAT PERNYATAAN</div>
 
@@ -351,7 +352,7 @@
             <tr><td>Lokasi</td><td>: <span id="cetak-lokasi"></span></td></tr>
           </table>
 
-          <p style="margin-top:20px;">Terlampir screenshoot tampilan CCTV atau Google Linimasa saya. Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan dapat dipertanggungjawabkan.</p>
+          <p style="margin-top:20px;">Terlampir <i>screenshoot</i> tampilan CCTV atau Google Linimasa saya. Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan dapat dipertanggungjawabkan.</p>
 
           <div style="text-align:right;margin:10px 0 0 0;">Bogor, <span id="tanggal-surat"></span></div>
 
@@ -376,7 +377,7 @@
               </td>
             </tr>
           </table>
-
+          <br>
           <div style="text-align:center;margin-top:30px;">
             <div class="ttd-space">
               <div class="ttd-name">
@@ -390,6 +391,7 @@
             <div class="proof-container">
               <div style="text-align:center; margin-bottom:0.5rem;">
                 <div style="font-weight:bold; font-size:12pt; text-decoration:underline">
+                  <br><br>
                   LAMPIRAN BUKTI KEHADIRAN
                 </div>
                 <div style="font-size:10pt; color:#555; margin-top:2px">
@@ -959,38 +961,36 @@
       document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
     }
 
-     function generatePdf() {
+    function generatePdf() {
       const namaPegawai = document.getElementById('cetak-nama').textContent;
       const tanggal = document.getElementById('tanggal').value;
       const namaFile = `Surat_Pernyataan_${namaPegawai}_${tanggal.replace(/-/g, '')}.pdf`;
       
       const element = document.getElementById('print-area');
       const opt = {
-  margin: [10, 10, 10, 10],  // top, left, bottom, right (dalam mm)
-  filename: namaFile,
-  image: { type: 'jpeg', quality: 0.98 },
-  html2canvas: { 
-    scale: 2,
-    logging: false,
-    useCORS: true,
-    allowTaint: true,
-    scrollX: 0,
-    scrollY: 0,
-    windowWidth: element.scrollWidth,
-    windowHeight: element.scrollHeight,
-    letterRendering: true,
-    dpi: 300
-  },
-  jsPDF: { 
-    unit: 'mm', 
-    format: 'a4', 
-    orientation: 'portrait',
-    hotfixes: ["px_scaling"]
-  },
-  pagebreak: { 
-    mode: ['avoid-all', 'css', 'legacy'] 
-  }
-};
+        margin: [10, 10, 10, 10],  // top, left, bottom, right (dalam mm)
+        filename: namaFile,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2,
+          logging: false,
+          useCORS: true,
+          allowTaint: true,
+          windowWidth: element.scrollWidth,
+          windowHeight: element.scrollHeight,
+          letterRendering: true,
+          dpi: 300
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait',
+          hotfixes: ["px_scaling"]
+        },
+        pagebreak: { 
+          mode: ['avoid-all', 'css', 'legacy'] 
+        }
+      };
 
       const btn = document.getElementById('downloadPdfBtn');
       const originalText = btn.innerHTML;
@@ -1023,7 +1023,6 @@
           });
       }, 500);
     }
-
   </script>
 </body>
 </html>
