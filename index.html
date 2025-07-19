@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Konfirmasi Kehadiran</title>
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" 
+          integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" 
+          crossorigin="anonymous" 
+          referrerpolicy="no-referrer"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
@@ -136,10 +139,11 @@
       display: inline-flex;
     }
 
-    /* Print-specific styles */
+    /* Print-specific styles - Diperbarui */
     @media print {
-      body * { 
-        visibility: hidden; 
+      body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
         margin: 0 !important;
         padding: 0 !important;
       }
@@ -151,14 +155,14 @@
         position: absolute;
         left: 0;
         top: 0;
-        width: 100%;
+        width: 100% !important;
         height: 100%;
-        margin: 0;
-        padding: 10mm 5mm !important; /* Minimal left margin */
-        font-size: 12pt;
+        margin: 0 !important;
+        padding: 10mm 5mm !important;
+        box-sizing: border-box;
       }
       #print-area > div {
-        margin-left: 5mm; /* Minimal left margin for content */
+        margin-left: 5mm;
       }
       .proof-page { 
         page-break-before: always;
@@ -175,6 +179,7 @@
       }
       .proof-image {
         max-height: 120mm !important;
+        page-break-inside: avoid;
       }
       .ttd-space {
         height: 30mm !important;
@@ -338,7 +343,7 @@
         </form>
         
         <!-- Print Area - Hidden by default, shown only for PDF generation -->
-        <div id="print-area" style="display:none; font-family:'Poppins',sans-serif;font-size:12pt;padding:20px;">
+        <div id="print-area" style="display:none; font-family:'Poppins',sans-serif;font-size:12pt;padding:20px;width:100%;box-sizing:border-box;">
           <div style="text-align:center;font-weight:bold;text-decoration:underline;margin-bottom:20px;font-size:14pt;">SURAT PERNYATAAN</div>
 
           <p>Yang bertanda tangan di bawah ini:</p>
@@ -853,11 +858,39 @@
     });
 
     function toBase64(file) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            // Pertahankan aspect ratio
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.9));
+          };
+        };
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
       });
     }
 
@@ -972,16 +1005,22 @@
       const opt = {
         margin: [10, 5, 10, 5],  // top, left, bottom, right (dalam mm) - left margin minimal
         filename: namaFile,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { 
+          type: 'jpeg', 
+          quality: 0.98,
+          useCORS: true
+        },
         html2canvas: { 
           scale: 2,
-          logging: false,
+          logging: true,  // Aktifkan untuk debug
           useCORS: true,
-          allowTaint: true,
-          windowWidth: element.scrollWidth,
-          windowHeight: element.scrollHeight,
+          allowTaint: false,
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: document.documentElement.scrollWidth,
+          windowHeight: document.documentElement.scrollHeight,
           letterRendering: true,
-          dpi: 300
+          dpi: 192
         },
         jsPDF: { 
           unit: 'mm', 
@@ -990,7 +1029,8 @@
           hotfixes: ["px_scaling"]
         },
         pagebreak: { 
-          mode: ['avoid-all', 'css', 'legacy'] 
+          mode: ['avoid-all', 'css', 'legacy'],
+          before: '.proof-page'
         }
       };
 
@@ -1002,28 +1042,46 @@
       // Tampilkan area cetak sementara
       element.style.display = 'block';
       
-      // Beri waktu kecil untuk memastikan rendering selesai
+      // Beri waktu untuk rendering
       setTimeout(() => {
-        html2pdf()
-          .set(opt)
-          .from(element)
-          .save()
-          .then(() => {
-            // Sembunyikan lagi area cetak setelah selesai
-            element.style.display = 'none';
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-          })
-          .catch(err => {
-            console.error('Error membuat PDF:', err);
-            element.style.display = 'none';
-            btn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Gagal membuat PDF';
-            setTimeout(() => {
+        // Tambahkan fallback handling
+        const generateWithFallback = () => {
+          html2pdf()
+            .set(opt)
+            .from(element)
+            .save()
+            .then(() => {
+              element.style.display = 'none';
               btn.innerHTML = originalText;
               btn.disabled = false;
-            }, 2000);
-          });
-      }, 500);
+            })
+            .catch(err => {
+              console.error('Error membuat PDF:', err);
+              // Fallback untuk browser tertentu
+              try {
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.srcdoc = element.innerHTML;
+                document.body.appendChild(iframe);
+                setTimeout(() => {
+                  iframe.contentWindow.print();
+                  document.body.removeChild(iframe);
+                  btn.innerHTML = originalText;
+                  btn.disabled = false;
+                }, 500);
+              } catch (fallbackErr) {
+                console.error('Fallback error:', fallbackErr);
+                alert('Gagal membuat PDF. Silakan coba di browser lain atau hubungi admin.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+              }
+              element.style.display = 'none';
+            });
+        };
+
+        // Coba pertama kali
+        generateWithFallback();
+      }, 1000);  // Delay 1 detik untuk memastikan rendering
     }
   </script>
 </body>
