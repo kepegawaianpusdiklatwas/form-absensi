@@ -445,6 +445,31 @@
     let fileCount = 1;
     const MAX_FILES = 2;
 
+    // Daftar atasan langsung yang diizinkan
+    const allowedDirectSuperiors = [
+      "Gema Puja Yuniarso",
+      "Akhmad Muzakki",
+      "Dewi Nur Aini",
+      "Hery Wijanarko",
+      "Ismet Eliskal",
+      "Muhammad Isa Arifianto",
+      "Mahmuddin Wiguna",
+      "Nova Indriani",
+      "Eko Firman Pratomo",
+      "Danang Desta Yudha",
+      "Martha Ully Nurfaqni",
+      "Eko Mardiono"
+    ];
+
+    // Daftar atasan dari atasan langsung yang diizinkan
+    const allowedSuperiorsOfDirectSuperiors = [
+      "Raden Murwantara",
+      "Hari Santosa",
+      "Hanik Inayatur Rohmah",
+      "Hendro Novianto Sujarwo",
+      "Ginrey Shandy Algam"
+    ];
+
     // Event Listener
     document.addEventListener('DOMContentLoaded', function() {
       initializeSearch();
@@ -475,15 +500,15 @@
         });
         
         setupSearchField('nama', 'info-nama', 'nip', 'nama-results', true);
-        setupSearchField('atasan1', 'info-atasan1', 'nip_atasan1', 'atasan1-results');
-        setupSearchField('atasan2', 'info-atasan2', 'nip_atasan2', 'atasan2-results');
+        setupSearchField('atasan1', 'info-atasan1', 'nip_atasan1', 'atasan1-results', false, allowedDirectSuperiors);
+        setupSearchField('atasan2', 'info-atasan2', 'nip_atasan2', 'atasan2-results', false, allowedSuperiorsOfDirectSuperiors);
       } catch (error) {
         console.error('Error loading data:', error);
         showError("Gagal memuat data pegawai. Silakan refresh halaman.");
       }
     }
 
-    function setupSearchField(inputId, infoId, nipFieldId, resultsId, isPegawai = false) {
+    function setupSearchField(inputId, infoId, nipFieldId, resultsId, isPegawai = false, allowedNames = null) {
       const input = document.getElementById(inputId), info = document.getElementById(infoId);
       const nipField = document.getElementById(nipFieldId), resultsContainer = document.getElementById(resultsId);
       let searchTimeout;
@@ -498,7 +523,12 @@
         searchTimeout = setTimeout(() => {
           try {
             const results = fuse.search(query);
-            handleSearchResults(results, input, info, nipField, resultsContainer, isPegawai);
+            // Filter results based on allowed names if provided
+            let filteredResults = results;
+            if (allowedNames) {
+              filteredResults = results.filter(result => allowedNames.includes(result.item.Nama));
+            }
+            handleSearchResults(filteredResults, input, info, nipField, resultsContainer, isPegawai);
           } catch (error) {
             console.error('Search error:', error);
             showErrorMessage(info, "Error dalam pencarian");
@@ -603,6 +633,15 @@
       if (!document.getElementById('nip_atasan1').value) return showErrorMessage(document.getElementById('info-atasan1'), "Harap pilih atasan dari daftar");
       if (!atasan2) return showErrorMessage(document.getElementById('info-atasan2'), "Harap isi atasan dari atasan langsung");
       if (!document.getElementById('nip_atasan2').value) return showErrorMessage(document.getElementById('info-atasan2'), "Harap pilih atasan dari daftar");
+      
+      // Validasi tambahan untuk memastikan atasan yang dipilih sesuai dengan daftar yang diizinkan
+      if (atasan1 && !allowedDirectSuperiors.includes(atasan1)) {
+        return showErrorMessage(document.getElementById('info-atasan1'), "Atasan langsung tidak valid");
+      }
+      
+      if (atasan2 && !allowedSuperiorsOfDirectSuperiors.includes(atasan2)) {
+        return showErrorMessage(document.getElementById('info-atasan2'), "Atasan dari atasan langsung tidak valid");
+      }
       
       return true;
     }
