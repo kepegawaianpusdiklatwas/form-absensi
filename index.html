@@ -788,31 +788,29 @@
 
         // Fixed fetch request
         
-        const response = await fetch("https://script.google.com/macros/s/AKfycbz1LFimY4tScNNuuhKPjZa3QSzetrT7CMwX-Upd_UvHmA5C0EunlP8nzhEnShsh5_o_/exec", {
-          method: "POST",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-          Nama: document.getElementById("nama").value,
-          NIP: document.getElementById("nip").value,
-          Jabatan: document.getElementById("jabatan").value,
-          Tanggal: document.getElementById("tanggal").value,
-          Waktu: document.getElementById("waktu").value,
-          Lokasi: document.getElementById("lokasi").value,
-          AtasanLangsung: document.getElementById("atasan1").value,
-          NIP_AtasanLangsung: document.getElementById("nip_atasan1").value,
-          AtasanDariAtasanLangsung: document.getElementById("atasan2").value,
-          NIP_AtasanDariAtasanLangsung: document.getElementById("nip_atasan2").value,
-          files: base64Files.map(file => ({
-            filename: file.newName,
-            mimeType: file.originalName.endsWith('.png') ? 'image/png' : 'image/jpeg',
-            content: file.base64
-          }))
-        })
-        });
-
+        const response = await fetch("https://script.google.com/macros/s/AKfycbx987kXfWbVeS2u-rTTpWUIo1AyGd_mT0TsoKgGxRncvPLLffa_RrBVSORgp3cIAE3P/exec", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    Nama: document.getElementById("nama").value,
+    NIP: document.getElementById("nip").value,
+    Jabatan: document.getElementById("jabatan").value,
+    Tanggal: document.getElementById("tanggal").value,
+    Waktu: document.getElementById("waktu").value,
+    Lokasi: document.getElementById("lokasi").value,
+    AtasanLangsung: document.getElementById("atasan1").value,
+    NIP_AtasanLangsung: document.getElementById("nip_atasan1").value,
+    AtasanDariAtasanLangsung: document.getElementById("atasan2").value,
+    NIP_AtasanDariAtasanLangsung: document.getElementById("nip_atasan2").value,
+    files: base64Files.map(file => ({
+      filename: file.newName,
+      mimeType: file.originalName.endsWith('.png') ? 'image/png' : 'image/jpeg',
+      content: file.base64
+    }))
+  })
+});
         // Karena mode no-cors, kita tidak bisa membaca response
         // Jadi kita asumsikan berhasil jika tidak ada error
         progressBar.style.width = "100%";
