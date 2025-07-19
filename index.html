@@ -109,9 +109,8 @@
 .proof-page { 
   page-break-before:always; 
   page-break-inside: avoid;
-  padding:0; /* Diubah dari 2rem 0 menjadi lebih kecil */
-  
-  margin-top:-20px; /* Ditambahkan untuk mengurangi margin atas */
+  padding:0;
+  margin-top:-20px;
 }
 .proof-container { 
   border:1px solid #e2e8f0; 
@@ -121,7 +120,7 @@
   width:75%; 
   max-width:650px; 
   box-shadow:0 2px 8px rgba(0,0,0,0.1); 
-  margin-top:0.5rem; /* Ditambahkan untuk mengurangi margin atas */
+  margin-top:0.5rem;
 }    
     .proof-image { width: 100%; max-width: 100%; height: auto; display: block; margin: 0 auto 20px; border: 1px solid #ddd; max-height: 300px; object-fit: contain; }
     .progress-container { width:100%; background-color:#e2e8f0; border-radius:8px; margin-top:1rem; }
@@ -391,37 +390,33 @@
           </div>
 
           <div class="proof-page">
-        <div class="proof-container">
-          <!-- Pindahkan judul ke sini -->
-          <div style="text-align:center; margin-bottom:0.5rem;">
-            <div style="font-weight:bold; font-size:12pt; text-decoration:underline">
-              LAMPIRAN BUKTI KEHADIRAN
-            </div>
-            <div style="font-size:10pt; color:#555; margin-top:2px">
-              (Tidak berlaku tanpa paraf/tanda tangan atasan langsung)
-            </div>
-          </div>
-    
             <div class="proof-container">
-              <div style="text-align:center; font-weight:500; margin-bottom:8px">
-                <span id="proof-nama"></span> <br>NIP: <span id="proof-nip"></span>
+              <div style="text-align:center; margin-bottom:0.5rem;">
+                <div style="font-weight:bold; font-size:12pt; text-decoration:underline">
+                  LAMPIRAN BUKTI KEHADIRAN
+                </div>
+                <div style="font-size:10pt; color:#555; margin-top:2px">
+                  (Tidak berlaku tanpa paraf/tanda tangan atasan langsung)
+                </div>
               </div>
-              
-              <div class="proof-images-container" id="proof-images-container"></div>
-              
-              <div style="text-align:center; margin-top:12px; font-size:11pt">
-                <div>Tanggal: <span id="proof-tanggal"></span></div>
-                <div>Waktu: <span id="proof-waktu"></span> WIB</div>
-                <div>Lokasi: <span id="proof-lokasi"></span></div>
+        
+              <div class="proof-container">
+                <div style="text-align:center; font-weight:500; margin-bottom:8px">
+                  <span id="proof-nama"></span> <br>NIP: <span id="proof-nip"></span>
+                </div>
+                
+                <div class="proof-images-container" id="proof-images-container"></div>
+                
+                <div style="text-align:center; margin-top:12px; font-size:11pt">
+                  <div>Tanggal: <span id="proof-tanggal"></span></div>
+                  <div>Waktu: <span id="proof-waktu"></span> WIB</div>
+                  <div>Lokasi: <span id="proof-lokasi"></span></div>
+                </div>
+                
+                <div style="text-align:center; font-size:7pt; color:#777; margin-top:4px; padding-top:2px; border-top:1px dashed #ddd">
+                  Dicetak otomatis pada <span id="proof-timestamp"></span>
+                </div>
               </div>
-              
-              <div style="text-align:center; font-size:7pt; color:#777; margin-top:4px; padding-top:2px; border-top:1px dashed #ddd">
-                Dicetak otomatis pada <span id="proof-timestamp"></span>
-              </div>
-                            <!-- Perubahan: 
-                 - font-size dari 9pt ke 8pt 
-                 - margin-top dari 16px ke 8px
-                 - padding-top dari 8px ke 4px -->
             </div>
           </div>
         </div>
@@ -448,13 +443,11 @@
     document.addEventListener('DOMContentLoaded', function() {
       initializeSearch();
       setupFileUpload(1);
+      
+      // Set tanggal default ke hari ini
+      document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
     });
 
-    function getCurrentDateISO() {
-  const now = new Date();
-  return now.toISOString().split('T')[0];
-}
-    
     // Fungsi Utama
     async function initializeSearch() {
       try {
@@ -705,63 +698,6 @@
       const uploadStatus = document.getElementById("upload-status");
       const submitBtn = document.getElementById("submit-btn");
 
-      async function submitForm() {
-  const submitBtn = document.getElementById("submit-btn");
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
-
-  try {
-    const formData = {
-      Nama: document.getElementById("nama").value,
-      NIP: document.getElementById("nip").value,
-      Tanggal: document.getElementById("tanggal").value,
-      AtasanLangsung: document.getElementById("atasan1").value,
-      NIP_AtasanLangsung: document.getElementById("nip_atasan1").value,
-      files: await prepareFiles() // Fungsi untuk menyiapkan file
-    };
-
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
-    });
-
-    if (!response.ok) throw new Error(await response.text());
-    
-    const result = await response.json();
-    if (result.status === "error") throw new Error(result.message);
-    
-    // Tampilkan sukses
-    showSuccessUI(result);
-    
-  } catch (error) {
-    console.error("Upload error:", error);
-    alert(`Gagal mengirim data: ${error.message}`);
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim';
-  }
-}
-
-// Fungsi untuk konversi file ke base64
-async function prepareFiles() {
-  const fileInputs = document.querySelectorAll(".file-upload-input");
-  const files = [];
-  
-  for (const input of fileInputs) {
-    if (input.files[0]) {
-      const file = input.files[0];
-      const base64 = await toBase64(file);
-      files.push({
-        filename: file.name,
-        mimeType: file.type,
-        content: base64.split(",")[1] // Hapus data:image/jpeg;base64,
-      });
-    }
-  }
-  return files;
-}
-      
       // Reset UI
       loading.classList.remove("hidden"); 
       errorDisplay.style.display = "none"; 
@@ -839,34 +775,40 @@ async function prepareFiles() {
           "Files": base64Files
         };
 
-        // Kirim data ke server
+        // Kirim data ke server menggunakan FormData
         progressBar.style.width = "90%";
         uploadStatus.textContent = "Mengunggah data ke server...";
 
-        // Fixed fetch request
+        const formData = new FormData();
+        formData.append('Nama', data.Nama);
+        formData.append('NIP', data.NIP);
+        formData.append('Jabatan', data.Jabatan);
+        formData.append('Tanggal', data.Tanggal);
+        formData.append('Waktu', data.Waktu);
+        formData.append('Lokasi', data.Lokasi);
+        formData.append('AtasanLangsung', data["Atasan Langsung"]);
+        formData.append('NIP_AtasanLangsung', data["NIP Atasan"]);
+        formData.append('AtasanDariAtasanLangsung', data["Atasan dari Atasan"]);
+        formData.append('NIP_AtasanDariAtasanLangsung', data["NIP Atasan Atasan"]);
+        
+        // Tambahkan file
+        for (let i = 0; i < fileInputs.length; i++) {
+          if (fileInputs[i].files[0]) {
+            formData.append('files', fileInputs[i].files[0]);
+          }
+        }
+
+        // Kirim request dengan FormData
         const response = await fetch("https://script.google.com/macros/s/AKfycbx0_n1FsIL84cBt-t7PPpKNQhKqLsHgw8BXY_9LCZ3N9q75b_Z1PqqMMG2maS2XYATV/exec", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    Nama: document.getElementById("nama").value,
-    NIP: document.getElementById("nip").value,
-    Jabatan: document.getElementById("jabatan").value,
-    Tanggal: document.getElementById("tanggal").value,
-    Waktu: document.getElementById("waktu").value,
-    Lokasi: document.getElementById("lokasi").value,
-    AtasanLangsung: document.getElementById("atasan1").value,
-    NIP_AtasanLangsung: document.getElementById("nip_atasan1").value,
-    AtasanDariAtasanLangsung: document.getElementById("atasan2").value,
-    NIP_AtasanDariAtasanLangsung: document.getElementById("nip_atasan2").value,
-    files: base64Files.map(file => ({
-      filename: file.newName,
-      mimeType: file.originalName.endsWith('.png') ? 'image/png' : 'image/jpeg',
-      content: file.base64
-    }))
-  })
-});
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || "Gagal mengirim data ke server");
+        }
+
         // Karena mode no-cors, kita tidak bisa membaca response
         // Jadi kita asumsikan berhasil jika tidak ada error
         progressBar.style.width = "100%";
@@ -894,11 +836,19 @@ async function prepareFiles() {
         console.error("Upload error:", err);
         progressBar.style.width = "100%";
         progressBar.style.backgroundColor = "#f72585";
-        uploadStatus.textContent = "Upload gagal: " + err.message;
+        
+        let errorMsg = err.message;
+        if (err.message.includes("Failed to fetch")) {
+          errorMsg = "Gagal terhubung ke server. Periksa koneksi internet Anda.";
+        } else if (err.message.includes("NetworkError")) {
+          errorMsg = "Gagal terhubung ke jaringan. Periksa koneksi internet Anda.";
+        }
+        
+        uploadStatus.textContent = "Upload gagal: " + errorMsg;
         uploadStatus.className = "upload-status error";
         
         loading.innerHTML = '<i class="fas fa-times-circle mr-2"></i> Gagal mengunggah';
-        errorDisplay.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i>${err.message}`;
+        errorDisplay.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i>${errorMsg}`;
         errorDisplay.style.display = "block";
         submitBtn.disabled = false;
       }
@@ -908,7 +858,7 @@ async function prepareFiles() {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
       });
     }
@@ -939,18 +889,18 @@ async function prepareFiles() {
         const imgContainer = document.createElement('div');
         imgContainer.style.marginBottom = '10px';
         
-       if (base64Files.length > 1) {
-      const imgTitle = document.createElement('div');
-      imgTitle.textContent = `Bukti ${index + 1}`; // Hapus nama file, cukup nomor bukti
-      imgTitle.style.textAlign = 'center';
-      imgTitle.style.fontWeight = '500';
-      imgTitle.style.marginBottom = '4px'; // kecilkan margin
-      imgTitle.style.fontSize = '11px'; // tambahkan ukuran font lebih kecil
-      imgContainer.appendChild(imgTitle);
-    }
+        if (base64Files.length > 1) {
+          const imgTitle = document.createElement('div');
+          imgTitle.textContent = `Bukti ${index + 1}`;
+          imgTitle.style.textAlign = 'center';
+          imgTitle.style.fontWeight = '500';
+          imgTitle.style.marginBottom = '4px';
+          imgTitle.style.fontSize = '11px';
+          imgContainer.appendChild(imgTitle);
+        }
         
         const img = document.createElement('img');
-        img.src = 'data:image/jpeg;base64,' + file.base64;
+        img.src = file.base64;
         img.className = 'proof-image';
         img.alt = 'Bukti Presensi ' + data.Nama;
         img.style.maxHeight = base64Files.length > 1 ? '220px' : '320px';
@@ -1011,6 +961,9 @@ async function prepareFiles() {
         step.classList.remove('active', 'completed');
       });
       document.getElementById('step1').classList.add('active');
+      
+      // Set tanggal default ke hari ini
+      document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
     }
 
     // Tombol Save PDF
