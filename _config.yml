@@ -1,0 +1,7 @@
+theme: jekyll-theme-minimal
+plugins:
+  - jekyll-feed
+exclude:
+  - node_modules
+  - package.json
+  - package-lock.json
