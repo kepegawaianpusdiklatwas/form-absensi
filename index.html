@@ -704,6 +704,63 @@
       const progressBar = document.getElementById("progress-bar");
       const uploadStatus = document.getElementById("upload-status");
       const submitBtn = document.getElementById("submit-btn");
+
+      async function submitForm() {
+  const submitBtn = document.getElementById("submit-btn");
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+
+  try {
+    const formData = {
+      Nama: document.getElementById("nama").value,
+      NIP: document.getElementById("nip").value,
+      Tanggal: document.getElementById("tanggal").value,
+      AtasanLangsung: document.getElementById("atasan1").value,
+      NIP_AtasanLangsung: document.getElementById("nip_atasan1").value,
+      files: await prepareFiles() // Fungsi untuk menyiapkan file
+    };
+
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData)
+    });
+
+    if (!response.ok) throw new Error(await response.text());
+    
+    const result = await response.json();
+    if (result.status === "error") throw new Error(result.message);
+    
+    // Tampilkan sukses
+    showSuccessUI(result);
+    
+  } catch (error) {
+    console.error("Upload error:", error);
+    alert(`Gagal mengirim data: ${error.message}`);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim';
+  }
+}
+
+// Fungsi untuk konversi file ke base64
+async function prepareFiles() {
+  const fileInputs = document.querySelectorAll(".file-upload-input");
+  const files = [];
+  
+  for (const input of fileInputs) {
+    if (input.files[0]) {
+      const file = input.files[0];
+      const base64 = await toBase64(file);
+      files.push({
+        filename: file.name,
+        mimeType: file.type,
+        content: base64.split(",")[1] // Hapus data:image/jpeg;base64,
+      });
+    }
+  }
+  return files;
+}
       
       // Reset UI
       loading.classList.remove("hidden"); 
