@@ -960,31 +960,39 @@
       document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
     }
 
-    function generatePdf() {
+     function generatePdf() {
       const namaPegawai = document.getElementById('cetak-nama').textContent;
       const tanggal = document.getElementById('tanggal').value;
       const namaFile = `Surat_Pernyataan_${namaPegawai}_${tanggal.replace(/-/g, '')}.pdf`;
       
       const element = document.getElementById('print-area');
       const opt = {
-        margin: 10,
+        margin: [10, 10, 10, 10], // Margin: top, left, bottom, right (dalam mm)
         filename: namaFile,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { 
+          type: 'jpeg', 
+          quality: 0.98 
+        },
         html2canvas: { 
           scale: 2,
-          logging: true,
+          logging: false,
           useCORS: true,
           allowTaint: true,
           scrollX: 0,
           scrollY: 0,
           windowWidth: element.scrollWidth,
-          windowHeight: element.scrollHeight
+          windowHeight: element.scrollHeight,
+          letterRendering: true,
+          dpi: 300
         },
         jsPDF: { 
           unit: 'mm', 
           format: 'a4', 
           orientation: 'portrait',
           hotfixes: ["px_scaling"]
+        },
+        pagebreak: { 
+          mode: ['avoid-all', 'css', 'legacy'] 
         }
       };
 
@@ -993,24 +1001,33 @@
       btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Membuat PDF...';
       btn.disabled = true;
 
-      // Show the print area temporarily
+      // Tampilkan area cetak sementara
       element.style.display = 'block';
       
-      html2pdf().set(opt).from(element).save().then(() => {
-        // Hide the print area again after PDF generation
-        element.style.display = 'none';
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      }).catch(err => {
-        console.error('PDF generation error:', err);
-        element.style.display = 'none';
-        btn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Gagal membuat PDF';
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.disabled = false;
-        }, 2000);
-      });
+      // Beri waktu kecil untuk memastikan rendering selesai
+      setTimeout(() => {
+        html2pdf()
+          .set(opt)
+          .from(element)
+          .save()
+          .then(() => {
+            // Sembunyikan lagi area cetak setelah selesai
+            element.style.display = 'none';
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          })
+          .catch(err => {
+            console.error('Error membuat PDF:', err);
+            element.style.display = 'none';
+            btn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Gagal membuat PDF';
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+              btn.disabled = false;
+            }, 2000);
+          });
+      }, 500);
     }
+
   </script>
 </body>
 </html>
