@@ -5,6 +5,118 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Konfirmasi Kehadiran</title>
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Poppins', sans-serif; background: #f5f7fb; }
+    .container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    .card { background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+    .header { background: linear-gradient(135deg, #4361ee, #3f37c9); color: white; padding: 1.5rem; text-align: center; }
+    .content { padding: 2rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.5s ease;
+      cursor: pointer;
+      border: none;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #4361ee, #3f37c9);
+      color: white;
+      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
+      z-index: -1;
+    }
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+    .btn-primary:hover {
+      animation: randomColor 0.5s forwards;
+    }
+    @keyframes randomColor {
+      0% { background: linear-gradient(135deg, #4361ee, #3f37c9); }
+      25% { background: linear-gradient(135deg, #3f37c9, #4361ee); }
+      50% { background: linear-gradient(135deg, #4cc9f0, #4895ef); }
+      75% { background: linear-gradient(135deg, #4895ef, #4361ee); }
+      100% { background: linear-gradient(135deg, #4361ee, #3f37c9); }
+    }
+    .btn-pulse {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(67, 97, 238, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+    }
+    .document-ref { background: #f8fafc; border-left: 4px solid #4361ee; padding: 1rem; margin: 1.5rem 0; }
+    .document-ref-title { font-weight: 600; color: #4361ee; margin-bottom: 0.5rem; }
+    .footer { text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <h1 class="text-xl md:text-2xl font-bold">Latar Belakang Pengisian Form</h1>
+        <p class="text-sm opacity-90 mt-1">Konfirmasi Kehadiran Pegawai yang Lupa Presensi</p>
+      </div>
+      <div class="content">
+        <div class="document-ref">
+          <div class="document-ref-title">Dasar Pengajuan:</div>
+          <p>Berdasarkan Nota Dinas Nomor: KP.03.00/ND-70/DL01/2025</p>
+          <p>Tanggal: 8 Juli 2025</p>
+          <p>Perihal: Mekanisme Klaim Kehadiran Pegawai yang Lupa Presensi</p>
+        </div>
+        <p>Dengan hormat,</p>
+        <p class="mt-4">Sehubungan dengan penghapusan fitur pembuatan izin konfirmasi lupa presensi oleh Biro SDM BPKP Pusat, maka sebagai alternatifnya, pegawai yang lupa melakukan presensi dapat mengajukan klaim kehadiran melalui mekanisme berikut:</p>
+        <ol class="list-decimal list-inside mt-4 text-gray-700">
+          <li>Mengisi form konfirmasi kehadiran dengan benar</li>
+          <li>Melampirkan bukti screenshot CCTV/Google Linimasa</li>
+          <li>Form menghasilkan dokumen PDF</li>
+          <li>Dokumen dicetak dan ditandatangani atasan langsung</li>
+          <li>Diserahkan ke Subbag Kepegawaian</li>
+        </ol>
+        <p class="mt-4">Form ini dibuat untuk memastikan adanya bukti dan pertanggungjawaban atas klaim kehadiran yang diajukan oleh pegawai.</p>
+        <div class="text-center mt-8">
+          <a href="#form-start" class="btn btn-primary btn-pulse">
+            <i class="fas fa-arrow-right mr-2"></i> Lanjutkan ke Form Pengisian
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <p>© 2025 Kepegawaian Pusdiklatwas BPKP</p>
+    </div>
+  </div>
+  <!-- Sisanya mulai dari form akan berada di bagian bawah dan ditautkan oleh anchor #form-start -->
+  <div id="form-start"></div>
+  <!-- Form dimulai dari sini -->
+  <!-- Anda bisa paste seluruh isi form multi-step yang sudah dibuat sebelumnya di bawah elemen ini -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Konfirmasi Kehadiran</title>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" 
           integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" 
           crossorigin="anonymous" 
@@ -1125,3 +1237,4 @@
   </script>
 </body>
 </html>
+
