@@ -145,47 +145,47 @@ class CutiApp {
     this.data.pegawai = [
       {
         id: 1,
-        nama: 'Ahmad Suryadi',
-        nip: '198501012010011001',
+        nama: 'Dr. Ahmad Suryadi, M.Si',
+        nip: '196801012010011001',
         golongan: 'III/c',
-        jabatan: 'Auditor Ahli Muda',
-        tglMasuk: '2010-01-01',
+        jabatan: 'Kepala Pusdiklatwas',
+        tglMasuk: '2010-03-01',
         jenisKelamin: 'L'
       },
       {
         id: 2,
-        nama: 'Siti Nurhaliza',
-        nip: '198703152012012002',
+        nama: 'Dra. Siti Nurhaliza, M.M',
+        nip: '197203152012012002',
         golongan: 'III/b',
-        jabatan: 'Auditor Terampil',
-        tglMasuk: '2012-03-15',
+        jabatan: 'Kepala Subbag Kepegawaian',
+        tglMasuk: '2012-06-15',
         jenisKelamin: 'P'
       },
       {
         id: 3,
-        nama: 'Budi Santoso',
-        nip: '198205102008011003',
+        nama: 'Ir. Budi Santoso, M.T',
+        nip: '197205102008011003',
         golongan: 'III/d',
-        jabatan: 'Auditor Ahli Madya',
-        tglMasuk: '2008-05-10',
+        jabatan: 'Widyaiswara Ahli Madya',
+        tglMasuk: '2008-08-10',
         jenisKelamin: 'L'
       },
       {
         id: 4,
-        nama: 'Dewi Sartika',
-        nip: '199002202015012004',
+        nama: 'Dewi Sartika, S.E., M.Ak',
+        nip: '198502202015012004',
         golongan: 'III/a',
-        jabatan: 'Auditor Terampil',
-        tglMasuk: '2015-02-20',
+        jabatan: 'Analis Kepegawaian',
+        tglMasuk: '2015-09-20',
         jenisKelamin: 'P'
       },
       {
         id: 5,
-        nama: 'Eko Prasetyo',
-        nip: '197812051999031005',
+        nama: 'Prof. Dr. Eko Prasetyo, M.Si',
+        nip: '196812051999031005',
         golongan: 'IV/a',
-        jabatan: 'Auditor Ahli Utama',
-        tglMasuk: '1999-12-05',
+        jabatan: 'Widyaiswara Ahli Utama',
+        tglMasuk: '1999-11-05',
         jenisKelamin: 'L'
       }
     ];

@@ -131,14 +131,31 @@ Sistem manajemen dan pelaporan cuti komprehensif untuk Pegawai Negeri Sipil (PNS
 
 ## Format Template Excel
 
-Template Excel terdiri dari 6 sheet:
+Template Excel terdiri dari 6 sheet yang dapat disesuaikan:
 
-1. **Pegawai**: Data dasar pegawai (Nama, NIP, Golongan, Jabatan, dll)
-2. **Cuti_Tahunan**: Data cuti tahunan per pegawai
-3. **Cuti_Sakit**: Riwayat cuti sakit
-4. **Cuti_Besar**: Status dan riwayat cuti besar
-5. **Cuti_Melahirkan**: Data cuti melahirkan (khusus wanita)
-6. **Cuti_Penting**: Riwayat cuti alasan penting
+1. **Pegawai** (atau Sheet1/Data): Data dasar pegawai
+   - Kolom: Nama, NIP, Golongan, Jabatan, Tanggal_Masuk, Jenis_Kelamin
+   - Format alternatif: NAMA, nip, golongan, jabatan, TGL_MASUK, JK/L/P
+
+2. **Cuti_Tahunan** (atau CutiTahunan/Sheet2): Data cuti tahunan per pegawai
+   - Kolom: NIP, Tahun, Saldo_Awal, Hak_Cuti, Diambil, Sisa, Riwayat
+   - Format alternatif: nip, TAHUN, saldo_awal, hak_cuti, diambil, sisa
+
+3. **Cuti_Sakit** (atau CutiSakit/Sheet3): Riwayat cuti sakit
+   - Kolom: NIP, Tahun, Total_Hari, Riwayat
+   - Format alternatif: nip, tahun, total_hari, jumlah_hari
+
+4. **Cuti_Besar** (atau CutiBesar/Sheet4): Status dan riwayat cuti besar
+   - Kolom: NIP, Terakhir_Diambil
+   - Format alternatif: nip, terakhir_diambil
+
+5. **Cuti_Melahirkan** (atau CutiMelahirkan/Sheet5): Data cuti melahirkan (khusus wanita)
+   - Kolom: NIP, Tahun, Tanggal_Mulai, Tanggal_Selesai, Status
+   - Format alternatif: nip, tahun, tanggal_mulai, tanggal_selesai, status
+
+6. **Cuti_Penting** (atau CutiPenting/Sheet6): Riwayat cuti alasan penting
+   - Kolom: NIP, Tahun, Total_Hari, Alasan_Terakhir, Riwayat
+   - Format alternatif: nip, tahun, total_hari, alasan_terakhir, keterangan
 
 ## Fitur Keamanan dan Validasi
 

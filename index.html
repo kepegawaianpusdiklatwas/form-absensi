@@ -138,7 +138,7 @@
       <div class="card max-w-2xl mx-auto">
         <div class="card-header">
           <h3><i class="fas fa-upload mr-2"></i>Upload Data Cuti</h3>
-          <p class="text-sm text-gray-600">Upload file Excel dengan data cuti pegawai</p>
+          <p class="text-sm text-gray-600">Upload file Excel dengan data cuti pegawai (format .xlsx atau .xls)</p>
         </div>
         <div class="card-body">
           <div class="upload-area" id="upload-area">
@@ -152,6 +152,17 @@
               <span>Format: .xlsx, .xls</span>
               <span>Max: 10MB</span>
             </div>
+          </div>
+          
+          <div class="alert alert-info mt-4">
+            <i class="fas fa-info-circle mr-2"></i>
+            <strong>Petunjuk Upload:</strong>
+            <ul class="list-disc list-inside mt-2 text-sm">
+              <li>File Excel dapat memiliki multiple sheet atau single sheet</li>
+              <li>Kolom yang diperlukan: Nama, NIP, Golongan, Jabatan, Tanggal Masuk, Jenis Kelamin</li>
+              <li>Data cuti dapat berada di sheet terpisah atau sheet yang sama</li>
+              <li>Sistem akan otomatis mendeteksi format kolom yang berbeda</li>
+            </ul>
           </div>
           
           <div id="upload-progress" class="hidden">
@@ -174,9 +185,28 @@
       <div class="card max-w-2xl mx-auto mt-6">
         <div class="card-header">
           <h3><i class="fas fa-download mr-2"></i>Template Excel</h3>
+          <p class="text-sm text-gray-600">Download template Excel sesuai format yang dibutuhkan</p>
         </div>
         <div class="card-body">
-          <p class="mb-4">Download template Excel untuk format data yang benar:</p>
+          <p class="mb-4">Template Excel berisi 6 sheet dengan format standar untuk data cuti PNS:</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-gray-50 p-3 rounded">
+              <h5 class="font-semibold text-sm">Sheet yang Tersedia:</h5>
+              <ul class="text-xs mt-2 space-y-1">
+                <li>• <strong>Pegawai</strong> - Data dasar pegawai</li>
+                <li>• <strong>Cuti_Tahunan</strong> - Data cuti tahunan</li>
+                <li>• <strong>Cuti_Sakit</strong> - Data cuti sakit</li>
+              </ul>
+            </div>
+            <div class="bg-gray-50 p-3 rounded">
+              <h5 class="font-semibold text-sm">Sheet Lanjutan:</h5>
+              <ul class="text-xs mt-2 space-y-1">
+                <li>• <strong>Cuti_Besar</strong> - Data cuti besar</li>
+                <li>• <strong>Cuti_Melahirkan</strong> - Data cuti melahirkan</li>
+                <li>• <strong>Cuti_Penting</strong> - Data cuti alasan penting</li>
+              </ul>
+            </div>
+          </div>
           <button id="download-template" class="btn btn-outline">
             <i class="fas fa-file-excel mr-2"></i>Download Template
           </button>
