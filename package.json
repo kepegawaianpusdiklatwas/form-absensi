@@ -1,0 +1,23 @@
+{
+  "name": "form-absensi",
+  "version": "1.0.0",
+  "description": "Aplikasi Rekap Cuti Pegawai PNS - Sistem manajemen dan pelaporan cuti komprehensif",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo \"Build completed - static files ready for deployment\"",
+    "start": "npx serve -s . -l 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cuti",
+    "pegawai",
+    "pns",
+    "rekap",
+    "laporan",
+    "manajemen"
+  ],
+  "author": "Kepegawaian Pusdiklatwas BPKP",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {}
+}
