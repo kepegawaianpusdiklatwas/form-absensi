@@ -16,7 +16,7 @@ class CutiApp {
 
   init() {
     this.setupEventListeners();
-    this.loadSampleData();
+    // Data akan dimuat dari upload Excel
     this.updateDashboard();
   }
 
@@ -140,124 +140,10 @@ class CutiApp {
     });
   }
 
-  loadSampleData() {
-    // Sample data untuk demonstrasi
-    this.data.pegawai = [
-      {
-        id: 1,
-        nama: 'Dr. Ahmad Suryadi, M.Si',
-        nip: '196801012010011001',
-        golongan: 'III/c',
-        jabatan: 'Kepala Pusdiklatwas',
-        tglMasuk: '2010-03-01',
-        jenisKelamin: 'L'
-      },
-      {
-        id: 2,
-        nama: 'Dra. Siti Nurhaliza, M.M',
-        nip: '197203152012012002',
-        golongan: 'III/b',
-        jabatan: 'Kepala Subbag Kepegawaian',
-        tglMasuk: '2012-06-15',
-        jenisKelamin: 'P'
-      },
-      {
-        id: 3,
-        nama: 'Ir. Budi Santoso, M.T',
-        nip: '197205102008011003',
-        golongan: 'III/d',
-        jabatan: 'Widyaiswara Ahli Madya',
-        tglMasuk: '2008-08-10',
-        jenisKelamin: 'L'
-      },
-      {
-        id: 4,
-        nama: 'Dewi Sartika, S.E., M.Ak',
-        nip: '198502202015012004',
-        golongan: 'III/a',
-        jabatan: 'Analis Kepegawaian',
-        tglMasuk: '2015-09-20',
-        jenisKelamin: 'P'
-      },
-      {
-        id: 5,
-        nama: 'Prof. Dr. Eko Prasetyo, M.Si',
-        nip: '196812051999031005',
-        golongan: 'IV/a',
-        jabatan: 'Widyaiswara Ahli Utama',
-        tglMasuk: '1999-11-05',
-        jenisKelamin: 'L'
-      }
-    ];
-
-    // Generate sample cuti data
-    this.generateSampleCutiData();
-  }
-
-  generateSampleCutiData() {
-    const currentYear = this.tahunAktif;
-    
-    this.data.pegawai.forEach(pegawai => {
-      // Cuti Tahunan
-      const hakCuti = this.calculateHakCutiTahunan(pegawai);
-      const cutiDiambil = Math.floor(Math.random() * hakCuti);
-      
-      this.data.cutiTahunan.push({
-        pegawaiId: pegawai.id,
-        tahun: currentYear,
-        saldoAwal: Math.floor(Math.random() * 6), // Sisa tahun lalu
-        hakCuti: hakCuti,
-        diambil: cutiDiambil,
-        sisa: hakCuti - cutiDiambil,
-        riwayat: this.generateRiwayatCuti(pegawai.id, 'tahunan', cutiDiambil)
-      });
-
-      // Cuti Sakit
-      const cutiSakit = Math.floor(Math.random() * 20);
-      this.data.cutiSakit.push({
-        pegawaiId: pegawai.id,
-        tahun: currentYear,
-        totalHari: cutiSakit,
-        batasNormal: 14,
-        kelebihan: Math.max(0, cutiSakit - 14),
-        potongan: this.calculatePotonganSakit(cutiSakit),
-        riwayat: this.generateRiwayatCuti(pegawai.id, 'sakit', cutiSakit)
-      });
-
-      // Cuti Besar
-      const masaKerja = this.calculateMasaKerja(pegawai.tglMasuk);
-      this.data.cutiBesar.push({
-        pegawaiId: pegawai.id,
-        masaKerja: masaKerja,
-        hakCutiBesar: Math.floor(masaKerja / 6),
-        terakhirDiambil: masaKerja >= 6 ? '2020-01-01' : null,
-        statusKelayakan: masaKerja >= 6 && (masaKerja % 6 === 0) ? 'Layak' : 'Belum Layak'
-      });
-
-      // Cuti Melahirkan (hanya untuk perempuan)
-      if (pegawai.jenisKelamin === 'P') {
-        this.data.cutiMelahirkan.push({
-          pegawaiId: pegawai.id,
-          tahun: currentYear,
-          tanggalMulai: Math.random() > 0.7 ? '2025-03-01' : null,
-          tanggalSelesai: Math.random() > 0.7 ? '2025-05-30' : null,
-          lamaHari: Math.random() > 0.7 ? 90 : 0,
-          status: Math.random() > 0.7 ? 'Sedang Cuti' : 'Tidak Ada'
-        });
-      }
-
-      // Cuti Alasan Penting
-      const cutiPenting = Math.floor(Math.random() * 15);
-      this.data.cutiPenting.push({
-        pegawaiId: pegawai.id,
-        tahun: currentYear,
-        totalHari: cutiPenting,
-        batasMaksimal: 30,
-        sisaHak: 30 - cutiPenting,
-        alasanTerakhir: cutiPenting > 0 ? 'Urusan keluarga' : '-',
-        riwayat: this.generateRiwayatCuti(pegawai.id, 'penting', cutiPenting)
-      });
-    });
+  loadDataFromExcel() {
+    // Data akan dimuat dari file Excel yang diupload
+    // Fungsi ini akan dipanggil setelah upload berhasil
+    console.log('Data akan dimuat dari file Excel');
   }
 
   calculateHakCutiTahunan(pegawai) {
