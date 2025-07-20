@@ -158,10 +158,11 @@
             <i class="fas fa-info-circle mr-2"></i>
             <strong>Petunjuk Upload:</strong>
             <ul class="list-disc list-inside mt-2 text-sm">
-              <li>Upload file Excel dengan data pegawai pada sheet pertama</li>
-              <li>Kolom yang diperlukan: Nama, NIP, Golongan, Jabatan, Tanggal_Masuk, Jenis_Kelamin</li>
-              <li>Sistem akan otomatis menghitung hak cuti berdasarkan aturan PNS</li>
-              <li>Data cuti awal akan di-generate, dapat diupdate manual setelahnya</li>
+              <li>File Excel dapat berisi 1-6 sheet sesuai kebutuhan</li>
+              <li><strong>Sheet Pegawai:</strong> Nama, NIP, Golongan, Jabatan, Tanggal_Masuk, Jenis_Kelamin</li>
+              <li><strong>Sheet Cuti (opsional):</strong> Cuti_Tahunan, Cuti_Sakit, Cuti_Besar, Cuti_Melahirkan, Cuti_Penting</li>
+              <li>Sistem akan melengkapi data yang belum ada berdasarkan aturan PNS</li>
+              <li>Data dari Excel akan menimpa data yang sudah ada</li>
             </ul>
           </div>
           
@@ -185,30 +186,37 @@
       <div class="card max-w-2xl mx-auto mt-6">
         <div class="card-header">
           <h3><i class="fas fa-download mr-2"></i>Template Excel</h3>
-          <p class="text-sm text-gray-600">Download template Excel sesuai format yang dibutuhkan</p>
+          <p class="text-sm text-gray-600">Download template Excel lengkap dengan contoh data Pusdiklatwas BPKP</p>
         </div>
         <div class="card-body">
-          <p class="mb-4">Template Excel berisi 6 sheet dengan format standar untuk data cuti PNS:</p>
+          <p class="mb-4">Template Excel berisi 6 sheet dengan contoh data real Pusdiklatwas BPKP:</p>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div class="bg-gray-50 p-3 rounded">
-              <h5 class="font-semibold text-sm">Sheet yang Tersedia:</h5>
+              <h5 class="font-semibold text-sm">Sheet Wajib:</h5>
               <ul class="text-xs mt-2 space-y-1">
-                <li>• <strong>Pegawai</strong> - Data dasar pegawai</li>
-                <li>• <strong>Cuti_Tahunan</strong> - Data cuti tahunan</li>
-                <li>• <strong>Cuti_Sakit</strong> - Data cuti sakit</li>
+                <li>• <strong>Pegawai</strong> - Data dasar pegawai (wajib)</li>
+                <li>• <strong>Cuti_Tahunan</strong> - Rekap cuti tahunan</li>
+                <li>• <strong>Cuti_Sakit</strong> - Rekap cuti sakit</li>
               </ul>
             </div>
             <div class="bg-gray-50 p-3 rounded">
-              <h5 class="font-semibold text-sm">Sheet Lanjutan:</h5>
+              <h5 class="font-semibold text-sm">Sheet Opsional:</h5>
               <ul class="text-xs mt-2 space-y-1">
-                <li>• <strong>Cuti_Besar</strong> - Data cuti besar</li>
-                <li>• <strong>Cuti_Melahirkan</strong> - Data cuti melahirkan</li>
-                <li>• <strong>Cuti_Penting</strong> - Data cuti alasan penting</li>
+                <li>• <strong>Cuti_Besar</strong> - Riwayat cuti besar</li>
+                <li>• <strong>Cuti_Melahirkan</strong> - Cuti melahirkan</li>
+                <li>• <strong>Cuti_Penting</strong> - Cuti alasan penting</li>
               </ul>
             </div>
           </div>
+          <div class="bg-blue-50 p-3 rounded mb-4">
+            <p class="text-xs text-blue-800">
+              <i class="fas fa-info-circle mr-1"></i>
+              <strong>Catatan:</strong> Hanya sheet "Pegawai" yang wajib. Sheet lainnya opsional. 
+              Jika tidak ada, sistem akan membuat struktur kosong berdasarkan aturan PNS.
+            </p>
+          </div>
           <button id="download-template" class="btn btn-outline">
-            <i class="fas fa-file-excel mr-2"></i>Download Template
+            <i class="fas fa-file-excel mr-2"></i>Download Template Lengkap
           </button>
         </div>
       </div>

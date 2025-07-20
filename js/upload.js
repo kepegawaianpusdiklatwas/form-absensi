@@ -134,43 +134,84 @@ class UploadManager {
     // Update progress
     this.updateProgress(20, 'Memproses data pegawai...');
     
-    // Hapus semua data existing
-    this.app.data = {
-      pegawai: [],
-      cutiTahunan: [],
-      cutiSakit: [],
-      cutiBesar: [],
-      cutiMelahirkan: [],
-      cutiPenting: []
-    };
+    // Reset data
+    this.app.data.pegawai = [];
+    this.app.data.cutiTahunan = [];
+    this.app.data.cutiSakit = [];
+    this.app.data.cutiBesar = [];
+    this.app.data.cutiMelahirkan = [];
+    this.app.data.cutiPenting = [];
     
-    // Process data pegawai dari sheet pertama
-    const sheetNames = Object.keys(sheets);
-    if (sheetNames.length > 0) {
-      const pegawaiSheet = sheets[sheetNames[0]]; // Ambil sheet pertama
-      await this.processPegawaiData(pegawaiSheet);
+    // Process semua sheet yang ada
+    for (const [sheetName, sheetData] of Object.entries(sheets)) {
+      this.updateProgress(30, `Memproses sheet: ${sheetName}...`);
+      
+      if (this.isPegawaiSheet(sheetName)) {
+        await this.processPegawaiData(sheetData);
+      } else if (this.isCutiTahunanSheet(sheetName)) {
+        await this.processCutiTahunanData(sheetData);
+      } else if (this.isCutiSakitSheet(sheetName)) {
+        await this.processCutiSakitData(sheetData);
+      } else if (this.isCutiBesarSheet(sheetName)) {
+        await this.processCutiBesarData(sheetData);
+      } else if (this.isCutiMelahirkanSheet(sheetName)) {
+        await this.processCutiMelahirkanData(sheetData);
+      } else if (this.isCutiPentingSheet(sheetName)) {
+        await this.processCutiPentingData(sheetData);
+      }
     }
     
-    // Generate data cuti berdasarkan data pegawai yang diupload
-    this.updateProgress(60, 'Menghitung data cuti berdasarkan aturan PNS...');
-    await this.generateCutiDataFromPegawai();
+    // Generate data cuti yang belum ada
+    this.updateProgress(80, 'Melengkapi data cuti...');
+    await this.generateMissingCutiData();
     
     this.updateProgress(100, 'Selesai!');
   }
 
+  isPegawaiSheet(sheetName) {
+    const pegawaiSheets = ['pegawai', 'data', 'sheet1', 'data_pegawai'];
+    return pegawaiSheets.includes(sheetName.toLowerCase());
+  }
+
+  isCutiTahunanSheet(sheetName) {
+    const cutiTahunanSheets = ['cuti_tahunan', 'cutitahunan', 'sheet2'];
+    return cutiTahunanSheets.includes(sheetName.toLowerCase());
+  }
+
+  isCutiSakitSheet(sheetName) {
+    const cutiSakitSheets = ['cuti_sakit', 'cutisakit', 'sheet3'];
+    return cutiSakitSheets.includes(sheetName.toLowerCase());
+  }
+
+  isCutiBesarSheet(sheetName) {
+    const cutiBesarSheets = ['cuti_besar', 'cutibesar', 'sheet4'];
+    return cutiBesarSheets.includes(sheetName.toLowerCase());
+  }
+
+  isCutiMelahirkanSheet(sheetName) {
+    const cutiMelahirkanSheets = ['cuti_melahirkan', 'cutimelahirkan', 'sheet5'];
+    return cutiMelahirkanSheets.includes(sheetName.toLowerCase());
+  }
+
+  isCutiPentingSheet(sheetName) {
+    const cutiPentingSheets = ['cuti_penting', 'cutipenting', 'sheet6'];
+    return cutiPentingSheets.includes(sheetName.toLowerCase());
+  }
+
   async processPegawaiData(data) {
     if (!data || data.length === 0) {
-      throw new Error('Data pegawai tidak ditemukan atau kosong');
+      console.warn('Data pegawai kosong');
+      return;
     }
     
     const processedData = data.map(row => {
-      // Fleksibel untuk berbagai format kolom
-      const nama = row['Nama'] || row['NAMA'] || row['nama'] || '';
-      const nip = row['NIP'] || row['nip'] || row['Nip'] || '';
-      const golongan = row['Golongan'] || row['GOLONGAN'] || row['golongan'] || '';
-      const jabatan = row['Jabatan'] || row['JABATAN'] || row['jabatan'] || '';
-      const tglMasuk = row['Tanggal_Masuk'] || row['TGL_MASUK'] || row['tanggal_masuk'] || row['Tgl Masuk'] || '';
-      const jenisKelamin = row['Jenis_Kelamin'] || row['JK'] || row['jenis_kelamin'] || row['L/P'] || 'L';
+      // Sesuaikan dengan struktur file Excel yang diupload
+      const nama = this.getColumnValue(row, ['Nama', 'NAMA', 'nama', 'Name']);
+      const nip = this.getColumnValue(row, ['NIP', 'nip', 'Nip']);
+      const golongan = this.getColumnValue(row, ['Golongan', 'GOLONGAN', 'golongan', 'Gol']);
+      const jabatan = this.getColumnValue(row, ['Jabatan', 'JABATAN', 'jabatan', 'Position']);
+      const tglMasuk = this.getColumnValue(row, ['Tanggal_Masuk', 'TGL_MASUK', 'tanggal_masuk', 'Tgl Masuk', 'Tanggal Masuk']);
+      const jenisKelamin = this.getColumnValue(row, ['Jenis_Kelamin', 'JK', 'jenis_kelamin', 'L/P', 'Gender']) || 'L';
       
       return {
         id: this.generateId(),
@@ -183,74 +224,233 @@ class UploadManager {
       };
     }).filter(item => item.nama && item.nip);
 
-    // Replace existing data
     this.app.data.pegawai = processedData;
-    
     console.log(`Berhasil memproses ${processedData.length} data pegawai`);
   }
 
-  async generateCutiDataFromPegawai() {
-    const currentYear = this.app.tahunAktif;
-    
-    this.app.data.pegawai.forEach(pegawai => {
-      // Cuti Tahunan - hitung berdasarkan masa kerja
-      const hakCuti = this.app.calculateHakCutiTahunan(pegawai);
-      this.app.data.cutiTahunan.push({
-        pegawaiId: pegawai.id,
-        tahun: currentYear,
-        saldoAwal: 0, // Akan diisi manual atau dari data lain
-        hakCuti: hakCuti,
-        diambil: 0, // Akan diisi manual atau dari data lain
-        sisa: hakCuti,
-        riwayat: []
-      });
+  async processCutiTahunanData(data) {
+    if (!data || data.length === 0) {
+      console.warn('Data cuti tahunan kosong');
+      return;
+    }
 
-      // Cuti Sakit
-      this.app.data.cutiSakit.push({
+    const processedData = data.map(row => {
+      const nip = this.getColumnValue(row, ['NIP', 'nip']);
+      const pegawai = this.findPegawaiByNIP(nip);
+      
+      if (!pegawai) return null;
+
+      return {
         pegawaiId: pegawai.id,
-        tahun: currentYear,
-        totalHari: 0, // Akan diisi manual atau dari data lain
+        tahun: parseInt(this.getColumnValue(row, ['Tahun', 'TAHUN', 'tahun']) || this.app.tahunAktif),
+        saldoAwal: parseInt(this.getColumnValue(row, ['Saldo_Awal', 'saldo_awal', 'Saldo Awal']) || 0),
+        hakCuti: parseInt(this.getColumnValue(row, ['Hak_Cuti', 'hak_cuti', 'Hak Cuti']) || this.app.calculateHakCutiTahunan(pegawai)),
+        diambil: parseInt(this.getColumnValue(row, ['Diambil', 'diambil', 'Cuti Diambil']) || 0),
+        sisa: parseInt(this.getColumnValue(row, ['Sisa', 'sisa', 'Sisa Cuti']) || 0),
+        riwayat: this.parseRiwayatCuti(this.getColumnValue(row, ['Riwayat', 'riwayat']))
+      };
+    }).filter(item => item !== null);
+
+    this.app.data.cutiTahunan = processedData;
+    console.log(`Berhasil memproses ${processedData.length} data cuti tahunan`);
+  }
+
+  async processCutiSakitData(data) {
+    if (!data || data.length === 0) {
+      console.warn('Data cuti sakit kosong');
+      return;
+    }
+
+    const processedData = data.map(row => {
+      const nip = this.getColumnValue(row, ['NIP', 'nip']);
+      const pegawai = this.findPegawaiByNIP(nip);
+      
+      if (!pegawai) return null;
+
+      const totalHari = parseInt(this.getColumnValue(row, ['Total_Hari', 'total_hari', 'Total Hari', 'Jumlah_Hari']) || 0);
+      const potongan = this.app.calculatePotonganSakit(totalHari);
+
+      return {
+        pegawaiId: pegawai.id,
+        tahun: parseInt(this.getColumnValue(row, ['Tahun', 'tahun']) || this.app.tahunAktif),
+        totalHari: totalHari,
         batasNormal: 14,
-        kelebihan: 0,
-        potongan: 0,
-        riwayat: []
-      });
+        kelebihan: Math.max(0, totalHari - 14),
+        potongan: potongan,
+        riwayat: this.parseRiwayatCuti(this.getColumnValue(row, ['Riwayat', 'riwayat']))
+      };
+    }).filter(item => item !== null);
 
-      // Cuti Besar
+    this.app.data.cutiSakit = processedData;
+    console.log(`Berhasil memproses ${processedData.length} data cuti sakit`);
+  }
+
+  async processCutiBesarData(data) {
+    if (!data || data.length === 0) {
+      console.warn('Data cuti besar kosong');
+      return;
+    }
+
+    const processedData = data.map(row => {
+      const nip = this.getColumnValue(row, ['NIP', 'nip']);
+      const pegawai = this.findPegawaiByNIP(nip);
+      
+      if (!pegawai) return null;
+
       const masaKerja = this.app.calculateMasaKerja(pegawai.tglMasuk);
-      this.app.data.cutiBesar.push({
+      const terakhirDiambil = this.parseDate(this.getColumnValue(row, ['Terakhir_Diambil', 'terakhir_diambil', 'Terakhir Diambil']));
+
+      return {
         pegawaiId: pegawai.id,
         masaKerja: masaKerja,
         hakCutiBesar: Math.floor(masaKerja / 6),
-        terakhirDiambil: null,
+        terakhirDiambil: terakhirDiambil,
         statusKelayakan: masaKerja >= 6 ? 'Layak' : 'Belum Layak'
-      });
+      };
+    }).filter(item => item !== null);
 
-      // Cuti Melahirkan (hanya untuk perempuan)
-      if (pegawai.jenisKelamin === 'P') {
+    this.app.data.cutiBesar = processedData;
+    console.log(`Berhasil memproses ${processedData.length} data cuti besar`);
+  }
+
+  async processCutiMelahirkanData(data) {
+    if (!data || data.length === 0) {
+      console.warn('Data cuti melahirkan kosong');
+      return;
+    }
+
+    const processedData = data.map(row => {
+      const nip = this.getColumnValue(row, ['NIP', 'nip']);
+      const pegawai = this.findPegawaiByNIP(nip);
+      
+      if (!pegawai || pegawai.jenisKelamin !== 'P') return null;
+
+      const tanggalMulai = this.parseDate(this.getColumnValue(row, ['Tanggal_Mulai', 'tanggal_mulai', 'Tanggal Mulai']));
+      const tanggalSelesai = this.parseDate(this.getColumnValue(row, ['Tanggal_Selesai', 'tanggal_selesai', 'Tanggal Selesai']));
+      const lamaHari = parseInt(this.getColumnValue(row, ['Lama_Hari', 'lama_hari', 'Lama Hari']) || 0);
+
+      return {
+        pegawaiId: pegawai.id,
+        tahun: parseInt(this.getColumnValue(row, ['Tahun', 'tahun']) || this.app.tahunAktif),
+        tanggalMulai: tanggalMulai,
+        tanggalSelesai: tanggalSelesai,
+        lamaHari: lamaHari,
+        status: this.getColumnValue(row, ['Status', 'status']) || 'Selesai'
+      };
+    }).filter(item => item !== null);
+
+    this.app.data.cutiMelahirkan = processedData;
+    console.log(`Berhasil memproses ${processedData.length} data cuti melahirkan`);
+  }
+
+  async processCutiPentingData(data) {
+    if (!data || data.length === 0) {
+      console.warn('Data cuti penting kosong');
+      return;
+    }
+
+    const processedData = data.map(row => {
+      const nip = this.getColumnValue(row, ['NIP', 'nip']);
+      const pegawai = this.findPegawaiByNIP(nip);
+      
+      if (!pegawai) return null;
+
+      const totalHari = parseInt(this.getColumnValue(row, ['Total_Hari', 'total_hari', 'Total Hari']) || 0);
+
+      return {
+        pegawaiId: pegawai.id,
+        tahun: parseInt(this.getColumnValue(row, ['Tahun', 'tahun']) || this.app.tahunAktif),
+        totalHari: totalHari,
+        batasMaksimal: 30,
+        sisaHak: Math.max(0, 30 - totalHari),
+        alasanTerakhir: this.getColumnValue(row, ['Alasan_Terakhir', 'alasan_terakhir', 'Alasan Terakhir', 'Keterangan']) || '-',
+        riwayat: this.parseRiwayatCuti(this.getColumnValue(row, ['Riwayat', 'riwayat']))
+      };
+    }).filter(item => item !== null);
+
+    this.app.data.cutiPenting = processedData;
+    console.log(`Berhasil memproses ${processedData.length} data cuti penting`);
+  }
+
+  getColumnValue(row, possibleNames) {
+    for (const name of possibleNames) {
+      if (row[name] !== undefined && row[name] !== null && row[name] !== '') {
+        return row[name];
+      }
+    }
+    return '';
+  }
+
+  async generateMissingCutiData() {
+    const currentYear = this.app.tahunAktif;
+    
+    this.app.data.pegawai.forEach(pegawai => {
+      // Cuti Tahunan - buat jika belum ada
+      if (!this.app.data.cutiTahunan.find(c => c.pegawaiId === pegawai.id)) {
+        const hakCuti = this.app.calculateHakCutiTahunan(pegawai);
+        this.app.data.cutiTahunan.push({
+          pegawaiId: pegawai.id,
+          tahun: currentYear,
+          saldoAwal: 0,
+          hakCuti: hakCuti,
+          diambil: 0,
+          sisa: hakCuti,
+          riwayat: []
+        });
+      }
+
+      // Cuti Sakit - buat jika belum ada
+      if (!this.app.data.cutiSakit.find(c => c.pegawaiId === pegawai.id)) {
+        this.app.data.cutiSakit.push({
+          pegawaiId: pegawai.id,
+          tahun: currentYear,
+          totalHari: 0,
+          batasNormal: 14,
+          kelebihan: 0,
+          potongan: 0,
+          riwayat: []
+        });
+      }
+
+      // Cuti Besar - buat jika belum ada
+      if (!this.app.data.cutiBesar.find(c => c.pegawaiId === pegawai.id)) {
+        const masaKerja = this.app.calculateMasaKerja(pegawai.tglMasuk);
+        this.app.data.cutiBesar.push({
+          pegawaiId: pegawai.id,
+          masaKerja: masaKerja,
+          hakCutiBesar: Math.floor(masaKerja / 6),
+          terakhirDiambil: null,
+          statusKelayakan: masaKerja >= 6 ? 'Layak' : 'Belum Layak'
+        });
+      }
+
+      // Cuti Melahirkan - buat jika belum ada (hanya untuk perempuan)
+      if (pegawai.jenisKelamin === 'P' && !this.app.data.cutiMelahirkan.find(c => c.pegawaiId === pegawai.id)) {
         this.app.data.cutiMelahirkan.push({
           pegawaiId: pegawai.id,
           tahun: currentYear,
           tanggalMulai: null,
           tanggalSelesai: null,
           lamaHari: 0,
-          status: 'Tidak Ada'
+          status: 'Belum Ada'
         });
       }
 
-      // Cuti Alasan Penting
-      this.app.data.cutiPenting.push({
-        pegawaiId: pegawai.id,
-        tahun: currentYear,
-        totalHari: 0, // Akan diisi manual atau dari data lain
-        batasMaksimal: 30,
-        sisaHak: 30,
-        alasanTerakhir: '-',
-        riwayat: []
-      });
+      // Cuti Penting - buat jika belum ada
+      if (!this.app.data.cutiPenting.find(c => c.pegawaiId === pegawai.id)) {
+        this.app.data.cutiPenting.push({
+          pegawaiId: pegawai.id,
+          tahun: currentYear,
+          totalHari: 0,
+          batasMaksimal: 30,
+          sisaHak: 30,
+          alasanTerakhir: '-',
+          riwayat: []
+        });
+      }
     });
     
-    console.log(`Berhasil generate data cuti untuk ${this.app.data.pegawai.length} pegawai`);
+    console.log(`Berhasil melengkapi data cuti untuk ${this.app.data.pegawai.length} pegawai`);
   }
 
   findPegawaiByNIP(nip) {
@@ -314,14 +514,97 @@ class UploadManager {
     // Create template workbook
     const wb = XLSX.utils.book_new();
     
-    // Pegawai sheet
+    // Sheet 1: Data Pegawai
     const pegawaiData = [
       {
-        'Nama': 'Contoh Nama Pegawai',
-        'NIP': '199001012020121001',
+        'Nama': 'Dr. Ahmad Susanto, M.Si.',
+        'NIP': '196801011994031001',
         'Golongan': 'III/a',
-        'Jabatan': 'Contoh Jabatan',
-        'Tanggal_Masuk': '2020-01-01',
+        'Jabatan': 'Kepala Pusdiklatwas',
+        'Tanggal_Masuk': '1994-03-01',
+        'Jenis_Kelamin': 'L'
+      },
+      {
+        'Nama': 'Dra. Siti Nurhaliza, M.M.',
+        'NIP': '197205151998032001',
+        'Golongan': 'III/b',
+        'Jabatan': 'Kepala Subbag Kepegawaian',
+        'Tanggal_Masuk': '1998-03-15',
+        'Jenis_Kelamin': 'P'
+      }
+    ];
+    const pegawaiWS = XLSX.utils.json_to_sheet(pegawaiData);
+    XLSX.utils.book_append_sheet(wb, pegawaiWS, 'Pegawai');
+    
+    // Sheet 2: Cuti Tahunan (opsional)
+    const cutiTahunanData = [
+      {
+        'NIP': '196801011994031001',
+        'Tahun': 2025,
+        'Saldo_Awal': 5,
+        'Hak_Cuti': 21,
+        'Diambil': 8,
+        'Sisa': 18,
+        'Riwayat': ''
+      }
+    ];
+    const cutiTahunanWS = XLSX.utils.json_to_sheet(cutiTahunanData);
+    XLSX.utils.book_append_sheet(wb, cutiTahunanWS, 'Cuti_Tahunan');
+    
+    // Sheet 3: Cuti Sakit (opsional)
+    const cutiSakitData = [
+      {
+        'NIP': '196801011994031001',
+        'Tahun': 2025,
+        'Total_Hari': 5,
+        'Riwayat': ''
+      }
+    ];
+    const cutiSakitWS = XLSX.utils.json_to_sheet(cutiSakitData);
+    XLSX.utils.book_append_sheet(wb, cutiSakitWS, 'Cuti_Sakit');
+    
+    // Sheet 4: Cuti Besar (opsional)
+    const cutiBesarData = [
+      {
+        'NIP': '196801011994031001',
+        'Terakhir_Diambil': '2018-01-01'
+      }
+    ];
+    const cutiBesarWS = XLSX.utils.json_to_sheet(cutiBesarData);
+    XLSX.utils.book_append_sheet(wb, cutiBesarWS, 'Cuti_Besar');
+    
+    // Sheet 5: Cuti Melahirkan (opsional)
+    const cutiMelahirkanData = [
+      {
+        'NIP': '197205151998032001',
+        'Tahun': 2025,
+        'Tanggal_Mulai': '2025-01-01',
+        'Tanggal_Selesai': '2025-03-31',
+        'Lama_Hari': 90,
+        'Status': 'Selesai'
+      }
+    ];
+    const cutiMelahirkanWS = XLSX.utils.json_to_sheet(cutiMelahirkanData);
+    XLSX.utils.book_append_sheet(wb, cutiMelahirkanWS, 'Cuti_Melahirkan');
+    
+    // Sheet 6: Cuti Penting (opsional)
+    const cutiPentingData = [
+      {
+        'NIP': '196801011994031001',
+        'Tahun': 2025,
+        'Total_Hari': 3,
+        'Alasan_Terakhir': 'Urusan keluarga',
+        'Riwayat': ''
+      }
+    ];
+    const cutiPentingWS = XLSX.utils.json_to_sheet(cutiPentingData);
+    XLSX.utils.book_append_sheet(wb, cutiPentingWS, 'Cuti_Penting');
+    
+    // Download file
+    const timestamp = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `Template_Data_Cuti_Pusdiklatwas_${timestamp}.xlsx`);
+  }
+
         'Jenis_Kelamin': 'L'
       }
     ];
