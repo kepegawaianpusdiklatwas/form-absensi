@@ -1,7 +1,7 @@
 {
   "name": "form-absensi",
   "version": "1.0.0",
-  "description": "Form konfirmasi kehadiran pegawai yang lupa presensi",
+  "description": "Aplikasi Rekap Cuti Pegawai PNS - Sistem manajemen dan pelaporan cuti komprehensif",
   "main": "index.html",
   "scripts": {
     "build": "echo \"Build completed - static files ready for deployment\"",
@@ -9,10 +9,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "form",
-    "absensi",
-    "kehadiran",
-    "pegawai"
+    "cuti",
+    "pegawai",
+    "pns",
+    "rekap",
+    "laporan",
+    "manajemen"
   ],
   "author": "Kepegawaian Pusdiklatwas BPKP",
   "license": "ISC",
