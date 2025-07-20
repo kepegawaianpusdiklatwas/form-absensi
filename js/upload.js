@@ -605,17 +605,6 @@ class UploadManager {
     XLSX.writeFile(wb, `Template_Data_Cuti_Pusdiklatwas_${timestamp}.xlsx`);
   }
 
-        'Jenis_Kelamin': 'L'
-      }
-    ];
-    const pegawaiWS = XLSX.utils.json_to_sheet(pegawaiData);
-    XLSX.utils.book_append_sheet(wb, pegawaiWS, 'Data_Pegawai');
-    
-    // Download file
-    const timestamp = new Date().toISOString().slice(0, 10);
-    XLSX.writeFile(wb, `Template_Data_Pegawai_${timestamp}.xlsx`);
-  }
-
   showProgress() {
     document.getElementById('upload-progress').classList.remove('hidden');
     document.getElementById('upload-result').classList.add('hidden');
