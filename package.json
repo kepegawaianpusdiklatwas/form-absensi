@@ -4,8 +4,9 @@
   "description": "Aplikasi Rekap Cuti Pegawai PNS - Sistem manajemen dan pelaporan cuti komprehensif",
   "main": "index.html",
   "scripts": {
+    "start": "python3 -m http.server 8000",
+    "serve": "npx serve -s . -l 8000",
     "build": "echo \"Build completed - static files ready for deployment\"",
-    "start": "npx serve -s . -l 8000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
