@@ -1,0 +1,21 @@
+{
+  "name": "form-absensi",
+  "version": "1.0.0",
+  "description": "Form konfirmasi kehadiran pegawai yang lupa presensi",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo \"Build completed - static files ready for deployment\"",
+    "start": "python3 -m http.server 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "form",
+    "absensi",
+    "kehadiran",
+    "pegawai"
+  ],
+  "author": "Kepegawaian Pusdiklatwas BPKP",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {}
+}
