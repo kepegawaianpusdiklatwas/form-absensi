@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latar Belakang Form Konfirmasi Kehadiran</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Poppins', sans-serif; background: #f5f7fb; }
+    .container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    .card { background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+    .header { background: linear-gradient(135deg, #4361ee, #3f37c9); color: white; padding: 1.5rem; text-align: center; }
+    .content { padding: 2rem; }
+    
+    /* Enhanced Button Styles */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.5s ease;
+      cursor: pointer;
+      border: none;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #4361ee, #3f37c9);
+      color: white;
+      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    /* Shading Animation */
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
+      z-index: -1;
+    }
+    
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+    
+    /* Random Color Animation on Hover */
+    .btn-primary:hover {
+      animation: randomColor 0.5s forwards;
+    }
+    
+    @keyframes randomColor {
+      0% { background: linear-gradient(135deg, #4361ee, #3f37c9); }
+      25% { background: linear-gradient(135deg, #3f37c9, #4361ee); }
+      50% { background: linear-gradient(135deg, #4cc9f0, #4895ef); }
+      75% { background: linear-gradient(135deg, #4895ef, #4361ee); }
+      100% { background: linear-gradient(135deg, #4361ee, #3f37c9); }
+    }
+    
+    /* Pulse Animation */
+    .btn-pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(67, 97, 238, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+    }
+    
+    .document-ref { background: #f8fafc; border-left: 4px solid #4361ee; padding: 1rem; margin: 1.5rem 0; }
+    .document-ref-title { font-weight: 600; color: #4361ee; margin-bottom: 0.5rem; }
+    ol { padding-left: 0; margin: 1rem 0; list-style-type: none; }
+    li { margin-bottom: 1rem; display: flex; align-items: flex-start; }
+    .li-icon { margin-right: 1rem; color: #4361ee; font-size: 1.25rem; min-width: 30px; }
+    .li-content { flex: 1; }
+    .footer { text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 0.9rem; }
+    
+    /* Animasi khusus untuk ikon */
+    .animate-bounce { animation: bounce 2s infinite; }
+    .animate-pulse { animation: pulse-icon 2s infinite; }
+    .animate-swing { animation: swing 2s infinite; transform-origin: top center; }
+    .animate-tada { animation: tada 2s infinite; }
+    .animate-wobble { animation: wobble 2s infinite; }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes pulse-icon {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+    }
+    @keyframes swing {
+      20% { transform: rotate(15deg); }
+      40% { transform: rotate(-10deg); }
+      60% { transform: rotate(5deg); }
+      80% { transform: rotate(-5deg); }
+      100% { transform: rotate(0deg); }
+    }
+    @keyframes tada {
+      0% { transform: scale(1); }
+      10%, 20% { transform: scale(0.9) rotate(-3deg); }
+      30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); }
+      40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+    @keyframes wobble {
+      0% { transform: translateX(0%); }
+      15% { transform: translateX(-5%) rotate(-5deg); }
+      30% { transform: translateX(5%) rotate(3deg); }
+      45% { transform: translateX(-3%) rotate(-3deg); }
+      60% { transform: translateX(2%) rotate(2deg); }
+      75% { transform: translateX(-1%) rotate(-1deg); }
+      100% { transform: translateX(0%); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <h1 class="text-xl md:text-2xl font-bold">Latar Belakang Pengisian Form</h1>
+        <p class="text-sm opacity-90 mt-1">Konfirmasi Kehadiran Pegawai yang Lupa Presensi</p>
+      </div>
+      
+      <div class="content">
+        <div class="document-ref">
+          <div class="document-ref-title">Dasar Pengajuan:</div>
+          <p>Berdasarkan Nota Dinas Nomor: KP.03.00/ND-70/DL01/2025</p>
+          <p>Tanggal: 8 Juli 2025</p>
+          <p>Perihal: Mekanisme Klaim Kehadiran Pegawai yang Lupa Presensi</p>
+        </div>
+        
+        <p>Dengan hormat,</p>
+        
+        <p class="mt-4">Sehubungan dengan penghapusan fitur pembuatan izin konfirmasi lupa presensi oleh Biro SDM BPKP Pusat, maka sebagai alternatifnya, pegawai yang lupa melakukan presensi dapat mengajukan klaim kehadiran melalui mekanisme berikut:</p>
+        
+        <ol>
+          <li>
+            <div class="li-icon animate__animated animate__fadeInLeft">
+              <i class="fas fa-user-edit animate-bounce"></i>
+            </div>
+            <div class="li-content">
+              Pegawai mengisi form konfirmasi kehadiran ini dengan lengkap dan benar
+            </div>
+          </li>
+          <li>
+            <div class="li-icon animate__animated animate__fadeInLeft">
+              <i class="fas fa-camera animate-pulse"></i>
+            </div>
+            <div class="li-content">
+              Melampirkan bukti kehadiran berupa screenshot CCTV atau Google Linimasa
+            </div>
+          </li>
+          <li>
+            <div class="li-icon animate__animated animate__fadeInLeft">
+              <i class="fas fa-file-pdf animate-swing"></i>
+            </div>
+            <div class="li-content">
+              Form yang telah diisi dan dilengkapi bukti akan menghasilkan dokumen PDF
+            </div>
+          </li>
+          <li>
+            <div class="li-icon animate__animated animate__fadeInLeft">
+              <i class="fas fa-print animate-tada"></i>
+            </div>
+            <div class="li-content">
+              Pegawai mencetak dokumen tersebut dan meminta persetujuan atasan langsung
+            </div>
+          </li>
+          <li>
+            <div class="li-icon animate__animated animate__fadeInLeft">
+              <i class="fas fa-file-signature animate-wobble"></i>
+            </div>
+            <div class="li-content">
+              Dokumen yang telah ditandatangani diserahkan ke Subbag Kepegawaian
+            </div>
+          </li>
+        </ol>
+        
+        <p class="mt-4">Form ini dibuat untuk memastikan adanya bukti dan pertanggungjawaban atas klaim kehadiran yang diajukan oleh pegawai.</p>
+        
+        <div class="text-center mt-8">
+          <a href="form.html" class="btn btn-primary btn-pulse animate__animated animate__fadeInUp">
+            <i class="fas fa-arrow-right mr-2"></i> Lanjutkan ke Form Pengisian
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>© 2025 Kepegawaian Pusdiklatwas BPKP</p>
+    </div>
+  </div>
+
+  <script>
+    // Generate random gradient colors on hover
+    document.querySelector('.btn-primary').addEventListener('mouseover', function() {
+      const colors = [
+        ['#4361ee', '#3f37c9'],
+        ['#4cc9f0', '#4895ef'],
+        ['#7209b7', '#560bad'],
+        ['#f72585', '#b5179e'],
+        ['#3a0ca3', '#480ca8']
+      ];
+      
+      const randomColors = colors[Math.floor(Math.random() * colors.length)];
+      this.style.background = `linear-gradient(135deg, ${randomColors[0]}, ${randomColors[1]})`;
+    });
+    
+    document.querySelector('.btn-primary').addEventListener('mouseout', function() {
+      this.style.background = 'linear-gradient(135deg, #4361ee, #3f37c9)';
+    });
+  </script>
+</body>
+</html>
