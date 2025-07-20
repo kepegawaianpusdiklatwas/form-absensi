@@ -131,31 +131,39 @@ Sistem manajemen dan pelaporan cuti komprehensif untuk Pegawai Negeri Sipil (PNS
 
 ## Format Template Excel
 
-Template Excel terdiri dari 6 sheet yang dapat disesuaikan:
+Template Excel terdiri dari 6 sheet berdasarkan file Excel yang diupload:
 
 1. **Pegawai** (atau Sheet1/Data): Data dasar pegawai
-   - Kolom: Nama, NIP, Golongan, Jabatan, Tanggal_Masuk, Jenis_Kelamin
-   - Format alternatif: NAMA, nip, golongan, jabatan, TGL_MASUK, JK/L/P
+   - Kolom wajib: Nama, NIP, Golongan, Jabatan, Tanggal_Masuk, Jenis_Kelamin
+   - Format fleksibel: NAMA/nama, nip/NIP, golongan/GOLONGAN, dll.
 
 2. **Cuti_Tahunan** (atau CutiTahunan/Sheet2): Data cuti tahunan per pegawai
-   - Kolom: NIP, Tahun, Saldo_Awal, Hak_Cuti, Diambil, Sisa, Riwayat
-   - Format alternatif: nip, TAHUN, saldo_awal, hak_cuti, diambil, sisa
+   - Kolom: NIP, Tahun, Saldo_Awal, Hak_Cuti, Diambil, Sisa, Riwayat (opsional)
+   - Jika kosong, sistem akan generate berdasarkan masa kerja
 
 3. **Cuti_Sakit** (atau CutiSakit/Sheet3): Riwayat cuti sakit
-   - Kolom: NIP, Tahun, Total_Hari, Riwayat
-   - Format alternatif: nip, tahun, total_hari, jumlah_hari
+   - Kolom: NIP, Tahun, Total_Hari, Riwayat (opsional)
+   - Sistem otomatis hitung potongan jika > 14 hari
 
 4. **Cuti_Besar** (atau CutiBesar/Sheet4): Status dan riwayat cuti besar
-   - Kolom: NIP, Terakhir_Diambil
-   - Format alternatif: nip, terakhir_diambil
+   - Kolom: NIP, Terakhir_Diambil (opsional)
+   - Kelayakan dihitung otomatis berdasarkan masa kerja
 
 5. **Cuti_Melahirkan** (atau CutiMelahirkan/Sheet5): Data cuti melahirkan (khusus wanita)
-   - Kolom: NIP, Tahun, Tanggal_Mulai, Tanggal_Selesai, Status
-   - Format alternatif: nip, tahun, tanggal_mulai, tanggal_selesai, status
+   - Kolom: NIP, Tahun, Tanggal_Mulai, Tanggal_Selesai, Lama_Hari, Status (opsional)
+   - Hanya untuk pegawai dengan Jenis_Kelamin = 'P'
 
 6. **Cuti_Penting** (atau CutiPenting/Sheet6): Riwayat cuti alasan penting
-   - Kolom: NIP, Tahun, Total_Hari, Alasan_Terakhir, Riwayat
-   - Format alternatif: nip, tahun, total_hari, alasan_terakhir, keterangan
+   - Kolom: NIP, Tahun, Total_Hari, Alasan_Terakhir, Riwayat (opsional)
+   - Maksimal 30 hari per tahun
+
+## Fleksibilitas Format
+
+Aplikasi dapat membaca berbagai format nama kolom dan sheet:
+- **Nama kolom:** Case-insensitive (Nama/NAMA/nama)
+- **Nama sheet:** Pegawai/Data/Sheet1, Cuti_Tahunan/CutiTahunan/Sheet2, dst.
+- **Data kosong:** Jika sheet tidak ada atau kosong, sistem generate struktur default
+- **Merge data:** Data dari Excel akan menimpa/melengkapi data yang sudah ada
 
 ## Fitur Keamanan dan Validasi
 
