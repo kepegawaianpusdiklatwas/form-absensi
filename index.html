@@ -18,7 +18,7 @@
           <i class="fas fa-calendar-check text-3xl"></i>
           <div>
             <h1 class="text-2xl font-bold">Aplikasi Rekap Cuti Pegawai</h1>
-            <p class="text-blue-100">Sistem Manajemen Cuti PNS</p>
+            <p class="text-blue-100">Sistem Rekap dan Analisis Cuti PNS Pusdiklatwas BPKP</p>
           </div>
         </div>
         <div class="text-right">
@@ -41,25 +41,25 @@
           <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
         </button>
         <button class="nav-tab" data-tab="upload">
-          <i class="fas fa-upload mr-2"></i>Upload Data
+          <i class="fas fa-upload mr-2"></i>Import Data Excel
         </button>
         <button class="nav-tab" data-tab="cuti-tahunan">
-          <i class="fas fa-calendar-alt mr-2"></i>Cuti Tahunan
+          <i class="fas fa-calendar-alt mr-2"></i>Rekap Cuti Tahunan
         </button>
         <button class="nav-tab" data-tab="cuti-sakit">
-          <i class="fas fa-user-injured mr-2"></i>Cuti Sakit
+          <i class="fas fa-user-injured mr-2"></i>Rekap Cuti Sakit
         </button>
         <button class="nav-tab" data-tab="cuti-besar">
-          <i class="fas fa-calendar-plus mr-2"></i>Cuti Besar
+          <i class="fas fa-calendar-plus mr-2"></i>Rekap Cuti Besar
         </button>
         <button class="nav-tab" data-tab="cuti-melahirkan">
-          <i class="fas fa-baby mr-2"></i>Cuti Melahirkan
+          <i class="fas fa-baby mr-2"></i>Rekap Cuti Melahirkan
         </button>
         <button class="nav-tab" data-tab="cuti-penting">
-          <i class="fas fa-exclamation-circle mr-2"></i>Cuti Penting
+          <i class="fas fa-exclamation-circle mr-2"></i>Rekap Cuti Penting
         </button>
         <button class="nav-tab" data-tab="laporan">
-          <i class="fas fa-chart-bar mr-2"></i>Laporan
+          <i class="fas fa-chart-bar mr-2"></i>Laporan & Analisis
         </button>
       </div>
     </div>
@@ -137,16 +137,16 @@
     <div id="upload" class="tab-content">
       <div class="card max-w-2xl mx-auto">
         <div class="card-header">
-          <h3><i class="fas fa-upload mr-2"></i>Upload Data Cuti</h3>
-          <p class="text-sm text-gray-600">Upload file Excel dengan data cuti pegawai (format .xlsx atau .xls)</p>
+          <h3><i class="fas fa-upload mr-2"></i>Import Data Excel untuk Rekap</h3>
+          <p class="text-sm text-gray-600">Import file Excel berisi data cuti pegawai yang sudah ada untuk direkap dan dianalisis</p>
         </div>
         <div class="card-body">
           <div class="upload-area" id="upload-area">
             <div class="upload-icon">
               <i class="fas fa-cloud-upload-alt"></i>
             </div>
-            <h4>Drag & Drop file Excel di sini</h4>
-            <p>atau klik untuk memilih file</p>
+            <h4>Import File Excel Data Cuti</h4>
+            <p>Drag & drop atau klik untuk memilih file Excel</p>
             <input type="file" id="file-input" accept=".xlsx,.xls" class="hidden">
             <div class="upload-formats">
               <span>Format: .xlsx, .xls</span>
@@ -156,13 +156,13 @@
           
           <div class="alert alert-info mt-4">
             <i class="fas fa-info-circle mr-2"></i>
-            <strong>Petunjuk Upload:</strong>
+            <strong>Fungsi Aplikasi - REKAP DATA CUTI:</strong>
             <ul class="list-disc list-inside mt-2 text-sm">
-              <li>File Excel dapat berisi 1-6 sheet sesuai kebutuhan</li>
-              <li><strong>Sheet Pegawai:</strong> Nama, NIP, Golongan, Jabatan, Tanggal_Masuk, Jenis_Kelamin</li>
-              <li><strong>Sheet Cuti (opsional):</strong> Cuti_Tahunan, Cuti_Sakit, Cuti_Besar, Cuti_Melahirkan, Cuti_Penting</li>
-              <li>Sistem akan melengkapi data yang belum ada berdasarkan aturan PNS</li>
-              <li>Data dari Excel akan menimpa data yang sudah ada</li>
+              <li><strong>REKAP & ANALISIS:</strong> Menganalisis data cuti yang sudah ada dalam file Excel</li>
+              <li><strong>VISUALISASI:</strong> Menampilkan grafik dan statistik penggunaan cuti</li>
+              <li><strong>MONITORING:</strong> Memantau pegawai yang melebihi batas cuti atau perlu perhatian</li>
+              <li><strong>LAPORAN:</strong> Generate laporan komprehensif dalam berbagai format</li>
+              <li><strong>PERHITUNGAN OTOMATIS:</strong> Hitung potongan gaji, kelayakan cuti besar, dll.</li>
             </ul>
           </div>
           
@@ -185,38 +185,38 @@
       <!-- Template Download -->
       <div class="card max-w-2xl mx-auto mt-6">
         <div class="card-header">
-          <h3><i class="fas fa-download mr-2"></i>Template Excel</h3>
-          <p class="text-sm text-gray-600">Download template Excel lengkap dengan contoh data Pusdiklatwas BPKP</p>
+          <h3><i class="fas fa-download mr-2"></i>Template Excel untuk Rekap</h3>
+          <p class="text-sm text-gray-600">Download template Excel untuk menyiapkan data cuti yang akan direkap</p>
         </div>
         <div class="card-body">
-          <p class="mb-4">Template Excel berisi 6 sheet dengan contoh data real Pusdiklatwas BPKP:</p>
+          <p class="mb-4">Template Excel berisi 6 sheet untuk data cuti yang akan direkap:</p>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div class="bg-gray-50 p-3 rounded">
-              <h5 class="font-semibold text-sm">Sheet Wajib:</h5>
+              <h5 class="font-semibold text-sm">Data Utama:</h5>
               <ul class="text-xs mt-2 space-y-1">
-                <li>• <strong>Pegawai</strong> - Data dasar pegawai (wajib)</li>
-                <li>• <strong>Cuti_Tahunan</strong> - Rekap cuti tahunan</li>
-                <li>• <strong>Cuti_Sakit</strong> - Rekap cuti sakit</li>
+                <li>• <strong>Pegawai</strong> - Data dasar pegawai</li>
+                <li>• <strong>Cuti_Tahunan</strong> - Data cuti tahunan yang sudah diambil</li>
+                <li>• <strong>Cuti_Sakit</strong> - Data cuti sakit yang sudah diambil</li>
               </ul>
             </div>
             <div class="bg-gray-50 p-3 rounded">
-              <h5 class="font-semibold text-sm">Sheet Opsional:</h5>
+              <h5 class="font-semibold text-sm">Data Tambahan:</h5>
               <ul class="text-xs mt-2 space-y-1">
-                <li>• <strong>Cuti_Besar</strong> - Riwayat cuti besar</li>
-                <li>• <strong>Cuti_Melahirkan</strong> - Cuti melahirkan</li>
-                <li>• <strong>Cuti_Penting</strong> - Cuti alasan penting</li>
+                <li>• <strong>Cuti_Besar</strong> - Riwayat cuti besar yang sudah diambil</li>
+                <li>• <strong>Cuti_Melahirkan</strong> - Data cuti melahirkan</li>
+                <li>• <strong>Cuti_Penting</strong> - Data cuti alasan penting</li>
               </ul>
             </div>
           </div>
           <div class="bg-blue-50 p-3 rounded mb-4">
             <p class="text-xs text-blue-800">
               <i class="fas fa-info-circle mr-1"></i>
-              <strong>Catatan:</strong> Hanya sheet "Pegawai" yang wajib. Sheet lainnya opsional. 
-              Jika tidak ada, sistem akan membuat struktur kosong berdasarkan aturan PNS.
+              <strong>Fungsi Rekap:</strong> Aplikasi akan menganalisis data cuti yang sudah ada, 
+              menghitung statistik, memantau pelanggaran, dan membuat laporan komprehensif.
             </p>
           </div>
-          <button id="download-template" class="btn btn-outline">
-            <i class="fas fa-file-excel mr-2"></i>Download Template Lengkap
+          <button id="download-template" class="btn btn-primary">
+            <i class="fas fa-file-excel mr-2"></i>Download Template untuk Rekap
           </button>
         </div>
       </div>
