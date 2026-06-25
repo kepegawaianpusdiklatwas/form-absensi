@@ -3,19 +3,120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Latar Belakang Form Konfirmasi Kehadiran</title>
+  <meta name="description" content="Form konfirmasi kehadiran pegawai yang lupa presensi di BPKP Pusdiklatwas">
+  <meta name="theme-color" content="#4361ee">
+  <title>Latar Belakang Form Konfirmasi Kehadiran - BPKP Pusdiklatwas</title>
+  
+  <!-- CSS External -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Poppins', sans-serif; background: #f5f7fb; }
-    .container { max-width: 800px; margin: 0 auto; padding: 2rem; }
-    .card { background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
-    .header { background: linear-gradient(135deg, #4361ee, #3f37c9); color: white; padding: 1.5rem; text-align: center; }
-    .content { padding: 2rem; }
     
-    /* Enhanced Button Styles */
+    * { box-sizing: border-box; }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fb;
+      color: #2d3748;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #4361ee, #3f37c9);
+      color: white;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 700;
+    }
+    
+    .header p {
+      margin: 0.5rem 0 0;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      opacity: 0.95;
+    }
+    
+    .content {
+      padding: 1.5rem;
+    }
+    
+    @media (min-width: 768px) {
+      .content {
+        padding: 2rem;
+      }
+    }
+    
+    /* Document Reference Box */
+    .document-ref {
+      background: #f8fafc;
+      border-left: 4px solid #4361ee;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .document-ref-title {
+      font-weight: 600;
+      color: #4361ee;
+      margin-bottom: 0.5rem;
+    }
+    
+    .document-ref p {
+      margin: 0.25rem 0;
+      font-size: 0.95rem;
+      color: #4a5568;
+    }
+    
+    /* List Styles */
+    ol {
+      padding-left: 0;
+      margin: 1.5rem 0;
+      list-style-type: none;
+    }
+    
+    li {
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .li-icon {
+      color: #4361ee;
+      font-size: 1.5rem;
+      min-width: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .li-content {
+      flex: 1;
+      color: #4a5568;
+      font-size: 0.95rem;
+    }
+    
+    /* Button Styles */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -23,12 +124,13 @@
       padding: 0.75rem 1.5rem;
       border-radius: 8px;
       font-weight: 500;
-      transition: all 0.5s ease;
+      font-size: 1rem;
+      transition: all 0.3s ease;
       cursor: pointer;
       border: none;
+      text-decoration: none;
       position: relative;
       overflow: hidden;
-      z-index: 1;
     }
     
     .btn-primary {
@@ -37,101 +139,105 @@
       box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
     }
     
-    /* Shading Animation */
-    .btn-primary::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: 0.5s;
-      z-index: -1;
-    }
-    
-    .btn-primary:hover::before {
-      left: 100%;
-    }
-    
-    /* Random Color Animation on Hover */
     .btn-primary:hover {
-      animation: randomColor 0.5s forwards;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
     }
     
-    @keyframes randomColor {
-      0% { background: linear-gradient(135deg, #4361ee, #3f37c9); }
-      25% { background: linear-gradient(135deg, #3f37c9, #4361ee); }
-      50% { background: linear-gradient(135deg, #4cc9f0, #4895ef); }
-      75% { background: linear-gradient(135deg, #4895ef, #4361ee); }
-      100% { background: linear-gradient(135deg, #4361ee, #3f37c9); }
+    .btn-primary:active {
+      transform: translateY(0);
     }
     
-    /* Pulse Animation */
-    .btn-pulse {
-      animation: pulse 2s infinite;
+    .btn-primary:focus {
+      outline: 2px solid #4361ee;
+      outline-offset: 2px;
     }
     
-    @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7); }
-      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(67, 97, 238, 0); }
-      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+    /* Icon animation */
+    .icon-bounce {
+      animation: bounce 1s ease-in-out infinite;
     }
-    
-    .document-ref { background: #f8fafc; border-left: 4px solid #4361ee; padding: 1rem; margin: 1.5rem 0; }
-    .document-ref-title { font-weight: 600; color: #4361ee; margin-bottom: 0.5rem; }
-    ol { padding-left: 0; margin: 1rem 0; list-style-type: none; }
-    li { margin-bottom: 1rem; display: flex; align-items: flex-start; }
-    .li-icon { margin-right: 1rem; color: #4361ee; font-size: 1.25rem; min-width: 30px; }
-    .li-content { flex: 1; }
-    .footer { text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 0.9rem; }
-    
-    /* Animasi khusus untuk ikon */
-    .animate-bounce { animation: bounce 2s infinite; }
-    .animate-pulse { animation: pulse-icon 2s infinite; }
-    .animate-swing { animation: swing 2s infinite; transform-origin: top center; }
-    .animate-tada { animation: tada 2s infinite; }
-    .animate-wobble { animation: wobble 2s infinite; }
     
     @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-8px);
+      }
     }
+    
+    .icon-pulse {
+      animation: pulse-icon 2s ease-in-out infinite;
+    }
+    
     @keyframes pulse-icon {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.2); opacity: 0.8; }
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.15);
+        opacity: 0.8;
+      }
     }
+    
+    .icon-swing {
+      animation: swing 1.5s ease-in-out infinite;
+      transform-origin: top center;
+    }
+    
     @keyframes swing {
-      20% { transform: rotate(15deg); }
-      40% { transform: rotate(-10deg); }
-      60% { transform: rotate(5deg); }
-      80% { transform: rotate(-5deg); }
-      100% { transform: rotate(0deg); }
+      0%, 100% {
+        transform: rotate(0deg);
+      }
+      25% {
+        transform: rotate(10deg);
+      }
+      75% {
+        transform: rotate(-10deg);
+      }
     }
-    @keyframes tada {
-      0% { transform: scale(1); }
-      10%, 20% { transform: scale(0.9) rotate(-3deg); }
-      30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); }
-      40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); }
-      100% { transform: scale(1) rotate(0); }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+      color: #718096;
+      font-size: 0.875rem;
     }
-    @keyframes wobble {
-      0% { transform: translateX(0%); }
-      15% { transform: translateX(-5%) rotate(-5deg); }
-      30% { transform: translateX(5%) rotate(3deg); }
-      45% { transform: translateX(-3%) rotate(-3deg); }
-      60% { transform: translateX(2%) rotate(2deg); }
-      75% { transform: translateX(-1%) rotate(-1deg); }
-      100% { transform: translateX(0%); }
+    
+    /* Fade In Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+    
+    .fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+    
+    .fade-in:nth-child(1) { animation-delay: 0.1s; }
+    .fade-in:nth-child(2) { animation-delay: 0.2s; }
+    .fade-in:nth-child(3) { animation-delay: 0.3s; }
+    .fade-in:nth-child(4) { animation-delay: 0.4s; }
+    .fade-in:nth-child(5) { animation-delay: 0.5s; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="card">
       <div class="header">
-        <h1 class="text-xl md:text-2xl font-bold">Latar Belakang</h1>
-        <p class="text-sm opacity-90 mt-1">Konfirmasi Kehadiran Pegawai yang Lupa Presensi</p>
+        <h1>Latar Belakang</h1>
+        <p>Konfirmasi Kehadiran Pegawai yang Lupa Presensi</p>
       </div>
       
       <div class="content">
@@ -144,84 +250,70 @@
         
         <p>Dengan hormat,</p>
         
-        <p class="mt-4">Sehubungan dengan penghapusan fitur pembuatan izin konfirmasi lupa presensi oleh Biro SDM BPKP Pusat, maka sebagai alternatifnya, pegawai yang lupa melakukan presensi dapat mengajukan klaim kehadiran melalui mekanisme berikut:</p>
+        <p style="margin-top: 1rem; text-align: justify;">
+          Sehubungan dengan penghapusan fitur pembuatan izin konfirmasi lupa presensi oleh Biro SDM BPKP Pusat, 
+          maka sebagai alternatifnya, pegawai yang lupa melakukan presensi dapat mengajukan klaim kehadiran melalui 
+          form konfirmasi kehadiran ini. Proses ini memastikan adanya bukti dan pertanggungjawaban yang jelas atas 
+          setiap klaim kehadiran yang diajukan.
+        </p>
+        
+        <p style="margin-top: 1rem; font-weight: 600; color: #2d3748;">Langkah-langkah Pengajuan:</p>
         
         <ol>
-          <li>
-            <div class="li-icon animate__animated animate__fadeInLeft">
-              <i class="fas fa-user-edit animate-bounce"></i>
+          <li class="fade-in">
+            <div class="li-icon">
+              <i class="fas fa-user-edit icon-bounce" aria-hidden="true"></i>
             </div>
             <div class="li-content">
               Pegawai mengisi form konfirmasi kehadiran ini dengan lengkap dan benar
             </div>
           </li>
-          <li>
-            <div class="li-icon animate__animated animate__fadeInLeft">
-              <i class="fas fa-camera animate-pulse"></i>
+          <li class="fade-in">
+            <div class="li-icon">
+              <i class="fas fa-camera icon-pulse" aria-hidden="true"></i>
             </div>
             <div class="li-content">
-              Melampirkan bukti kehadiran screenshot CCTV dan Google Linimasa
+              Melampirkan bukti kehadiran berupa screenshot CCTV dan Google Timeline
             </div>
           </li>
-          <li>
-            <div class="li-icon animate__animated animate__fadeInLeft">
-              <i class="fas fa-file-pdf animate-swing"></i>
+          <li class="fade-in">
+            <div class="li-icon">
+              <i class="fas fa-file-pdf icon-swing" aria-hidden="true"></i>
             </div>
             <div class="li-content">
-              Form yang telah diisi dan dilengkapi bukti akan menghasilkan dokumen PDF
+              Form yang telah diisi dan dilengkapi bukti akan menghasilkan dokumen PDF siap cetak
             </div>
           </li>
-          <li>
-            <div class="li-icon animate__animated animate__fadeInLeft">
-              <i class="fas fa-print animate-tada"></i>
+          <li class="fade-in">
+            <div class="li-icon">
+              <i class="fas fa-print icon-bounce" aria-hidden="true"></i>
             </div>
             <div class="li-content">
-              Pegawai mencetak dokumen tersebut dan meminta persetujuan atasan langsung
+              Pegawai mencetak dokumen tersebut dan meminta persetujuan dari atasan langsung
             </div>
           </li>
-          <li>
-            <div class="li-icon animate__animated animate__fadeInLeft">
-              <i class="fas fa-file-signature animate-wobble"></i>
+          <li class="fade-in">
+            <div class="li-icon">
+              <i class="fas fa-file-signature icon-swing" aria-hidden="true"></i>
             </div>
             <div class="li-content">
-              Dokumen yang telah ditandatangani diserahkan ke Subbag Kepegawaian
+              Dokumen yang telah ditandatangani diserahkan ke Subbag Kepegawaian untuk diproses
             </div>
           </li>
         </ol>
         
-        <p class="mt-4">Form ini dibuat untuk memastikan adanya bukti dan pertanggungjawaban atas klaim kehadiran yang diajukan oleh pegawai.</p>
-        
-        <div class="text-center mt-8">
-          <a href="https://pusdiklatwas.bpkp.go.id/lancar/lupa-presensi/form.html" class="btn btn-primary btn-pulse animate__animated animate__fadeInUp">
-            <i class="fas fa-arrow-right mr-2"></i> Lanjutkan ke Form Pengisian
+        <div class="text-center" style="margin-top: 2rem;">
+          <a href="https://pusdiklatwas.bpkp.go.id/lancar/lupa-presensi/form.html" class="btn btn-primary" aria-label="Lanjutkan ke Form Pengisian">
+            <i class="fas fa-arrow-right" aria-hidden="true" style="margin-right: 0.5rem;"></i> 
+            Lanjutkan ke Form Pengisian
           </a>
         </div>
       </div>
     </div>
     
     <div class="footer">
-      <p>© 2025 Kepegawaian Pusdiklatwas BPKP</p>
+      <p>© 2025 Kepegawaian Pusdiklatwas BPKP. Semua Hak Dilindungi.</p>
     </div>
   </div>
-
-  <script>
-    // Generate random gradient colors on hover
-    document.querySelector('.btn-primary').addEventListener('mouseover', function() {
-      const colors = [
-        ['#4361ee', '#3f37c9'],
-        ['#4cc9f0', '#4895ef'],
-        ['#7209b7', '#560bad'],
-        ['#f72585', '#b5179e'],
-        ['#3a0ca3', '#480ca8']
-      ];
-      
-      const randomColors = colors[Math.floor(Math.random() * colors.length)];
-      this.style.background = `linear-gradient(135deg, ${randomColors[0]}, ${randomColors[1]})`;
-    });
-    
-    document.querySelector('.btn-primary').addEventListener('mouseout', function() {
-      this.style.background = 'linear-gradient(135deg, #4361ee, #3f37c9)';
-    });
-  </script>
 </body>
 </html>
