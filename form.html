@@ -42,10 +42,10 @@
     .file-upload-btn:hover { border-color:#4361ee; color:#4361ee; background:rgba(67,97,238,0.05); }
     .file-upload-input { position:absolute; left:0; top:0; opacity:0; width:100%; height:100%; cursor:pointer; }
     .file-name { margin-top:0.5rem; font-size:0.85rem; color:#64748b; }
-    .loading-spinner { display:inline-block; width:1rem; height:1rem; border:2px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:white; animation:spin 1s ease-in-out infinite; margin-right:0.5rem; }
+    .loading-spinner { display:inline-block; width:1rem; height:1rem; border:2px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:white; animation:spin 1s ease-in-out infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
     .input-with-icon { position:relative; }
-    .search-result { position:absolute; width:100%; max-height:200px; overflow-y:auto; background:white; border:1px solid #e2e8f0; border-radius:8px; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:10; margin-top:0.25rem; display:none; }
+    .search-result { position:absolute; width:100%; max-height:200px; overflow-y:auto; background:white; border:1px solid #e2e8f0; border-radius:8px; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:10; top:100%; }
     .search-result-item { padding:0.75rem 1rem; cursor:pointer; transition:background 0.2s; }
     .search-result-item:hover { background:#f8fafc; }
     .search-result-item small { display:block; color:#64748b; font-size:0.75rem; }
@@ -330,7 +330,7 @@
               </div>
               <h2 class="thank-you-title animate__animated animate__fadeIn">Terima Kasih!</h2>
               <p class="thank-you-message animate__animated animate__fadeIn">
-                Silakan unduh dan cetak dokumen PDF, beri tanda tangan, lalu mintakan persetujuan atasan. Setelah itu, serahkan ke Subbag Kepegawaian Gedung TU Tower Lt. 4, atau kirim softcopy-nya setelah discan.
+                Silakan unduh dan cetak dokumen PDF, beri tanda tangan, lalu mintakan persetujuan atasan. Setelah itu, serahkan ke Subbag Kepegawaian Gedung TU Tower Lt. 4, atau kirim softcopy-nya ke email resmi.
               </p>
               <button type="button" class="btn btn-primary download-pdf-btn animate__animated animate__fadeInUp" id="downloadPdfBtn">
                 <i class="fas fa-file-pdf mr-2"></i> Download PDF
@@ -540,7 +540,6 @@
         searchTimeout = setTimeout(() => {
           try {
             const results = fuse.search(query);
-            // Filter results based on allowed names if provided
             let filteredResults = results;
             if (allowedNames) {
               filteredResults = results.filter(result => allowedNames.includes(result.item.Nama));
@@ -594,7 +593,6 @@
       if (currentPage === 1 && !validatePage1()) return;
       if (currentPage === 2 && !validatePage2()) return;
       
-      // Animasi keluar
       document.getElementById(`page${currentPage}`).classList.add('animate__animated', 'animate__fadeOutLeft');
       
       setTimeout(() => {
@@ -603,7 +601,6 @@
         
         updateStepIndicator(currentPage, currentPage + 1);
         
-        // Hapus class animasi setelah selesai
         setTimeout(() => {
           document.getElementById(`page${currentPage + 1}`).classList.remove('animate__fadeInRight');
         }, 500);
@@ -611,7 +608,6 @@
     }
     
     function prevPage(currentPage) {
-      // Animasi keluar
       document.getElementById(`page${currentPage}`).classList.add('animate__animated', 'animate__fadeOutRight');
       
       setTimeout(() => {
@@ -620,7 +616,6 @@
         
         updateStepIndicator(currentPage, currentPage - 1);
         
-        // Hapus class animasi setelah selesai
         setTimeout(() => {
           document.getElementById(`page${currentPage - 1}`).classList.remove('animate__fadeInLeft');
         }, 500);
@@ -651,7 +646,6 @@
       if (!atasan2) return showErrorMessage(document.getElementById('info-atasan2'), "Harap isi atasan dari atasan langsung");
       if (!document.getElementById('nip_atasan2').value) return showErrorMessage(document.getElementById('info-atasan2'), "Harap pilih atasan dari daftar");
       
-      // Validasi tambahan untuk memastikan atasan yang dipilih sesuai dengan daftar yang diizinkan
       if (atasan1 && !allowedDirectSuperiors.includes(atasan1)) {
         return showErrorMessage(document.getElementById('info-atasan1'), "Atasan langsung tidak valid");
       }
@@ -679,6 +673,8 @@
       const fileInput = document.querySelector(`#file-upload-${index} .file-upload-input`);
       const fileName = document.querySelector(`#file-upload-${index} .file-name`);
       const fileLabel = document.querySelector(`#file-upload-${index} .file-label`);
+      
+      if (!fileInput) return;
       
       fileInput.addEventListener('change', function() {
         if (this.files && this.files[0]) {
@@ -750,8 +746,28 @@
 
     function showInfoMessage(element, message, type = "info") { element.textContent = message; element.className = `search-info ${type} mt-2`; }
     function showSuccessMessage(element, message) { element.textContent = message; element.className = "search-info success mt-2"; }
-    function showErrorMessage(element, message) { element.textContent = message; element.className = "search-info error mt-2"; }
+    function showErrorMessage(element, message) { element.textContent = message; element.className = "search-info error mt-2"; return false; }
     function showError(message) { document.querySelectorAll('.search-info').forEach(el => showErrorMessage(el, message)); }
+
+    // Format Date and Time
+    function formatTanggalIndonesia(tanggalISO) {
+      const date = new Date(tanggalISO);
+      const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+      const hari = date.getDate();
+      const bulanIndex = date.getMonth();
+      const tahun = date.getFullYear();
+      return `${hari} ${bulan[bulanIndex]} ${tahun}`;
+    }
+
+    function formatDateTime(date) {
+      const d = new Date(date);
+      const tanggal = String(d.getDate()).padStart(2, '0');
+      const bulan = String(d.getMonth() + 1).padStart(2, '0');
+      const tahun = d.getFullYear();
+      const jam = String(d.getHours()).padStart(2, '0');
+      const menit = String(d.getMinutes()).padStart(2, '0');
+      return `${tanggal}-${bulan}-${tahun} ${jam}:${menit}`;
+    }
 
     // Form Submission
     document.getElementById("absenForm").addEventListener("submit", async function(e) {
@@ -769,6 +785,7 @@
       errorDisplay.textContent = "";
       progressContainer.classList.remove("hidden");
       progressBar.style.width = "0%";
+      progressBar.style.backgroundColor = "#4361ee";
       uploadStatus.textContent = "";
       uploadStatus.className = "upload-status";
       submitBtn.disabled = true;
@@ -874,8 +891,7 @@
           throw new Error(errorText || "Gagal mengirim data ke server");
         }
 
-        // Karena mode no-cors, kita tidak bisa membaca response
-        // Jadi kita asumsikan berhasil jika tidak ada error
+        // Berhasil
         progressBar.style.width = "100%";
         uploadStatus.textContent = "Upload berhasil!";
         uploadStatus.className = "upload-status success";
@@ -922,7 +938,6 @@
           img.onload = () => {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            // Pertahankan aspect ratio
             const MAX_WIDTH = 800;
             const MAX_HEIGHT = 800;
             let width = img.width;
@@ -997,147 +1012,51 @@
       });
     }
 
-    function formatTanggalIndonesia(tanggalISO) {
-      const bulanList = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-      const tanggal = new Date(tanggalISO + "T00:00:00");
-      return `${tanggal.getDate()} ${bulanList[tanggal.getMonth()]} ${tanggal.getFullYear()}`;
-    }
-
-    function formatDateTime(date) {
-      const bulanList = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-      const jam = date.getHours().toString().padStart(2, '0');
-      const menit = date.getMinutes().toString().padStart(2, '0');
-      return `${date.getDate()} ${bulanList[date.getMonth()]} ${date.getFullYear()} ${jam}:${menit}`;
-    }
-    
-    function resetForm() {
-      document.getElementById("absenForm").reset();
-      document.querySelectorAll(".search-info").forEach(el => { el.textContent = ""; el.className = "search-info mt-2"; });
-      document.getElementById("error-display").style.display = "none";
-      
-      // Reset file uploads
-      const fileUploadContainer = document.getElementById("file-upload-container");
-      fileUploadContainer.innerHTML = `
-        <div class="file-upload-wrapper" id="file-upload-1">
-          <label class="form-label required">Bukti Screenshot CCTV dan Google Linimasa</label>
-          <div class="file-upload">
-            <label class="file-upload-btn">
-              <i class="fas fa-cloud-upload-alt mr-2"></i>
-              <span class="file-label">Pilih file gambar (JPG, PNG)</span>
-              <input type="file" class="file-upload-input" accept="image/*" required>
-            </label>
-            <div class="file-name"></div>
-          </div>
-          <div class="text-xs text-slate-500 mt-1">Maksimal ukuran file: 2MB</div>
-        </div>
-      `;
-      setupFileUpload(1);
-      fileCount = 1;
-      document.getElementById('add-file-btn').style.display = 'inline-flex';
-      
-      document.getElementById("progress-container").classList.add("hidden");
-      document.getElementById("progress-bar").style.width = "0%";
-      document.getElementById("progress-bar").style.backgroundColor = "#4361ee";
-      document.getElementById("upload-status").textContent = "";
-      
-      document.querySelectorAll('.form-page').forEach(page => page.classList.remove('active'));
-      document.getElementById('page1').classList.add('active');
-      
-      document.querySelectorAll('.page-step').forEach(step => {
-        step.classList.remove('active', 'completed');
-      });
-      document.getElementById('step1').classList.add('active');
-      
-      // Set tanggal default ke hari ini
-      document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
-    }
-
+    // Generate PDF Function
     function generatePdf() {
-      const namaPegawai = document.getElementById('cetak-nama').textContent;
-      const tanggal = document.getElementById('tanggal').value;
-      const namaFile = `Surat_Pernyataan_${namaPegawai}_${tanggal.replace(/-/g, '')}.pdf`;
-      
       const element = document.getElementById('print-area');
       const opt = {
-        margin: [10, 12, 10, 5],  // top, left, bottom, right (dalam mm) - left margin minimal
-        filename: namaFile,
-        image: { 
-          type: 'jpeg', 
-          quality: 0.98,
-          useCORS: true
-        },
-        html2canvas: { 
-          scale: 2,
-          logging: true,  // Aktifkan untuk debug
-          useCORS: true,
-          allowTaint: false,
-          scrollX: 0,
-          scrollY: 0,
-          windowWidth: document.documentElement.scrollWidth,
-          windowHeight: document.documentElement.scrollHeight,
-          letterRendering: true,
-          dpi: 192
-        },
-        jsPDF: { 
-          unit: 'mm', 
-          format: 'a4', 
-          orientation: 'portrait',
-          hotfixes: ["px_scaling"]
-        },
-        pagebreak: { 
-          mode: ['avoid-all', 'css', 'legacy'],
-          before: '.proof-page'
-        }
+        margin: 5,
+        filename: `Surat_Pernyataan_${document.getElementById('cetak-nama').textContent}_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
       };
-
-      const btn = document.getElementById('downloadPdfBtn');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Membuat PDF...';
-      btn.disabled = true;
-
-      // Tampilkan area cetak sementara
-      element.style.display = 'block';
       
-      // Beri waktu untuk rendering
-      setTimeout(() => {
-        // Tambahkan fallback handling
-        const generateWithFallback = () => {
-          html2pdf()
-            .set(opt)
-            .from(element)
-            .save()
-            .then(() => {
-              element.style.display = 'none';
-              btn.innerHTML = originalText;
-              btn.disabled = false;
-            })
-            .catch(err => {
-              console.error('Error membuat PDF:', err);
-              // Fallback untuk browser tertentu
-              try {
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.srcdoc = element.innerHTML;
-                document.body.appendChild(iframe);
-                setTimeout(() => {
-                  iframe.contentWindow.print();
-                  document.body.removeChild(iframe);
-                  btn.innerHTML = originalText;
-                  btn.disabled = false;
-                }, 500);
-              } catch (fallbackErr) {
-                console.error('Fallback error:', fallbackErr);
-                alert('Gagal membuat PDF. Silakan coba di browser lain atau hubungi admin.');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-              }
-              element.style.display = 'none';
-            });
-        };
+      html2pdf().set(opt).from(element).save();
+    }
 
-        // Coba pertama kali
-        generateWithFallback();
-      }, 1000);  // Delay 1 detik untuk memastikan rendering
+    // Reset Form Function
+    function resetForm() {
+      document.getElementById('absenForm').reset();
+      document.getElementById('nama').value = '';
+      document.getElementById('nip').value = '';
+      document.getElementById('jabatan').value = '';
+      document.getElementById('atasan1').value = '';
+      document.getElementById('nip_atasan1').value = '';
+      document.getElementById('atasan2').value = '';
+      document.getElementById('nip_atasan2').value = '';
+      
+      // Clear file uploads
+      fileCount = 1;
+      document.querySelectorAll('.file-upload-input').forEach(input => input.value = '');
+      document.querySelectorAll('.file-upload-wrapper:not(#file-upload-1)').forEach(el => el.remove());
+      document.getElementById('add-file-btn').style.display = 'inline-flex';
+      
+      // Reset date
+      document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
+      
+      // Go back to page 1
+      document.getElementById('page4').classList.remove('active');
+      document.getElementById('page1').classList.add('active');
+      document.querySelectorAll('.page-step').forEach((el, idx) => {
+        el.classList.remove('active', 'completed');
+        if (idx === 0) el.classList.add('active');
+      });
+      
+      // Clear search results
+      document.querySelectorAll('.search-info').forEach(el => el.textContent = '');
+      document.querySelectorAll('.search-result').forEach(el => el.innerHTML = '');
     }
   </script>
 </body>
